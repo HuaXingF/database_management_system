@@ -64,9 +64,9 @@
           </el-col>
           <el-col :span="8">
             请选择数据库: &nbsp;
-            <el-select v-model="value">
+            <el-select v-model="value4" @change="conOneKernelDataAdd()">
               <el-option
-                v-for="item in options"
+                v-for="item in options4"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
@@ -75,7 +75,7 @@
           </el-col>
           <el-col :span="8">
             请选择统计周期: &nbsp;
-            <el-select v-model="value">
+            <el-select v-model="value3" @change="conOneKernelDataAdd()">
               <el-option
                 v-for="item in options3"
                 :key="item.value"
@@ -109,23 +109,27 @@ export default {
       getTable_month: null, // 后台获取的数据  到时候直接覆盖
       getTable_trend_total: null, // 核心库单表数据总量变化趋势
       getTable_trend: null, // 核心库表数据增量变化趋势
-      value: "leave_hospital_summary",
-      value4: "leave_hospital_summary",
+      value: "健康档案",
+      value4: "健康档案",
       value1: "selectTotalWeek",
       value3: "selectAddWeek",
       options: [
         {
-          value: "leave_hospital_summary",
+          value: "健康档案",
           label: "健康档案"
         },
         {
-          value: "patient_prescription",
+          value: "电子病历",
           label: "电子病历"
         },
         {
-          value: "patient_prescription_core",
+          value: "全员人口",
           label: "全员人口"
         },
+        {
+          value: "公卫",
+          label: "公卫"
+        }
       ],
       options1: [
         {
@@ -157,17 +161,21 @@ export default {
       ],
       options4: [
         {
-          value: "leave_hospital_summary",
+          value: "健康档案",
           label: "健康档案"
         },
         {
-          value: "patient_prescription",
+          value: "电子病历",
           label: "电子病历"
         },
         {
-          value: "patient_prescription_core",
+          value: "全员人口",
           label: "全员人口"
         },
+        {
+          value: "公卫",
+          label: "公卫"
+        }
       ],
     };
 
