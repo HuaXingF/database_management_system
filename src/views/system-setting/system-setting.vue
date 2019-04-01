@@ -63,7 +63,11 @@
 
 <script>
   import MTopNav from "@/components/m-topNav/m-topNav";
-
+  import {select_shujuhu,
+    select_shujuku,
+    select_containerCircle,
+    select_hegelu,
+    select_conGetAllTab} from "@/api/system-setting"
   export default {
     name: "systemSetting",
     data() {
@@ -122,7 +126,7 @@
           animation: false
         };
         myChart.setOption(option);
-        this.$http.get("/pipelien/queryPopelienCountAndStatus").then(({data})=>{
+        select_containerCircle().then(({data})=>{
           myChart.setOption({
             series :[
               {data:data}
@@ -141,7 +145,7 @@
       },
       shujuhu(){ // 数据湖当前数据统计
         var myChart = this.containerColumn(this.$refs.getCloumn1);
-        this.$http.get("/hive/selectDayByTableName?tableNameArr=employee_bucket_orc_test,total").then(({data})=>{
+        select_shujuhu().then(({data})=>{
           this.tableData=data;
           let x = new Array();
           let y = new Array();
@@ -161,7 +165,7 @@
       },
       shujuku(){ // 核心数据库当前数据统计
         var myChart = this.containerColumn(this.$refs.getCloumn2);
-        this.$http.get("/tabAllRows/selectByBase").then(({data})=>{
+        select_shujuku().then(({data})=>{
           this.tableData=data;
           myChart.setOption({
             xAxis : {
@@ -178,7 +182,7 @@
       },
       hegelu(){ // 当前各表数据合格率统计
         var myChart = this.containerColumn(this.$refs.getCloumn);
-        this.$http.get("ruleApplyResult/selectRegularByTable2").then(({data})=>{
+        select_hegelu().then(({data})=>{
           let x = new Array();
           let hege = new Array();
           let tol = new Array();
@@ -281,7 +285,7 @@
           animation: false
         };
         myChart.setOption(option);
-        this.$http.get("/relationShip/selectRate").then(({data})=>{
+        select_conGetAllTab().then(({data})=>{
           let map={"name":"关联成功","value":data.success};
           let map1={"name":"未关联","value":data.fail};
           let list = [map,map1];
