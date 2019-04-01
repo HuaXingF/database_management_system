@@ -4,7 +4,7 @@ import baseURL from '@/assets/js/config'
 
 // 数据湖当前数据统计
 export const select_shujuhu = params => {
-    const url = `${baseURL}/hive/selectDayByTableName?tableNameArr=employee_bucket_orc_test,total`
+    const url = `${baseURL}/hive/selectByBase`
     return axios.post(url, { params: params })
 }
 // 核心数据库当前数据统计
