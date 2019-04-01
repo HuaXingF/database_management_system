@@ -4,12 +4,12 @@
         <el-col :span="24" class="main">
             <MAside :collapsed="collapsed"></MAside>
             <section class="content-container">
-                <MTopTip>
-                    <template slot="pageName">
-                        <i class="topTip-pageIcon" :class="itemClass"></i>
-                        <span class="topTip-pageName">{{$route.name}}</span>
-                    </template>
-                </MTopTip>
+                <!--<MTopTip>
+                <template slot="pageName">
+                    <i class="topTip-pageIcon" :class="itemClass"></i>
+                    <span class="topTip-pageName">{{$route.name}}</span>
+                </template>
+            </MTopTip>-->
                 <el-col :span="24" class="content-wrapper">
                     <router-view></router-view>
                 </el-col>

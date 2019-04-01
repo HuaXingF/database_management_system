@@ -32,7 +32,7 @@
           </el-col>
           <el-col :span="8">
             请选择数据库: &nbsp;
-            <el-select v-model="value">
+            <el-select v-model="value" @change="conOneKernelDataAll()">
               <el-option
                 v-for="item in options"
                 :key="item.value"
@@ -43,9 +43,9 @@
           </el-col>
           <el-col :span="8">
             请选择统计周期: &nbsp;
-            <el-select v-model="value">
+            <el-select v-model="value1" @change="conOneKernelDataAll()">
               <el-option
-                v-for="item in options"
+                v-for="item in options1"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
@@ -64,9 +64,9 @@
           </el-col>
           <el-col :span="8">
             请选择数据库: &nbsp;
-            <el-select v-model="value">
+            <el-select v-model="value4" @change="conOneKernelDataAdd()">
               <el-option
-                v-for="item in options"
+                v-for="item in options4"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
@@ -75,9 +75,9 @@
           </el-col>
           <el-col :span="8">
             请选择统计周期: &nbsp;
-            <el-select v-model="value">
+            <el-select v-model="value3" @change="conOneKernelDataAdd()">
               <el-option
-                v-for="item in options"
+                v-for="item in options3"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
@@ -94,65 +94,124 @@
 
 <script>
 import MTopNav from "@/components/m-topNav/m-topNav";
-
+import {
+  selectotle_week,
+  selectotle_month,
+  select_trend,
+  selectotle_trend} from "@/api/message-search"
 export default {
   name: "messageSearch",
   data() {
     return {
       lineWeekData: "lineWeekData",
       lineMonthData: "lineMonthData",
-      getTable: null, // 后台获取的数据  到时候直接覆盖
+      getTable_week: null, // 后台获取的数据  到时候直接覆盖
+      getTable_month: null, // 后台获取的数据  到时候直接覆盖
+      getTable_trend_total: null, // 核心库单表数据总量变化趋势
+      getTable_trend: null, // 核心库表数据增量变化趋势
+      value: "leave_hospital_summary",
+      value4: "leave_hospital_summary",
+      value1: "selectTotalWeek",
+      value3: "selectAddWeek",
       options: [
         {
-          value: "选项1",
-          label: "黄金糕"
+          value: "leave_hospital_summary",
+          label: "健康档案"
         },
         {
-          value: "选项2",
-          label: "双皮奶"
+          value: "patient_prescription",
+          label: "电子病历"
         },
         {
-          value: "选项3",
-          label: "蚵仔煎"
+          value: "patient_prescription_core",
+          label: "全员人口"
+        },
+      ],
+      options1: [
+        {
+          value: "selectTotalWeek",
+          label: "按周"
         },
         {
-          value: "选项4",
-          label: "龙须面"
+          value: "selectTotalMonth",
+          label: "按月"
         },
         {
-          value: "选项5",
-          label: "北京烤鸭"
+          value: "selectTotalYear",
+          label: "按年"
         }
       ],
-      value: "黄金糕"
+      options3: [
+        {
+          value: "selectAddWeek",
+          label: "按周"
+        },
+        {
+          value: "selectAddMonth",
+          label: "按月"
+        },
+        {
+          value: "selectAddYear",
+          label: "按年"
+        }
+      ],
+      options4: [
+        {
+          value: "leave_hospital_summary",
+          label: "健康档案"
+        },
+        {
+          value: "patient_prescription",
+          label: "电子病历"
+        },
+        {
+          value: "patient_prescription_core",
+          label: "全员人口"
+        },
+      ],
     };
+
   },
   mounted() {
-    // 本周数据湖数据总量变化图
+    // 本周核心数据库数据总量变化图
     this.conLineKernelWeekData();
-    // 数据湖数据总量月变化趋势图
+    // 核心数据库数据总量月变化趋势图
     this.conLineKernelMonthData();
-    // 单表数据总量变化趋势
+    // 核心库单表数据总量变化趋势
     this.conOneKernelDataAll();
-    // 单表数据增量变化趋势
+    // 核心库表数据增量变化趋势
     this.conOneKernelDataAdd();
   },
   methods: {
-    // 本周数据湖数据总量变化图
+    // 本周核心数据库数据总量变化图
     conLineKernelWeekData() {
-      this.getLineKernelTable(this.getTable, this.$refs.getLineKernelWeekData);
+      selectotle_week().then(({data})=>{
+        this.getTable_week = data;
+        this.getLineKernelTable(this.getTable_week, this.$refs.getLineKernelWeekData);
+      });
     },
-    // 数据湖数据总量月变化趋势图
+    // 核心数据库数据总量月变化趋势图
     conLineKernelMonthData() {
-      this.getLineKernelTable(this.getTable, this.$refs.getLineKernelMonthData);
+      selectotle_month().then(({data})=>{
+        this.getTable_month= data;
+        this.getLineKernelTable(this.getTable_month, this.$refs.getLineKernelMonthData);
+      });
     },
-    // 单表数据总量变化趋势
+    // 核心库单表数据总量变化趋势
     conOneKernelDataAll() {
-      this.getLineKernelTable(this.getTable, this.$refs.getOneKernelDataAll);
+      let obj = {"value" : this.value, "value1" : this.value1};
+      selectotle_trend(obj).then((data)=>{
+        this.getTable_trend_total = data.data;
+        this.getLineKernelTable(this.getTable_trend_total, this.$refs.getOneKernelDataAll);
+      })
     },
-    // 单表数据增量变化趋势
+    // 核心库表数据增量变化趋势
     conOneKernelDataAdd() {
-      this.getLineKernelTable(this.getTable, this.$refs.getOneKernelDataAdd);
+      let obj = {"value" : this.value4, "value1" : this.value3};
+      select_trend(obj).then(({data})=>{
+        this.getTable_trend = data;
+        this.getLineKernelTable(this.getTable_trend, this.$refs.getOneKernelDataAdd);
+      })
     },
 
     // 获取echarts函数
@@ -167,7 +226,7 @@ export default {
         xAxis: {
           type: "category",
           boundaryGap: false,
-          data: ["周一", "周二", "周三", "周四", "周五", "周六", "周日"]
+          data: getTable.fSelectTimeList
         },
         yAxis: {
           type: "value",
@@ -179,7 +238,7 @@ export default {
           {
             name: "最高数据",
             type: "line",
-            data: [11, 11, 15, 13, 12, 13, 20],
+            data: getTable.fTableRowsList,
             itemStyle: {
               color: "#6ED6D7"
             },
