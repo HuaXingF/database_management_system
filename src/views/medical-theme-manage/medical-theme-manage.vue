@@ -13,12 +13,64 @@
     </MTopNav>
     <el-row :gutter="50">
       <el-col :sm="12">
-        <p>患者关联信息统计</p>
+        <el-row :gutter="5" class="selectBox">
+          <el-col :sm="6">
+            <p>患者关联信息统计</p>
+          </el-col>
+          <el-col :sm="9" class="selectTimeBox">
+            <div class="block dataSelect">
+              <span class="demonstration">开始时间: &nbsp;</span>
+              <el-date-picker
+                v-model="PatientStartHistoryValue"
+                type="datetime"
+                placeholder="选择日期时间"
+                style="font-size: 10px"
+              ></el-date-picker>
+            </div>
+          </el-col>
+          <el-col :sm="9" class="selectTimeBox">
+            <div class="block">
+              <span class="demonstration">结束时间: &nbsp;</span>
+              <el-date-picker
+                v-model="PatientEndHistoryValue"
+                type="datetime"
+                placeholder="选择日期时间"
+                style="font-size: 10px"
+              ></el-date-picker>
+            </div>
+          </el-col>
+        </el-row>
         <!-- <tableLine :getId="lineWeekData"></tableLine> -->
         <div id="linePatientAssoic" style="height: 300%" ref="getLineKernelWeekData"></div>
       </el-col>
       <el-col :sm="12">
-        <p>医生关联信息统计</p>
+        <el-row :gutter="5" class="selectBox">
+          <el-col :sm="6">
+            <p>医生关联信息统计</p>
+          </el-col>
+          <el-col :sm="9" class="selectTimeBox">
+            <div class="block dataSelect">
+              <span class="demonstration">开始时间: &nbsp;</span>
+              <el-date-picker
+                v-model="docStartHistoryValue"
+                type="datetime"
+                placeholder="选择日期时间"
+                style="font-size: 10px"
+              ></el-date-picker>
+            </div>
+          </el-col>
+          <el-col :sm="9" class="selectTimeBox">
+            <div class="block">
+              <span class="demonstration">结束时间: &nbsp;</span>
+              <el-date-picker
+                v-model="docEndHistoryValue"
+                type="datetime"
+                placeholder="选择日期时间"
+                style="font-size: 10px"
+              ></el-date-picker>
+            </div>
+          </el-col>
+        </el-row>
         <!-- <tableLine :getId="lineMonthData"></tableLine> -->
         <div id="lineKernelMonthData" style="height: 300%" ref="getLineKernelMonthData"></div>
       </el-col>
@@ -26,31 +78,31 @@
 
     <el-row :gutter="50">
       <el-col :sm="12">
-        <el-row :gutter="10" class="selectBox">
-          <el-col :sm="8">
+        <el-row :gutter="5" class="selectBox">
+          <el-col :sm="6">
             <p>费用关联信息统计</p>
           </el-col>
-          <el-col :sm="8">
-            开始时间: &nbsp;
-            <el-select v-model="value">
-              <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              ></el-option>
-            </el-select>
+          <el-col :sm="9" class="selectTimeBox">
+            <div class="block dataSelect">
+              <span class="demonstration">开始时间: &nbsp;</span>
+              <el-date-picker
+                v-model="costStartHistoryValue"
+                type="datetime"
+                placeholder="选择日期时间"
+                style="font-size: 10px"
+              ></el-date-picker>
+            </div>
           </el-col>
-          <el-col :sm="8">
-            结束时间: &nbsp;
-            <el-select v-model="value">
-              <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              ></el-option>
-            </el-select>
+          <el-col :sm="9" class="selectTimeBox">
+            <div class="block">
+              <span class="demonstration">结束时间: &nbsp;</span>
+              <el-date-picker
+                v-model="costEndHistoryValue"
+                type="datetime"
+                placeholder="选择日期时间"
+                style="font-size: 10px"
+              ></el-date-picker>
+            </div>
           </el-col>
         </el-row>
 
@@ -58,20 +110,30 @@
         <div id="oneKernelDataAll" style="height: 300%" ref="getOneKernelDataAll"></div>
       </el-col>
       <el-col :sm="12">
-        <el-row :gutter="10" class="selectBox">
+        <el-row :gutter="5" class="selectBox">
           <el-col :sm="6">
             <p>mesh关联信息统计</p>
           </el-col>
-          <el-col :sm="9">
+          <el-col :sm="9" class="selectTimeBox">
             <div class="block dataSelect">
               <span class="demonstration">开始时间: &nbsp;</span>
-              <el-date-picker v-model="meshStartHistoryValue" type="datetime" placeholder="选择日期时间"></el-date-picker>
+              <el-date-picker
+                v-model="meshStartHistoryValue"
+                type="datetime"
+                placeholder="选择日期时间"
+                style="font-size: 10px"
+              ></el-date-picker>
             </div>
           </el-col>
-          <el-col :sm="9">
+          <el-col :sm="9" class="selectTimeBox">
             <div class="block">
               <span class="demonstration">结束时间: &nbsp;</span>
-              <el-date-picker v-model="meshEndHistoryValue" type="datetime" placeholder="选择日期时间"></el-date-picker>
+              <el-date-picker
+                v-model="meshEndHistoryValue"
+                type="datetime"
+                placeholder="选择日期时间"
+                style="font-size: 10px"
+              ></el-date-picker>
             </div>
           </el-col>
         </el-row>
@@ -114,6 +176,12 @@ export default {
           label: "北京烤鸭"
         }
       ],
+      PatientStartHistoryValue: '', // 患者开始时间
+      PatientEndHistoryValue: '', // 患者结束时间
+      docStartHistoryValue: '', // 医生开始时间
+      docEndHistoryValue: '', // 医生结束时间
+      costStartHistoryValue: '', // 费用开始时间
+      costEndHistoryValue: '', // 费用结束时间
       meshStartHistoryValue: "", // mesh开始时间
       meshEndHistoryValue: "", // mesh结束时间
       value: "黄金糕"
@@ -220,14 +288,27 @@ export default {
   margin-top: -$fontSize8 / 4;
 }
 .dataSelect {
-    /deep/ div {
-      .el-date-editor.el-input,
-      .el-date-editor.el-input__inner {
-        width: 150px;
-      }
+  /deep/ div {
+    .el-date-editor.el-input,
+    .el-date-editor.el-input__inner {
+      width: 150px;
     }
-    .el-select {
-      width: 100px;
-    }
+  }
+  .el-select {
+    width: 100px;
+  }
+}
+.block .dataSelect {
+  margin-top: 8px;
+}
+.el-date-editor.el-input,
+.el-date-editor.el-input__inner {
+  width: 180px;
+}
+.selectTimeBox {
+  margin-top: 8px;
+}
+.el-input--prefix .el-input__inner {
+  padding: 0 0 0 25px;
 }
 </style>
