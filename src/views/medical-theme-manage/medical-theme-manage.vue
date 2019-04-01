@@ -25,6 +25,7 @@
                 type="datetime"
                 placeholder="选择日期时间"
                 style="font-size: 10px"
+                @change="patients()"
               ></el-date-picker>
             </div>
           </el-col>
@@ -36,6 +37,7 @@
                 type="datetime"
                 placeholder="选择日期时间"
                 style="font-size: 10px"
+                @change="patients()"
               ></el-date-picker>
             </div>
           </el-col>
@@ -56,6 +58,7 @@
                 type="datetime"
                 placeholder="选择日期时间"
                 style="font-size: 10px"
+                @change="doctor()"
               ></el-date-picker>
             </div>
           </el-col>
@@ -67,6 +70,7 @@
                 type="datetime"
                 placeholder="选择日期时间"
                 style="font-size: 10px"
+                @change="doctor()"
               ></el-date-picker>
             </div>
           </el-col>
@@ -90,6 +94,7 @@
                 type="datetime"
                 placeholder="选择日期时间"
                 style="font-size: 10px"
+                @change="conOneKernelDataAll()"
               ></el-date-picker>
             </div>
           </el-col>
@@ -101,6 +106,7 @@
                 type="datetime"
                 placeholder="选择日期时间"
                 style="font-size: 10px"
+                @change="conOneKernelDataAll()"
               ></el-date-picker>
             </div>
           </el-col>
@@ -122,6 +128,7 @@
                 type="datetime"
                 placeholder="选择日期时间"
                 style="font-size: 10px"
+                @change="conOneKernelDataAdd()"
               ></el-date-picker>
             </div>
           </el-col>
@@ -133,6 +140,7 @@
                 type="datetime"
                 placeholder="选择日期时间"
                 style="font-size: 10px"
+                @change="conOneKernelDataAdd()"
               ></el-date-picker>
             </div>
           </el-col>
@@ -162,62 +170,155 @@ export default {
       PatientEndHistoryValue: '', // 患者结束时间
       docStartHistoryValue: '', // 医生开始时间
       docEndHistoryValue: '', // 医生结束时间
-      costStartHistoryValue: '2018-09-08', // 费用开始时间
-      costEndHistoryValue: "2019-09-08", // 费用结束时间
-      meshStartHistoryValue: "2018-09-08", // mesh开始时间
-      meshEndHistoryValue: "2019-09-08", // mesh结束时间
+      costStartHistoryValue: '', // 费用开始时间
+      costEndHistoryValue: "", // 费用结束时间
+      meshStartHistoryValue: "", // mesh开始时间
+      meshEndHistoryValue: "", // mesh结束时间
       value: "黄金糕"
     };
   },
   mounted() {
-    // 本周数据湖数据总量变化图
-    this.conLineKernelWeekData();
-    // 数据湖数据总量月变化趋势图
-    this.conLineKernelMonthData();
-    //费用关联信息统计
-    this.conOneKernelDataAll();
-    // mesh关联信息统计
-    this.conOneKernelDataAdd();
+    this.init();
   },
   methods: {
-    // 本周数据湖数据总量变化图
-    conLineKernelWeekData() {
-      this.getLineKernelTable(this.getTable, this.$refs.getLineKernelWeekData);
+      init(){
+          /**********************初始化时间***************************/
+          this.PatientStartHistoryValue = this.initDate(true);// 患者开始时间
+          this.PatientEndHistoryValue = this.initDate(false);// 患者结束时间
+          this.docStartHistoryValue= this.initDate(true); // 医生开始时间
+          this.docEndHistoryValue= this.initDate(false); // 医生结束时间
+          this.costStartHistoryValue= this.initDate(true); // 费用开始时间
+          this.costEndHistoryValue= this.initDate(false); // 费用结束时间
+          this.meshStartHistoryValue= this.initDate(true); // mesh开始时间
+          this.meshEndHistoryValue= this.initDate(false); // mesh结束时间
+          // 患者关联信息统计
+          this.patients();
+          //医生关联信息统计
+          this.doctor();
+          // 单表数据总量变化趋势
+          this.conOneKernelDataAll();
+          // mesh关联信息统计
+          this.conOneKernelDataAdd();
+      },
+      initDate(boolean){
+          var timestamp = new Date();
+          var time = new Date(timestamp);
+          var y = "";
+          if(boolean){
+              y = time.getFullYear()-1;// 去年
+          }else{
+              y = time.getFullYear();// 当前年
+          }
+          var m = time.getMonth()+1;
+          var d = time.getDate();
+          var h = time.getHours();
+          var mm = time.getMinutes();
+          var s = time.getSeconds();
+          return y+'-'+this.add0(m)+'-'+this.add0(d)+' '+this.add0(h)+':'+this.add0(mm)+':'+this.add0(s);
+      },
+      // 将datatimes格式转换为string
+    formartDate:function(timestamp) {
+        if(timestamp == null || timestamp == ""){
+            timestamp = new Date();
+            var time = new Date(timestamp);
+            var y = time.getFullYear()-1;
+            var m = time.getMonth()+1;
+            var d = time.getDate();
+            var h = time.getHours();
+            var mm = time.getMinutes();
+            var s = time.getSeconds();
+            return y+'-'+this.add0(m)+'-'+this.add0(d)+' '+this.add0(h)+':'+this.add0(mm)+':'+this.add0(s);
+        }else {
+            var time = new Date(timestamp);
+            var y = time.getFullYear();
+            var m = time.getMonth() + 1;
+            var d = time.getDate();
+            var h = time.getHours();
+            var mm = time.getMinutes();
+            var s = time.getSeconds();
+            return y + '-' + this.add0(m) + '-' + this.add0(d) + ' ' + this.add0(h) + ':' + this.add0(mm) + ':' + this.add0(s);
+        }
     },
-    // 数据湖数据总量月变化趋势图
-    conLineKernelMonthData() {
-      this.getLineKernelTable(this.getTable, this.$refs.getLineKernelMonthData);
+    add0: function(m){
+      return m<10?'0'+m:m;
+    },
+      panduan(value, value1){
+          let bool = true;
+          if(value >= value1){
+              this.$message.error("开始时间不能大于或等于结束时间");
+              bool = false;
+          }
+           return bool;
+      },
+    // 患者关联信息统计
+    patients() {
+      let start_time = this.formartDate(this.PatientStartHistoryValue);
+      let end_time = this.formartDate(this.PatientEndHistoryValue);
+      let panduan = this.panduan(start_time, end_time);
+      if(panduan) {
+          let obj = {"fDimId": "001", "startTime": start_time, "endTime": end_time};
+          selectDimRelatedCountSum(obj).then(({data}) => {
+              this.getTable_patients = data;
+              console.log(this.getTable_patients);
+              this.getLineKernelTable(this.getTable_patients, this.$refs.getLineKernelWeekData);
+          })
+      }
+    },
+    // 医生关联信息统计
+    doctor() {
+        let start_time = this.formartDate(this.docStartHistoryValue);
+        let end_time = this.formartDate(this.docEndHistoryValue);
+        let panduan = this.panduan(start_time, end_time);
+        if(panduan) {
+            let obj = {
+                "fDimId": "002",
+                "startTime": start_time,
+                "endTime": end_time
+            }
+            selectDimRelatedCountSum(obj).then(({data}) => {
+                this.getTable_doctor = data;
+                this.getLineKernelTable(this.getTable_doctor, this.$refs.getLineKernelMonthData);
+            })
+        }
     },
     // 费用关联信息统计
     conOneKernelDataAll() {
-      let getTable={}
-      let obj={
-        fDimId:"003",
-        startTime:this.costStartHistoryValue,
-        endTime:this.costEndHistoryValue
+      let start_time = this.formartDate(this.costStartHistoryValue);
+      let end_time = this.formartDate(this.costEndHistoryValue);
+      let panduan = this.panduan(start_time, end_time);
+      if(panduan) {
+          let getTable = {}
+          let obj = {
+              fDimId: "003",
+              startTime: start_time,
+              endTime: end_time
+          }
+          selectDimRelatedCountSum(obj).then(({data}) => {
+              console.log(data)
+              getTable = data;
+              this.getLineKernelTable(getTable, this.$refs.getOneKernelDataAll);
+          })
       }
-      selectDimRelatedCountSum(obj).then(({data}) =>{
-        console.log(data)
-        getTable=data
-        this.getLineKernelTable(getTable, this.$refs.getOneKernelDataAll);
-      })
-
     },
     // mesh关联信息统计
     conOneKernelDataAdd() {
-      let getTable={}
-      let obj={
-        fDimId:"004",
-        startTime:this.meshStartHistoryValue,
-        endTime:this.meshEndHistoryValue
-      }
-      selectDimRelatedCountSum(obj).then(({data}) =>{
-        console.log(data,"666")
-        getTable=data
-        console.log(getTable)
-        this.getLineKernelTable(getTable, this.$refs.getOneKernelDataAdd);
-      })
-
+        let start_time = this.formartDate(this.meshStartHistoryValue);
+        let end_time = this.formartDate(this.meshEndHistoryValue);
+        let panduan = this.panduan(start_time, end_time);
+        if(panduan) {
+            let getTable = {}
+            let obj = {
+                fDimId: "004",
+                startTime: start_time,
+                endTime: end_time
+            }
+            selectDimRelatedCountSum(obj).then(({data}) => {
+                console.log(data, "666")
+                getTable = data
+                console.log(getTable)
+                this.getLineKernelTable(getTable, this.$refs.getOneKernelDataAdd);
+            })
+        }
     },
 
     // 获取echarts函数
