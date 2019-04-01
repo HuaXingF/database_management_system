@@ -13,7 +13,7 @@
     </MTopNav>
     <el-row :gutter="50">
       <el-col :sm="12">
-        <p>当前各表据关联总量排行榜</p>
+        <p>当前各维度关联总量排行榜</p>
         <!-- <tableLine :getId="lineWeekData"></tableLine> -->
         <div id="columnAssociAllData" style="height: 300%" ref="getColumnAssociAllData"></div>
       </el-col>
@@ -46,12 +46,15 @@
 
 <script>
 import MTopNav from "@/components/m-topNav/m-topNav";
-
+import {
+  selectTableSumDesc,
+  selectDimRatio
+ } from "@/api/expert-link.js"
 export default {
   name: "expertLink",
   data() {
     return {
-      tablePie: null
+      tablePie:[]
     };
   },
   mounted() {
@@ -69,81 +72,116 @@ export default {
   methods: {
     // 当前各表据关联总量排行榜
     conColumnAssociAllData() {
-      let dataSourcePie = this.$echarts.init(this.$refs.getColumnAssociAllData);
-      let legentData = [];
-      let seriesData = [];
-      const option = {
-        tooltip: {
-          trigger: "axis",
-          axisPointer: {
-            // 坐标轴指示器，坐标轴触发有效
-            type: "shadow" // 默认为直线，可选为：'line' | 'shadow'
-          }
-        },
-        xAxis: [
-          {
-            type: "category",
-            data: [
-              "电子病历",
-              "健康档案",
-              "全员人口",
-              "公卫",
-              "基础信息",
-              "门诊记录"
-            ]
-          }
-        ],
-        yAxis: [
-          {
-            type: "value"
-          }
-        ],
-        series: [
-          {
-            name: "联盟广告",
-            type: "bar",
-            stack: "广告",
-            itemStyle: {
-              color: "#96A7B7"
-            },
-            label: {
-              normal: {
-                show: true,
-                position: ["40%", 10],
-                color: "#fff"
+      var dataSourcePie = this.$echarts.init(this.$refs.getColumnAssociAllData);
+      //fDimName: "mesh", fRelatedCountSum: "160"
+      let listX = [];
+      let listY = [];
+      selectTableSumDesc().then(({data}) =>{
+        console.log(data)
+        for(let i=0; i<data.length;i++){
+          listX.push(data[i].fDimName)
+          listY.push(data[i].fRelatedCountSum)
+          dataSourcePie.setOption({
+            tooltip: {
+              trigger: "axis",
+              axisPointer: {
+                // 坐标轴指示器，坐标轴触发有效
+                type: "shadow" // 默认为直线，可选为：'line' | 'shadow'
               }
             },
-            data: [220, 182, 191, 234, 290, 330]
-          }
-        ],
-        animation: false
-      };
-      dataSourcePie.setOption(option);
+            xAxis: [
+              {
+                type: "category",
+                data: listX
+              }
+            ],
+            yAxis: [
+              {
+                type: "value"
+              }
+            ],
+            series: [
+              {
+                name: "关联成功数量",
+                type: "bar",
+                stack: "广告",
+                itemStyle: {
+                  color: "#96A7B7"
+                },
+                label: {
+                  normal: {
+                    show: true,
+                    position: ["40%", 10],
+                    color: "#fff"
+                  }
+                },
+                data: listY
+              }
+            ],
+            animation: false
+          })
+        }
+      })
+
+      //dataSourcePie.setOption(option);
       window.addEventListener("resize", function() {
         dataSourcePie.resize();
       });
     },
+   /* fDimId: "001"
+    fDimName: "患者"
+    fFailCountSum: "120"
+    fRelatedCountSum: "130"*/
     // 当前患者信息关联总量
     conPiePatientAssoci() {
-      this.getPieAssociTable(this.tablePie, this.$refs.getPiePatientAssoci);
+      let fDimId="001"
+      let  tablePie=[]
+      selectDimRatio(fDimId).then(({data}) =>{
+         //console.log(data)
+        tablePie.push({"name":"关联成功","value":parseInt(data[0].fRelatedCountSum)})
+        tablePie.push({"name":"关联失败","value":parseInt(data[0].fFailCountSum)})
+        //console.log(tablePie,"666")
+        this.getPieAssociTable(tablePie, this.$refs.getPiePatientAssoci);
+      })
+
     },
     // 当前医生信息关联总量
     conPieDoctorAssoci() {
-      this.getPieAssociTable(this.tablePie, this.$refs.getPieDoctorAssoci);
+      let fDimId="002"
+      let  tablePie=[]
+      selectDimRatio(fDimId).then(({data}) =>{
+        tablePie.push({"name":"关联成功","value":parseInt(data[0].fRelatedCountSum)})
+        tablePie.push({"name":"关联失败","value":parseInt(data[0].fFailCountSum)})
+        this.getPieAssociTable(tablePie, this.$refs.getPieDoctorAssoci);
+      })
+
     },
     // 当前费用信息关联总量
     conPieCostAssoci() {
-      this.getPieAssociTable(this.tablePie, this.$refs.getPieCostAssoci);
+      let fDimId="003"
+      let  tablePie=[]
+      selectDimRatio(fDimId).then(({data}) =>{
+        tablePie.push({"name":"关联成功","value":parseInt(data[0].fRelatedCountSum)})
+        tablePie.push({"name":"关联失败","value":parseInt(data[0].fFailCountSum)})
+        this.getPieAssociTable(tablePie, this.$refs.getPieCostAssoci);
+      })
+
     },
     // 当前mesh信息关联总量
     conPieMeshAssoci() {
-      this.getPieAssociTable(this.tablePie, this.$refs.getPieMeshAssoci);
+      let fDimId="004"
+      let  tablePie=[]
+      selectDimRatio(fDimId).then(({data}) =>{
+        tablePie.push({"name":"关联成功","value":parseInt(data[0].fRelatedCountSum)})
+        tablePie.push({"name":"关联失败","value":parseInt(data[0].fFailCountSum)})
+        this.getPieAssociTable(tablePie, this.$refs.getPieMeshAssoci);
+      })
     },
     // 获取饼形图
     getPieAssociTable(tablePie, getRef) {
       let dataSourcePie = this.$echarts.init(getRef);
-      let legentData = [];
-      let seriesData = [];
+     /* let legentData = [];
+      let seriesData = [];*/
       const option = {
         tooltip: {
           trigger: "item",
@@ -151,18 +189,11 @@ export default {
         },
         series: [
           {
-            name: "数据来源",
+            name: "百分率",
             type: "pie",
             radius: "80%",
             center: ["50%", "50%"],
-            data: [
-              { value: 335, name: "直接访问" },
-
-              { value: 310, name: "邮件营销" },
-              { value: 234, name: "联盟广告" },
-              { value: 135, name: "视频广告" },
-              { value: 1548, name: "搜索引擎" }
-            ]
+            data: tablePie
           }
         ],
         animation: false
