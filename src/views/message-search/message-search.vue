@@ -234,6 +234,7 @@ export default {
         xAxis: {
           type: "category",
           boundaryGap: false,
+          inverse:true,
           data: getTable.fSelectTimeList
         },
         yAxis: {
