@@ -112,8 +112,20 @@ export default {
       }, // 后台获取的数据  到时候直接覆盖
       options1: [
         {
-          value: "employee_bucket_orc_test",
-          label: "employee_bucket_orc_test"
+          value: "健康档案",
+          label: "健康档案"
+        },
+        {
+          value: "电子病历",
+          label: "电子病历"
+        },
+        {
+          value: "全员人口",
+          label: "全员人口"
+        },
+        {
+          value: "公卫",
+          label: "公卫"
         }
       ],
       options2: [
@@ -146,13 +158,25 @@ export default {
       ],
       options4: [
         {
-          value: "employee_bucket_orc_test",
-          label: "employee_bucket_orc_test"
+          value: "健康档案",
+          label: "健康档案"
+        },
+        {
+          value: "电子病历",
+          label: "电子病历"
+        },
+        {
+          value: "全员人口",
+          label: "全员人口"
+        },
+        {
+          value: "公卫",
+          label: "公卫"
         }
       ],
-      value1: "employee_bucket_orc_test",
+      value1: "健康档案",
       value2: "selectTotalWeek",
-      value3: "employee_bucket_orc_test",
+      value3: "健康档案",
       value4: "selectAddWeek"
 
     };
@@ -173,7 +197,7 @@ export default {
       //console.log(getObj,"11111")
     },
     getValue2() {
-      this.conOneDataAll();
+      this.conOneDataAdd();
       //console.log(getObj,"11111")
     },
     // 本周数据湖数据总量变化图
