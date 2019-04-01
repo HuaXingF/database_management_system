@@ -1,0 +1,130 @@
+/**
+* 背景图
+**/
+@mixin bg-full($args1:center,$args2:cover,$args3:no-repeat) {
+    background-position: $args1;
+    background-size: $args2;
+    background-repeat: $args3;
+}
+
+@mixin bg-url($args...) {
+    background-image: url($args);
+}
+
+/**
+* 圆角
+**/
+@mixin borderRadius($args: 2px) {
+    border-radius: $args;
+}
+
+/**
+* border
+**/
+@mixin border($px,$style,$color) {
+    border: $px $style $color;
+}
+
+/**
+* transition
+**/
+@mixin transition($args...) {
+    transition: $args;
+}
+
+/**
+* transform
+**/
+@mixin transform($args...) {
+	transform:$args;
+}
+
+/**
+* animation
+**/
+@mixin animation($args...) {
+    animation: $args;
+}
+
+/**
+* box-shadow
+**/
+@mixin boxShadow($args...) {
+    box-shadow: $args;
+}
+
+/**
+* linear-gradient
+**/
+@mixin linear-gradient($args1,$args2) {
+    background: linear-gradient($args1,$args2);
+}
+
+/**
+* hover颜色改变
+**/
+@mixin link-colors($args1,$args2) {
+    color : $args1;
+    &:hover {color: $args2;}
+}
+
+/**
+* hover背景色改变
+**/ 
+@mixin link-posColor($args1,$args2) {
+    background-color: $args1;
+    &:hover {background-color: $args2;}
+}
+
+/**
+* hover背景图改变
+**/
+@mixin link-backPos($args1,$args2) {
+    background-position: $args1;
+    &:hover{background-position: $args2;}
+}
+
+/**
+* 透明度
+**/
+@mixin opacity($args...) {
+    opacity: $args;
+    filter: alpha(opacity = $args * 100);
+}
+
+/*
+* Clearfix
+*/
+@mixin clearfix {
+    &:after {
+        content: "";
+        display: block;
+        clear: both;
+        height: 0;
+        visibility: hidden;
+    }
+}
+
+/**
+* Keyframe animations
+*/
+@mixin keyframes($args...) {
+    @-webkit-keyframes #{$args} {
+        @content;
+    }
+    @-moz-keyframes #{$args} {
+        @content;
+    }
+    @keyframes #{$args} {
+        @content;
+    }
+}
+
+/**
+* Media queries
+*/
+@mixin mediaQuery($args...) {
+    @media screen and (max-width: $args) {
+        @content;
+    }
+}
