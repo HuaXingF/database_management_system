@@ -12,6 +12,8 @@ import './assets/css/myProject.scss'
 
 Vue.prototype.$echarts = echarts
 Vue.config.productionTip = false
+Vue.prototype.$http=axios;
+Vue.prototype.$http.defaults.baseURL = 'http://192.168.10.21:8080/';
 
 Vue.use(ElementUI)
 
