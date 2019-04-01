@@ -151,42 +151,21 @@ import {
 
 } from "@/api/medical-theme-manage.js"
 export default {
+
   name: "medicalThemeManage",
   data() {
     return {
       lineWeekData: "lineWeekData",
       lineMonthData: "lineMonthData",
-      getTable: null, // 后台获取的数据  到时候直接覆盖
-      options: [
-        {
-          value: "选项1",
-          label: "黄金糕"
-        },
-        {
-          value: "选项2",
-          label: "双皮奶"
-        },
-        {
-          value: "选项3",
-          label: "蚵仔煎"
-        },
-        {
-          value: "选项4",
-          label: "龙须面"
-        },
-        {
-          value: "选项5",
-          label: "北京烤鸭"
-        }
-      ],
+      getTable: {}, // 后台获取的数据  到时候直接覆盖
       PatientStartHistoryValue: '', // 患者开始时间
       PatientEndHistoryValue: '', // 患者结束时间
       docStartHistoryValue: '', // 医生开始时间
       docEndHistoryValue: '', // 医生结束时间
-      costStartHistoryValue: '', // 费用开始时间
-      costEndHistoryValue: '', // 费用结束时间
-      meshStartHistoryValue: "", // mesh开始时间
-      meshEndHistoryValue: "", // mesh结束时间
+      costStartHistoryValue: '2018-09-08', // 费用开始时间
+      costEndHistoryValue: "2019-09-08", // 费用结束时间
+      meshStartHistoryValue: "2018-09-08", // mesh开始时间
+      meshEndHistoryValue: "2019-09-08", // mesh结束时间
       value: "黄金糕"
     };
   },
@@ -195,9 +174,9 @@ export default {
     this.conLineKernelWeekData();
     // 数据湖数据总量月变化趋势图
     this.conLineKernelMonthData();
-    // 单表数据总量变化趋势
+    //费用关联信息统计
     this.conOneKernelDataAll();
-    // 单表数据增量变化趋势
+    // mesh关联信息统计
     this.conOneKernelDataAdd();
   },
   methods: {
@@ -209,20 +188,43 @@ export default {
     conLineKernelMonthData() {
       this.getLineKernelTable(this.getTable, this.$refs.getLineKernelMonthData);
     },
-    // 单表数据总量变化趋势
+    // 费用关联信息统计
     conOneKernelDataAll() {
-      this.getLineKernelTable(this.getTable, this.$refs.getOneKernelDataAll);
+      let getTable={}
+      let obj={
+        fDimId:"003",
+        startTime:this.costStartHistoryValue,
+        endTime:this.costEndHistoryValue
+      }
+      selectDimRelatedCountSum(obj).then(({data}) =>{
+        console.log(data)
+        getTable=data
+        this.getLineKernelTable(getTable, this.$refs.getOneKernelDataAll);
+      })
+
     },
-    // 单表数据增量变化趋势
+    // mesh关联信息统计
     conOneKernelDataAdd() {
-      this.getLineKernelTable(this.getTable, this.$refs.getOneKernelDataAdd);
+      let getTable={}
+      let obj={
+        fDimId:"004",
+        startTime:this.meshStartHistoryValue,
+        endTime:this.meshEndHistoryValue
+      }
+      selectDimRelatedCountSum(obj).then(({data}) =>{
+        console.log(data,"666")
+        getTable=data
+        console.log(getTable)
+        this.getLineKernelTable(getTable, this.$refs.getOneKernelDataAdd);
+      })
+
     },
 
     // 获取echarts函数
     getLineKernelTable(getTable, getRef) {
       let dataSourcePie = this.$echarts.init(getRef);
-      let legentData = [];
-      let seriesData = [];
+     /* let legentData = [];
+      let seriesData = [];*/
       const option = {
         tooltip: {
           trigger: "axis"
@@ -230,7 +232,7 @@ export default {
         xAxis: {
           type: "category",
           boundaryGap: false,
-          data: ["周一", "周二", "周三", "周四", "周五", "周六", "周日"]
+          data: getTable.timeList
         },
         yAxis: {
           type: "value",
@@ -242,7 +244,7 @@ export default {
           {
             name: "最高数据",
             type: "line",
-            data: [11, 11, 15, 13, 12, 13, 20],
+            data:  getTable.sumList,
             itemStyle: {
               color: "#6ED6D7"
             },
