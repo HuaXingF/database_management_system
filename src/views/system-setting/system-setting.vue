@@ -146,19 +146,12 @@
       shujuhu(){ // 数据湖当前数据统计
         var myChart = this.containerColumn(this.$refs.getCloumn1);
         select_shujuhu().then(({data})=>{
-          this.tableData=data;
-          let x = new Array();
-          let y = new Array();
-          for(let i=0; i<data.length;i++) {
-            x[i] = data[i].table;
-            y[i] = data[i].sum;
-          }
           myChart.setOption({
             xAxis : {
-              data : x
+              data : data.nameList
             },
             series :[
-              {data:y}
+              {data:data.sumList}
             ]
           });
         });
