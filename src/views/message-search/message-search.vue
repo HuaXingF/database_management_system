@@ -64,9 +64,9 @@
           </el-col>
           <el-col :span="8">
             请选择数据库: &nbsp;
-            <el-select v-model="value4" @change="conOneKernelDataAdd()">
+            <el-select v-model="value">
               <el-option
-                v-for="item in options4"
+                v-for="item in options"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
@@ -75,7 +75,7 @@
           </el-col>
           <el-col :span="8">
             请选择统计周期: &nbsp;
-            <el-select v-model="value3" @change="conOneKernelDataAdd()">
+            <el-select v-model="value">
               <el-option
                 v-for="item in options3"
                 :key="item.value"
@@ -217,8 +217,8 @@ export default {
     // 获取echarts函数
     getLineKernelTable(getTable, getRef) {
       let dataSourcePie = this.$echarts.init(getRef);
-      let legentData = [];
-      let seriesData = [];
+     // let legentData = [];
+      // seriesData = [];
       const option = {
         tooltip: {
           trigger: "axis"

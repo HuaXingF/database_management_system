@@ -26,15 +26,15 @@
 
     <el-row :gutter="50">
       <el-col :sm="12">
-        <el-row :gutter="10" class="selectBox">
+        <el-row :gutter="10" class="selectBox" >
           <el-col :span="8">
             <p>单表数据总量变化趋势</p>
           </el-col>
           <el-col :span="8">
             请选择数据库: &nbsp;
-            <el-select v-model="value">
+            <el-select v-model="value1"  @change="getValue1">
               <el-option
-                v-for="item in options"
+                v-for="item in options1"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
@@ -43,9 +43,9 @@
           </el-col>
           <el-col :span="8">
             请选择统计周期: &nbsp;
-            <el-select v-model="value">
+            <el-select v-model="value2" @change="getValue1">
               <el-option
-                v-for="item in options"
+                v-for="item in options2"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
@@ -64,9 +64,9 @@
           </el-col>
           <el-col :span="8">
             请选择数据库: &nbsp;
-            <el-select v-model="value">
+            <el-select v-model="value3" @change="getValue2">
               <el-option
-                v-for="item in options"
+                v-for="item in options4"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
@@ -75,9 +75,9 @@
           </el-col>
           <el-col :span="8">
             请选择统计周期: &nbsp;
-            <el-select v-model="value">
+            <el-select v-model="value4" @change="getValue2">
               <el-option
-                v-for="item in options"
+                v-for="item in options3"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
@@ -94,37 +94,67 @@
 
 <script>
 import MTopNav from "@/components/m-topNav/m-topNav";
-import tableLine from "../../components/echarts/table-line";
+import {
+  selectTotalDay,
+  selectTotalMonth,
+  selectTotal
+} from "@/api/medical-theme-list.js"
+//import tableLine from "../../components/echarts/table-line";
 export default {
   name: "medicalThemeList",
   data() {
     return {
       lineWeekData: "lineWeekData",
       lineMonthData: "lineMonthData",
-      getTable: null, // 后台获取的数据  到时候直接覆盖
-      options: [
+      getTable:{
+        listA:[],
+        listY:[]
+      }, // 后台获取的数据  到时候直接覆盖
+      options1: [
         {
-          value: "选项1",
-          label: "黄金糕"
-        },
-        {
-          value: "选项2",
-          label: "双皮奶"
-        },
-        {
-          value: "选项3",
-          label: "蚵仔煎"
-        },
-        {
-          value: "选项4",
-          label: "龙须面"
-        },
-        {
-          value: "选项5",
-          label: "北京烤鸭"
+          value: "employee_bucket_orc_test",
+          label: "employee_bucket_orc_test"
         }
       ],
-      value: "黄金糕"
+      options2: [
+        {
+          value: "selectTotalWeek",
+          label: "周"
+        },
+        {
+          value: "selectTotalMonth",
+          label: "月"
+        },
+        {
+          value: "selectTotalYear",
+          label: "年"
+        }
+      ],
+      options3: [
+        {
+          value: "selectAddWeek",
+          label: "周"
+        },
+        {
+          value: "selectAddMonth",
+          label: "月"
+        },
+        {
+          value: "selectAddYear",
+          label: "年"
+        }
+      ],
+      options4: [
+        {
+          value: "employee_bucket_orc_test",
+          label: "employee_bucket_orc_test"
+        }
+      ],
+      value1: "employee_bucket_orc_test",
+      value2: "selectTotalWeek",
+      value3: "employee_bucket_orc_test",
+      value4: "selectAddWeek"
+
     };
   },
   mounted() {
@@ -138,28 +168,75 @@ export default {
     this.conOneDataAdd();
   },
   methods: {
+    getValue1() {
+      this.conOneDataAll();
+      //console.log(getObj,"11111")
+    },
+    getValue2() {
+      this.conOneDataAll();
+      //console.log(getObj,"11111")
+    },
     // 本周数据湖数据总量变化图
     conLineWeekData() {
-      this.getLineTable(this.getTable, this.$refs.getLineWeekData);
+     // console.log("getObj + 11111")
+     let getTable={}
+      selectTotalDay().then(({data}) => {
+        console.log(data)
+        getTable.listA=data.fSelectTimeList
+        getTable.listY=data.fTableRowsList
+        this.getLineTable(getTable, this.$refs.getLineWeekData);
+
+      })
+     // console.log(getTable,"6666")
+
     },
     // 数据湖数据总量月变化趋势图
     conLineMonthData() {
-      this.getLineTable(this.getTable, this.$refs.getLineMonthData);
+      let getTable={}
+      selectTotalMonth().then(({data}) =>{
+        console.log(data)
+        getTable.listA=data.fSelectTimeList
+        getTable.listY=data.fTableRowsList
+        this.getLineTable(getTable, this.$refs.getLineMonthData);
+      })
+
     },
     // 单表数据总量变化趋势
     conOneDataAll() {
-      this.getLineTable(this.getTable, this.$refs.getOneDataAll);
+      let obj={
+        value1:this.value1,
+        value2:this.value2
+      }
+      let getTable={}
+      selectTotal(obj).then(({data}) =>{
+        getTable.listA=data.fSelectTimeList
+        getTable.listY=data.fTableRowsList
+        this.getLineTable(getTable, this.$refs.getOneDataAll);
+      })
+
     },
     // 单表数据增量变化趋势
     conOneDataAdd() {
-      this.getLineTable(this.getTable, this.$refs.getOneDataAdd);
+      let obj={
+        value1:this.value3,
+        value2:this.value4
+      }
+      let getTable={}
+      selectTotal(obj).then(({data}) =>{
+        //console.log(data,"999999")
+        getTable.listA=data.fSelectTimeList
+        getTable.listY=data.fTableRowsList
+        this.getLineTable(getTable, this.$refs.getOneDataAdd);
+      })
+
     },
 
     // 获取echarts函数
     getLineTable(getTable, getRef) {
       let dataSourcePie = this.$echarts.init(getRef);
-      let legentData = [];
-      let seriesData = [];
+      //let legentData = [];
+      //let seriesData = [];
+      console.log(getTable,"666")
       const option = {
         tooltip: {
           trigger: "axis"
@@ -167,7 +244,7 @@ export default {
         xAxis: {
           type: "category",
           boundaryGap: false,
-          data: ["周一", "周二", "周三", "周四", "周五", "周六", "周日"]
+          data: getTable.listA/*["周一", "周二", "周三", "周四", "周五", "周六", "周日"]*/
         },
         yAxis: {
           type: "value",
@@ -179,7 +256,7 @@ export default {
           {
             name: "最高数据",
             type: "line",
-            data: [11, 11, 15, 13, 12, 13, 20],
+            data: getTable.listY/* [11, 11, 15, 13, 12, 13, 20]*/,
             itemStyle: {
               color: "#6ED6D7"
             },
@@ -211,8 +288,8 @@ export default {
   //   }
   // },
   components: {
-    MTopNav,
-    tableLine
+    MTopNav
+    //tableLine
   }
 };
 </script>
