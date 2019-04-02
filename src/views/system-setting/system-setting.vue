@@ -228,7 +228,7 @@
               label: {
                 normal: {
                   show: true,
-                  position: ["40%", 10],
+                  position: ["50%", 10],
                   color: "#fff"
                 }
               },
