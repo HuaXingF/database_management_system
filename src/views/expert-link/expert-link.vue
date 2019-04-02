@@ -111,7 +111,7 @@ export default {
                 label: {
                   normal: {
                     show: true,
-                    position: ["40%", 10],
+                    position: ["39%", 10],
                     color: "#fff"
                   }
                 },
