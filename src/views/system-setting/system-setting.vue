@@ -29,7 +29,7 @@
         <div id="container-circle" style="height: 300%" ref="getCircle"></div>
       </el-col>
       <el-col :sm="12">
-        <p>当前各表数据合格率统计</p>
+        <p>当前各库数据合格率统计</p>
         <div id="container-column" style="height: 300%" ref="getCloumn"></div>
       </el-col>
     </el-row>
@@ -38,24 +38,13 @@
       <!-- 当前关联信息统计 -->
       <el-col :sm="12">
         <p>当前关联信息统计</p>
-        <el-table
-                :data="tableData2"
-                :cell-style="cellStyle"
-                :header-cell-style="rowClass"
-                border
-                style="width: 100%"
-        >
-          <el-table-column prop="primaryTabName" label="数据项"></el-table-column>
-          <el-table-column prop="successRelatedSum" label="当前关联成功数"></el-table-column>
-          <el-table-column prop="failRelatedSum" label="当前关联失败数"></el-table-column>
-          <el-table-column prop="primaryCountSum" label="已有记录数"></el-table-column>
-          <!-- <el-table-column prop="grade" label="数据质量评分"></el-table-column>-->
-        </el-table>
+        <div id="container-gitGuanLian" style="height: 300%" ref="gitGuanLian"></div>
       </el-col>
-      <!-- 当前所有表关联成功比例 -->
+      <!-- 当前总关联成功比例 -->
       <el-col :sm="12">
-        <p>当前所有表关联成功比例</p>
-        <div id="container-getAllTab" style="height: 300%" ref="getAllTab"></div>
+        <p>当前总关联成功比例</p>
+        <!--<div id="container-getAllTab" style="height: 300%" ref="getAllTab"></div>-->
+        <div id="lineMonthData" style="height: 300%" ref="getLineMonthData"></div>
       </el-col>
     </el-row>
   </el-col>
@@ -63,8 +52,10 @@
 
 <script>
   import MTopNav from "@/components/m-topNav/m-topNav";
-  import {select_shujuhu,
+  import {
+    select_guanlian,
     select_shujuku,
+    select_shujuhu,
     select_containerCircle,
     select_hegelu,
     select_conGetAllTab} from "@/api/system-setting"
@@ -76,18 +67,19 @@
         //   containerColumn: "containerColumn",
         tableData: [ ],
         tableData1: [ ],//核心数据库当前数据统计
-        tableData2: [ ]//当前关联信息统计
+        //tableData2: [ ]//当前关联信息统计
       };
     },
     mounted() {
-      console.log(this.$refs.getCloumn);
+      //console.log(this.$refs.getCloumn);
       this.containerCircle();// 当前ETL流程状态分布统计
-      this.hegelu();// 当前各表数据合格率统计
-      this.conGetAllTab();// 当前所有表关联成功比例
+      this.hegelu();// 当前各库数据合格率统计
+      this.conGetAllTab();// 当前总关联成功比例
       this.conCircle();
       this.conColumn();
       this.getAllTab();
-      this.init();
+      this.getGuanLian();
+      this.guanlian();
       this.shujuhu();// 数据湖当前数据统计
       this.shujuku();// 核心数据库当前数据统计
     },
@@ -98,19 +90,21 @@
       rowClass({ row, rowIndex }) {
         return "text-align:center";
       },
-      init(){
-        this.$http.get("/relationShip/selectSuccessOrFail").then(({data})=>{
-          this.tableData2=data;
-        });
-      },
+
       // 圆形图
       containerCircle() {
         var myChart = this.$echarts.init(this.$refs.getCircle);
         let option = null;
+        let name=null;
         option = {
           tooltip: {
             trigger: "item",
             formatter: "{a} <br/>{b} : {c} ({d}%)"
+          },
+          legend: {
+            orient: 'vertical',
+            x: 'left',
+            data:name
           },
           series: [
             {
@@ -127,6 +121,7 @@
         };
         myChart.setOption(option);
         select_containerCircle().then(({data})=>{
+          name=data;
           myChart.setOption({
             series :[
               {data:data}
@@ -143,12 +138,66 @@
           });
         });
       },
+      guanlian(){ // 当前关联信息统计
+        var myChart = this.containerColumn(this.$refs.gitGuanLian);
+        let listX=['data',"关联成功","关联失败"];
+        let listY1=[];
+        //let listY2=[];
+        select_guanlian().then(({data})=>{
+         // console.log(data,"666")
+          for(let i=0;i<data.failRelatedSum.length;i++){
+            listY1.push({"data":data.primaryTabName[i],"关联成功":data.successRelatedSum[i],"关联失败":data.failRelatedSum[i]})
+          }
+          //console.log(listX,"x")
+         // console.log(listY1,"y")
+          let option={
+            legend: {},
+            tooltip: {},
+            dataset: {
+              dimensions: listX,
+              source: listY1
+            },
+            xAxis: {type: 'category'},
+            yAxis: {},
+            // Declare several bar series, each will be mapped
+            // to a column of dataset.source by default.
+            series: [
+              {type: 'bar',
+                label: {
+                  normal: {
+                    show: true,
+                    position: 'inside'
+                  }
+                }
+              },
+              {type: 'bar',
+                label: {
+                  normal: {
+                    show: true,
+                    position: 'inside'
+                  }
+                }
+              },
+            ]
+          }
+          myChart.setOption(option);
+          if (option && typeof option === "object") {
+            myChart.setOption(option, true);
+          }
+        });
+      },
       shujuhu(){ // 数据湖当前数据统计
         var myChart = this.containerColumn(this.$refs.getCloumn1);
         select_shujuhu().then(({data})=>{
           myChart.setOption({
+            legend: {},
+            tooltip: {},
             xAxis : {
+              name:"库名",
               data : data.nameList
+            },
+            yAxis:{
+              name:"数量"
             },
             series :[
               {data:data.sumList}
@@ -159,13 +208,20 @@
       shujuku(){ // 核心数据库当前数据统计
         var myChart = this.containerColumn(this.$refs.getCloumn2);
         select_shujuku().then(({data})=>{
-          this.tableData=data;
+          //this.tableData=data;
+         // console.log(data,"555")
           myChart.setOption({
+            legend: {},
+            tooltip: {},
             xAxis : {
+              name:"库名",
               data : data.nameList,
               axisLabel:{
                 rotate: 50
               }
+            },
+            yAxis:{
+              name:"数量"
             },
             series :[
               {data:data.sumList}
@@ -173,7 +229,7 @@
           });
         });
       },
-      hegelu(){ // 当前各表数据合格率统计
+      hegelu(){ // 当前各库数据合格率统计
         var myChart = this.containerColumn(this.$refs.getCloumn);
         select_hegelu().then(({data})=>{
           let x = new Array();
@@ -185,17 +241,46 @@
             tol[i] = data[i].rows;
           }
           myChart.setOption({
+            legend: {},
+            tooltip: {},
             xAxis : {
+              name:"表名",
               data : x
             },
-            series :[
-              {data:hege},
-              {data:tol}
-            ]
+            yAxis:{
+              name:"数量"
+            },
+              series: [
+                  {
+                      name: "总数",
+                      type: "bar",
+                      stack: "广告",
+                      label: {
+                          normal: {
+                              show: true,
+                              position: 'inside',
+                              color: "#fff"
+                          }
+                      },
+                      data: tol
+                  },
+                  {
+                      name: "成功数",
+                      type: "bar",
+                      stack: "广告",
+                      label: {
+                          normal: {
+                              show: true,
+                              //position: "top"
+                          }
+                      },
+                      data:hege
+                  }
+              ]
           });
         });
       },
-      // 柱形图
+      // 当前ETL流程状态分布统计
       containerColumn : function(a) {
         var myChart = this.$echarts.init(a);
         let option = null;
@@ -222,32 +307,19 @@
           ],
           series: [
             {
-              name: "合格数",
-              type: "bar",
-              stack: "广告",
-              label: {
-                normal: {
-                  show: true,
-                  position: ["50%", 10],
-                  color: "#fff"
-                }
-              },
-              data: []
-            },
-            {
               name: "总数",
               type: "bar",
               stack: "广告",
               label: {
                 normal: {
                   show: true,
-                  //position: "top"
+                  position: 'inside',
+                  color: "#fff"
                 }
               },
               data: []
             }
-          ]
-          // animation: false
+            ]
         };
         myChart.setOption(option);
         if (option && typeof option === "object") {
@@ -255,37 +327,115 @@
         }
         return myChart;
       },
-      // 第二个圆形图
+      // 当前总关联成功比例
       conGetAllTab() {
-        var myChart = this.$echarts.init(this.$refs.getAllTab);
+        var myChart = this.$echarts.init(this.$refs.getLineMonthData);
         let option = null;
-        option = {
-          tooltip: {
-            trigger: "item",
-            formatter: "{a} <br/>{b} : {c} ({d}%)"
-          },
-          series: [
-            {
-              name: "所占比例",
-              type: "pie",
-              radius: "80%",
-              center: ["50%", "50%"],
-              data: [
-
-              ]
-            }
-          ],
-          animation: false
-        };
+        //let name=null;
+        /*fail: 860
+        other: Array(4)
+        0: {base: "健康档案", baseSuccess: 880, baseFail: 190}
+        1: {base: "全员人口", baseSuccess: 690, baseFail: 160}
+        2: {base: "公卫", baseSuccess: 870, baseFail: 200}
+        3: {base: "电子病历", baseSuccess: 1100, baseFail: 310}
+        length: 4
+        __proto__: Array(0)
+        success: "2680"*/
+        option = {};
         myChart.setOption(option);
         select_conGetAllTab().then(({data})=>{
-          let map={"name":"关联成功","value":data.success};
-          let map1={"name":"未关联","value":data.fail};
-          let list = [map,map1];
+          console.log(data,"777")
+          let listA=["关联成功","关联失败"]
+          let listY=[]
+          let listY1=[]
+          let listY2=[]
+          let map1={"name":"关联成功","value":data.success};
+          let map2={"name":"关联失败","value":data.fail};
+          let list2=data.other
+          for(let i=0;i<list2.length;i++){
+            listA.push(list2[i].base)
+            listY1.push({"name":list2[i].base+"(关联成功)","value":list2[i].baseSuccess})
+            listY2.push({"name":list2[i].base+"(关联失败)","value":list2[i].baseFail})
+          }
+          for(let i=0;i<listY1.length;i++){
+            listY.push(listY1[i])
+          }
+          for(let i=0;i<listY2.length;i++){
+            listY.push(listY2[i])
+          }
+          let list = [map1,map2];
           console.log(list);
+          console.log(listA)
+          console.log(listY1)
+          console.log(listY2)
+          //name=list
           myChart.setOption({
-            series :[
-              {data:list}
+            tooltip: {
+              trigger: 'item',
+              formatter: "{a} <br/>{b}: {c} ({d}%)"
+            },
+            legend: {
+              orient: 'vertical',
+              x: 'left',
+              data:listA
+            },
+            series: [
+              {
+                name:'总关联比例',
+                type:'pie',
+                selectedMode: 'single',
+                radius: [0, '35%'],
+
+                label: {
+                  normal: {
+                    position: 'inner'
+                  }
+                },
+                labelLine: {
+                  normal: {
+                    show: false
+                  }
+                },
+                data:list
+              },
+              {
+                name:'',
+                type:'pie',
+                radius: ['40%', '60%'],
+                label: {
+                  normal: {
+                    formatter: '    {b|{b}：}{c}  {per|{d}%}  ',
+                    backgroundColor: '#eee',
+                    borderColor: '#aaa',
+                    borderWidth: 1,
+                    borderRadius: 4,
+                    rich: {
+                      a: {
+                        color: '#999',
+                        lineHeight: 22,
+                        align: 'center'
+                      },
+                      hr: {
+                        borderColor: '#aaa',
+                        width: '100%',
+                        borderWidth: 0.5,
+                        height: 0
+                      },
+                      b: {
+                        fontSize: 12,
+                        lineHeight: 16
+                      },
+                      per: {
+                        color: '#eee',
+                        backgroundColor: '#334455',
+                        padding: [2, 4],
+                        borderRadius: 2
+                      }
+                    }
+                  }
+                },
+                data: listY
+              }
             ]
           });
         });
@@ -318,6 +468,13 @@
         let self = this;
         window.addEventListener("resize", function() {
           self.chart = self.$echarts.init(self.$refs.getAllTab);
+          self.chart.resize();
+        });
+      },
+      getGuanLian() {
+        let self = this;
+        window.addEventListener("resize", function() {
+          self.chart = self.$echarts.init(self.$refs.gitGuanLian);
           self.chart.resize();
         });
       }

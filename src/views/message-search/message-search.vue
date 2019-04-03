@@ -28,7 +28,7 @@
       <el-col :sm="12">
         <el-row :gutter="10" class="selectBox">
           <el-col :span="8">
-            <p>核心库单表数据总量变化趋势</p>
+            <p>核心库单库数据总量变化趋势</p>
           </el-col>
           <el-col :span="8">
             请选择数据库: &nbsp;
@@ -60,7 +60,7 @@
       <el-col :sm="12">
         <el-row :gutter="10" class="selectBox">
           <el-col :span="8">
-            <p>核心库表数据增量变化趋势</p>
+            <p>核心库单库数据增量变化趋势</p>
           </el-col>
           <el-col :span="8">
             请选择数据库: &nbsp;
@@ -107,8 +107,8 @@ export default {
       lineMonthData: "lineMonthData",
       getTable_week: null, // 后台获取的数据  到时候直接覆盖
       getTable_month: null, // 后台获取的数据  到时候直接覆盖
-      getTable_trend_total: null, // 核心库单表数据总量变化趋势
-      getTable_trend: null, // 核心库表数据增量变化趋势
+      getTable_trend_total: null, // 核心库单单库数据总量变化趋势
+      getTable_trend: null, // 核心库单库数据增量变化趋势
       value: "健康档案",
       value4: "健康档案",
       value1: "selectTotalWeek",
@@ -185,9 +185,9 @@ export default {
     this.conLineKernelWeekData();
     // 核心数据库数据总量月变化趋势图
     this.conLineKernelMonthData();
-    // 核心库单表数据总量变化趋势
+    // 核心库单库数据总量变化趋势
     this.conOneKernelDataAll();
-    // 核心库表数据增量变化趋势
+    // 核心库单库数据增量变化趋势
     this.conOneKernelDataAdd();
   },
   methods: {
@@ -202,10 +202,11 @@ export default {
     conLineKernelMonthData() {
       selectotle_month().then(({data})=>{
         this.getTable_month= data;
+        console.log(data,"777")
         this.getLineKernelTable(this.getTable_month, this.$refs.getLineKernelMonthData);
       });
     },
-    // 核心库单表数据总量变化趋势
+    // 核心库单库数据总量变化趋势
     conOneKernelDataAll() {
       let obj = {"value" : this.value, "value1" : this.value1};
       selectotle_trend(obj).then((data)=>{
@@ -213,7 +214,7 @@ export default {
         this.getLineKernelTable(this.getTable_trend_total, this.$refs.getOneKernelDataAll);
       })
     },
-    // 核心库表数据增量变化趋势
+    // 核心库单库数据增量变化趋势
     conOneKernelDataAdd() {
       let obj = {"value" : this.value4, "value1" : this.value3};
       select_trend(obj).then(({data})=>{
@@ -232,12 +233,18 @@ export default {
           trigger: "axis"
         },
         xAxis: {
+          name:"时间",
           type: "category",
           boundaryGap: false,
-          inverse:true,
-          data: getTable.fSelectTimeList
+           inverse:true,
+          data: getTable.fSelectTimeList,
+          nameTextStyle: {
+            padding: [0, -590, 0, 0]
+          }
+
         },
         yAxis: {
+          name:"数据量",
           type: "value",
           axisLabel: {
             formatter: "{value}"
@@ -257,9 +264,9 @@ export default {
                 { type: "min", name: "最小值" }
               ]
             },
-            markLine: {
+           /* markLine: {
               data: [{ type: "average", name: "平均值" }]
-            }
+            }*/
           }
         ],
         animation: false

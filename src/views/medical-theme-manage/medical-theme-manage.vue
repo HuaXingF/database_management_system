@@ -11,68 +11,39 @@
       </template>
       <template slot="operation"></template>
     </MTopNav>
+    <el-row :gutter="5" class="selectBox">
+      <el-col :sm="7" class="selectTimeQuery" style="text-align:right;margin-right: 22.5px;">
+        <i class="el-icon-date"></i>
+        <span>请选择查询时间</span>
+      </el-col>
+      <el-col :sm="14" class="selectTimeBox">
+        <div class="block dataSelect">
+          <el-date-picker
+                  v-model="timeValue"
+                  type="daterange"
+                  range-separator="至"
+                  start-placeholder="开始日期"
+                  end-placeholder="结束日期"
+                  @change="changeTime()"
+          >
+          </el-date-picker>
+        </div>
+      </el-col>
+    </el-row>
     <el-row :gutter="50">
       <el-col :sm="12">
-        <el-row :gutter="5" class="selectBox">
+        <el-row :gutter="5" >
           <el-col :sm="6">
-            <p>患者关联信息统计</p>
-          </el-col>
-          <el-col :sm="9" class="selectTimeBox">
-            <div class="block dataSelect">
-              <span class="demonstration">开始时间: &nbsp;</span>
-              <el-date-picker
-                v-model="PatientStartHistoryValue"
-                type="datetime"
-                placeholder="选择日期时间"
-                style="font-size: 10px"
-                @change="patients()"
-              ></el-date-picker>
-            </div>
-          </el-col>
-          <el-col :sm="9" class="selectTimeBox">
-            <div class="block">
-              <span class="demonstration">结束时间: &nbsp;</span>
-              <el-date-picker
-                v-model="PatientEndHistoryValue"
-                type="datetime"
-                placeholder="选择日期时间"
-                style="font-size: 10px"
-                @change="patients()"
-              ></el-date-picker>
-            </div>
+            <p>患者关联数据统计</p>
           </el-col>
         </el-row>
         <!-- <tableLine :getId="lineWeekData"></tableLine> -->
         <div id="linePatientAssoic" style="height: 300%" ref="getLineKernelWeekData"></div>
       </el-col>
       <el-col :sm="12">
-        <el-row :gutter="5" class="selectBox">
+        <el-row :gutter="5" >
           <el-col :sm="6">
-            <p>医生关联信息统计</p>
-          </el-col>
-          <el-col :sm="9" class="selectTimeBox">
-            <div class="block dataSelect">
-              <span class="demonstration">开始时间: &nbsp;</span>
-              <el-date-picker
-                v-model="docStartHistoryValue"
-                type="datetime"
-                placeholder="选择日期时间"
-                style="font-size: 10px"
-                @change="doctor()"
-              ></el-date-picker>
-            </div>
-          </el-col>
-          <el-col :sm="9" class="selectTimeBox">
-            <div class="block">
-              <span class="demonstration">结束时间: &nbsp;</span>
-              <el-date-picker
-                v-model="docEndHistoryValue"
-                type="datetime"
-                placeholder="选择日期时间"
-                style="font-size: 10px"
-                @change="doctor()"
-              ></el-date-picker>
-            </div>
+            <p>医生关联数据统计</p>
           </el-col>
         </el-row>
         <!-- <tableLine :getId="lineMonthData"></tableLine> -->
@@ -82,33 +53,9 @@
 
     <el-row :gutter="50">
       <el-col :sm="12">
-        <el-row :gutter="5" class="selectBox">
+        <el-row :gutter="5">
           <el-col :sm="6">
-            <p>费用关联信息统计</p>
-          </el-col>
-          <el-col :sm="9" class="selectTimeBox">
-            <div class="block dataSelect">
-              <span class="demonstration">开始时间: &nbsp;</span>
-              <el-date-picker
-                v-model="costStartHistoryValue"
-                type="datetime"
-                placeholder="选择日期时间"
-                style="font-size: 10px"
-                @change="conOneKernelDataAll()"
-              ></el-date-picker>
-            </div>
-          </el-col>
-          <el-col :sm="9" class="selectTimeBox">
-            <div class="block">
-              <span class="demonstration">结束时间: &nbsp;</span>
-              <el-date-picker
-                v-model="costEndHistoryValue"
-                type="datetime"
-                placeholder="选择日期时间"
-                style="font-size: 10px"
-                @change="conOneKernelDataAll()"
-              ></el-date-picker>
-            </div>
+            <p>费用关联数据统计</p>
           </el-col>
         </el-row>
 
@@ -116,33 +63,9 @@
         <div id="oneKernelDataAll" style="height: 300%" ref="getOneKernelDataAll"></div>
       </el-col>
       <el-col :sm="12">
-        <el-row :gutter="5" class="selectBox">
+        <el-row :gutter="5" >
           <el-col :sm="6">
-            <p>mesh关联信息统计</p>
-          </el-col>
-          <el-col :sm="9" class="selectTimeBox">
-            <div class="block dataSelect">
-              <span class="demonstration">开始时间: &nbsp;</span>
-              <el-date-picker
-                v-model="meshStartHistoryValue"
-                type="datetime"
-                placeholder="选择日期时间"
-                style="font-size: 10px"
-                @change="conOneKernelDataAdd()"
-              ></el-date-picker>
-            </div>
-          </el-col>
-          <el-col :sm="9" class="selectTimeBox">
-            <div class="block">
-              <span class="demonstration">结束时间: &nbsp;</span>
-              <el-date-picker
-                v-model="meshEndHistoryValue"
-                type="datetime"
-                placeholder="选择日期时间"
-                style="font-size: 10px"
-                @change="conOneKernelDataAdd()"
-              ></el-date-picker>
-            </div>
+            <p>mesh关联数据统计</p>
           </el-col>
         </el-row>
         <!-- <tableLine :getId="lineMonthData"></tableLine> -->
@@ -166,14 +89,7 @@ export default {
       lineWeekData: "lineWeekData",
       lineMonthData: "lineMonthData",
       getTable: {}, // 后台获取的数据  到时候直接覆盖
-      PatientStartHistoryValue: '', // 患者开始时间
-      PatientEndHistoryValue: '', // 患者结束时间
-      docStartHistoryValue: '', // 医生开始时间
-      docEndHistoryValue: '', // 医生结束时间
-      costStartHistoryValue: '', // 费用开始时间
-      costEndHistoryValue: "", // 费用结束时间
-      meshStartHistoryValue: "", // mesh开始时间
-      meshEndHistoryValue: "", // mesh结束时间
+      timeValue:'',//开始时间-结束时间
       value: "黄金糕"
     };
   },
@@ -183,145 +99,92 @@ export default {
   methods: {
       init(){
           /**********************初始化时间***************************/
-          this.PatientStartHistoryValue = this.initDate(true);// 患者开始时间
-          this.PatientEndHistoryValue = this.initDate(false);// 患者结束时间
-          this.docStartHistoryValue= this.initDate(true); // 医生开始时间
-          this.docEndHistoryValue= this.initDate(false); // 医生结束时间
-          this.costStartHistoryValue= this.initDate(true); // 费用开始时间
-          this.costEndHistoryValue= this.initDate(false); // 费用结束时间
-          this.meshStartHistoryValue= this.initDate(true); // mesh开始时间
-          this.meshEndHistoryValue= this.initDate(false); // mesh结束时间
-          // 患者关联信息统计
-          this.patients();
-          //医生关联信息统计
-          this.doctor();
-          // 单表数据总量变化趋势
-          this.conOneKernelDataAll();
-          // mesh关联信息统计
-          this.conOneKernelDataAdd();
+          /*this.AllStartHistoryValue= this.initDate(true); // 开始时间
+          this.AllEndHistoryValue= this.initDate(false); // 结束时间*/
+          //this.changeTime();
+          this.initTime()
       },
-      initDate(boolean){
-          var timestamp = new Date();
-          var time = new Date(timestamp);
-          var y = "";
-          if(boolean){
-              y = time.getFullYear()-1;// 去年
-          }else{
-              y = time.getFullYear();// 当前年
-          }
-          var m = time.getMonth()+1;
-          var d = time.getDate();
-          var h = time.getHours();
-          var mm = time.getMinutes();
-          var s = time.getSeconds();
-          return y+'-'+this.add0(m)+'-'+this.add0(d)+' '+this.add0(h)+':'+this.add0(mm)+':'+this.add0(s);
-      },
-      // 将datatimes格式转换为string
-    formartDate:function(timestamp) {
-        if(timestamp == null || timestamp == ""){
-            timestamp = new Date();
-            var time = new Date(timestamp);
-            var y = time.getFullYear()-1;
-            var m = time.getMonth()+1;
-            var d = time.getDate();
-            var h = time.getHours();
-            var mm = time.getMinutes();
-            var s = time.getSeconds();
-            return y+'-'+this.add0(m)+'-'+this.add0(d)+' '+this.add0(h)+':'+this.add0(mm)+':'+this.add0(s);
-        }else {
-            var time = new Date(timestamp);
-            var y = time.getFullYear();
-            var m = time.getMonth() + 1;
-            var d = time.getDate();
-            var h = time.getHours();
-            var mm = time.getMinutes();
-            var s = time.getSeconds();
-            return y + '-' + this.add0(m) + '-' + this.add0(d) + ' ' + this.add0(h) + ':' + this.add0(mm) + ':' + this.add0(s);
-        }
-    },
-    add0: function(m){
-      return m<10?'0'+m:m;
-    },
-      panduan(value, value1){
-          let bool = true;
-          if(value >= value1){
-              this.$message.error("开始时间不能大于或等于结束时间");
-              bool = false;
-          }
-           return bool;
-      },
-    // 患者关联信息统计
-    patients() {
-      let start_time = this.formartDate(this.PatientStartHistoryValue);
-      let end_time = this.formartDate(this.PatientEndHistoryValue);
-      let panduan = this.panduan(start_time, end_time);
-      if(panduan) {
-          let obj = {"fDimId": "001", "startTime": start_time, "endTime": end_time};
-          selectDimRelatedCountSum(obj).then(({data}) => {
-              this.getTable_patients = data;
-              console.log(this.getTable_patients);
-              this.getLineKernelTable(this.getTable_patients, this.$refs.getLineKernelWeekData);
-          })
-      }
-    },
-    // 医生关联信息统计
-    doctor() {
-        let start_time = this.formartDate(this.docStartHistoryValue);
-        let end_time = this.formartDate(this.docEndHistoryValue);
-        let panduan = this.panduan(start_time, end_time);
-        if(panduan) {
-            let obj = {
-                "fDimId": "002",
-                "startTime": start_time,
-                "endTime": end_time
-            }
-            selectDimRelatedCountSum(obj).then(({data}) => {
-                this.getTable_doctor = data;
-                this.getLineKernelTable(this.getTable_doctor, this.$refs.getLineKernelMonthData);
-            })
-        }
-    },
-    // 费用关联信息统计
-    conOneKernelDataAll() {
-      let start_time = this.formartDate(this.costStartHistoryValue);
-      let end_time = this.formartDate(this.costEndHistoryValue);
-      let panduan = this.panduan(start_time, end_time);
-      if(panduan) {
-          let getTable = {}
-          let obj = {
-              fDimId: "003",
-              startTime: start_time,
-              endTime: end_time
-          }
-          selectDimRelatedCountSum(obj).then(({data}) => {
-              console.log(data)
-              getTable = data;
-              this.getLineKernelTable(getTable, this.$refs.getOneKernelDataAll);
-          })
-      }
-    },
-    // mesh关联信息统计
-    conOneKernelDataAdd() {
-        let start_time = this.formartDate(this.meshStartHistoryValue);
-        let end_time = this.formartDate(this.meshEndHistoryValue);
-        let panduan = this.panduan(start_time, end_time);
-        if(panduan) {
-            let getTable = {}
-            let obj = {
-                fDimId: "004",
-                startTime: start_time,
-                endTime: end_time
-            }
-            selectDimRelatedCountSum(obj).then(({data}) => {
-                console.log(data, "666")
-                getTable = data
-                console.log(getTable)
-                this.getLineKernelTable(getTable, this.$refs.getOneKernelDataAdd);
-            })
-        }
+    initTime(){
+      let end_time=new Date();
+      let start_time=new Date(end_time -7*24*3600*1000);
+      console.log(end_time)
+        let time=[start_time,end_time]
+      this.changeTime(time)
     },
 
-    // 获取echarts函数
+    // 时间改变触发时间
+    changeTime(time) {
+      //console.log(this.timeValue,"777")
+      let value5=[]
+      if(time==null || time.length<1){
+         value5=this.timeValue;
+      }else{
+         value5=time;
+      }
+      let d = new Date(value5[0])//.format("yyyy-MM-dd")
+      let  time1=d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate() ;
+      let b = new Date(value5[1])//.format("yyyy-MM-dd")
+      let time2=b.getFullYear() + '-' + (b.getMonth() + 1) + '-' + b.getDate() ;
+        console.log(time1,time2)
+      this.initValue(time1,time2);
+    },
+    initValue(start_time,end_time){
+      this.change1(start_time,end_time)
+      this.change2(start_time,end_time)
+      this.change3(start_time,end_time)
+      this.change4(start_time,end_time)
+    },
+    //患者关联数据统计
+    change1(start_time,end_time){
+      let obj = {"fDimId": "001", "startTime": start_time, "endTime": end_time};
+      selectDimRelatedCountSum(obj).then(({data}) => {
+        this.getTable_patients = data;
+        console.log(this.getTable_patients);
+        this.getLineKernelTable(this.getTable_patients, this.$refs.getLineKernelWeekData);
+      })
+    },
+    //医生关联数据统计
+    change2(start_time,end_time){
+      let obj = {
+        "fDimId": "002",
+        "startTime": start_time,
+        "endTime": end_time
+      }
+      selectDimRelatedCountSum(obj).then(({data}) => {
+        this.getTable_doctor = data;
+        this.getLineKernelTable(this.getTable_doctor, this.$refs.getLineKernelMonthData);
+      })
+    },
+    // 费用关联数据统计
+    change3(start_time,end_time){
+      let getTable = {}
+      let obj = {
+        fDimId: "003",
+        startTime: start_time,
+        endTime: end_time
+      }
+      selectDimRelatedCountSum(obj).then(({data}) => {
+        console.log(data)
+        getTable = data;
+        this.getLineKernelTable(getTable, this.$refs.getOneKernelDataAll);
+      })
+    },
+        //mesh关联数据统计
+    change4(start_time,end_time){
+      let getTable = {}
+      let obj = {
+        fDimId: "004",
+        startTime: start_time,
+        endTime: end_time
+      }
+      selectDimRelatedCountSum(obj).then(({data}) => {
+        console.log(data, "666")
+        getTable = data
+        console.log(getTable)
+        this.getLineKernelTable(getTable, this.$refs.getOneKernelDataAdd);
+      })
+    },
+        // 获取echarts函数
     getLineKernelTable(getTable, getRef) {
       let dataSourcePie = this.$echarts.init(getRef);
      /* let legentData = [];
@@ -331,11 +194,13 @@ export default {
           trigger: "axis"
         },
         xAxis: {
+          name:"时间",
           type: "category",
           boundaryGap: false,
           data: getTable.timeList
         },
         yAxis: {
+          name:'数量',
           type: "value",
           axisLabel: {
             formatter: "{value}"
@@ -355,9 +220,9 @@ export default {
                 { type: "min", name: "最小值" }
               ]
             },
-            markLine: {
+           /* markLine: {
               data: [{ type: "average", name: "平均值" }]
-            }
+            }*/
           }
         ],
         animation: false
@@ -409,12 +274,32 @@ export default {
 }
 .el-date-editor.el-input,
 .el-date-editor.el-input__inner {
-  width: 180px;
+  width: 300px;
 }
 .selectTimeBox {
   margin-top: 8px;
 }
 .el-input--prefix .el-input__inner {
   padding: 0 0 0 25px;
+}
+
+.selectBox {
+  padding-left: 25px;
+  /deep/ div {
+    margin-top: 5px;
+    &:first-of-type {
+      margin-top: 0;
+    }
+  }
+  .el-select {
+    width: 100px;
+  }
+  /deep/ .selectTimeQuery {
+    margin-top: 17px !important;
+    .el-icon-date {
+      font-size: 16px;
+      margin-right: 5px;
+    }
+  }
 }
 </style>

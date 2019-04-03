@@ -3,7 +3,7 @@
     margin: 0 !important;
     .el-col {
         margin-bottom: 20px;
-        >p {
+        >p,>span {
             margin: 20px 0;
             font-size: 16px;
             font-weight: 500;
@@ -19,5 +19,12 @@
     .el-table th {
         color: #fff;
         background-color: #43586F !important;
+    }
+    .el-table {
+        .el-table__row {
+            td {
+                padding: 3px 0;
+            }
+        }
     }
 }

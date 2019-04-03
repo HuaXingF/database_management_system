@@ -18,12 +18,12 @@
             <p>指定管道读取数据量统计</p>
           </el-col>
           <el-col :span="16">
-            请选择pipeline: &nbsp;
-            <el-select v-model="ETLReadData" @change="getOneData">
+            请选择管道: &nbsp;
+            <el-select v-model="ETLReadData" @change="getData1">
               <el-option
                 v-for="item in options"
                 :label="item.label"
-                :value="item.value"
+                :value="item.name"
                 :key="item.value"
               ></el-option>
             </el-select>
@@ -38,12 +38,12 @@
             <p>指定管道写入数据量统计</p>
           </el-col>
           <el-col :span="16">
-            请选择pipeline: &nbsp;
-            <el-select v-model="ETLWriteData" @change="getOneData">
+            请选择管道: &nbsp;
+            <el-select v-model="ETLWriteData" @change="getData2">
               <el-option
                 v-for="item in options"
                 :label="item.label"
-                :value="item.value"
+                :value="item.name"
                 :key="item.value"
               ></el-option>
             </el-select>
@@ -61,12 +61,12 @@
             <p>指定管道去重数据统计</p>
           </el-col>
           <el-col :span="16">
-            请选择pipeline: &nbsp;
-            <el-select v-model="ETLRemoveData" @change="getOneData">
+            请选择管道: &nbsp;
+            <el-select v-model="ETLRemoveData" @change="getData3">
               <el-option
                 v-for="item in options"
                 :label="item.label"
-                :value="item.value"
+                :value="item.name"
                 :key="item.value"
               ></el-option>
             </el-select>
@@ -82,13 +82,13 @@
             <p>指定管道去空值数据统计</p>
           </el-col>
           <el-col :span="16">
-            请选择pipeline: &nbsp;
-            <el-select v-model="ETLNullData">
+            请选择管道: &nbsp;
+            <el-select v-model="ETLNullData" @change="getData4" >
               <el-option
                 v-for="item in options"
                 :key="item.value"
                 :label="item.label"
-                :value="item.value"
+                :value="item.name"
               ></el-option>
             </el-select>
           </el-col>
@@ -102,7 +102,10 @@
 
 <script>
 import MTopNav from "@/components/m-topNav/m-topNav";
-
+import {
+  selectOneTimeAtamp,
+  selectAllId
+} from "@/api/SystemETL"
 export default {
   name: "messageSearch",
   data() {
@@ -110,84 +113,207 @@ export default {
       lineWeekData: "lineWeekData",
       lineMonthData: "lineMonthData",
       getTable: null, // 后台获取的数据  到时候直接覆盖
-      options: [
-        {
-          value: "选项1",
-          label: "黄金糕"
-        },
-        {
-          value: "选项2",
-          label: "双皮奶"
-        },
-        {
-          value: "选项3",
-          label: "蚵仔煎"
-        },
-        {
-          value: "选项4",
-          label: "龙须面"
-        },
-        {
-          value: "选项5",
-          label: "北京烤鸭"
-        }
-      ],
-      ETLReadData: 'pipeline001',   // 指定管道读取数据量统计
-      ETLWriteData: 'pipeline001',   // 指定管道写入数据量统计
-      ETLRemoveData:'pipeline001',   // 指定管道去重数据统计
-      ETLNullData: 'pipeline001',   // 指定管道去空值数据统计
+      options:[],
+      ETLReadData: '',   // 指定管道读取数据量统计
+      ETLWriteData: '',   // 指定管道写入数据量统计
+      ETLRemoveData:'',   // 指定管道去重数据统计
+      ETLNullData: '',   // 指定管道去空值数据统计
+        startTime:null,
+      endTime:null
     };
   },
+
   mounted() {
-    // 本周数据湖数据总量变化图
-    this.conLineKernelWeekData();
-    // 数据湖数据总量月变化趋势图
-    this.conLineKernelMonthData();
-    // 单表数据总量变化趋势
-    this.conOneKernelDataAll();
-    // 单表数据增量变化趋势
-    this.conOneKernelDataAdd();
+      this.init();
   },
   methods: {
-    getOneData(valId) {
+    init(){
+        selectAllId().then(({data})=>{
+                // console.log(data)
+                for(let i=0;i<data.length;i++){
+                  this.options.push({"name":data[i].fPipelineTitle,"value":data[i].fPipelineId})
+                }
+                console.log(this.options)
+                this.changeTime()
+                let obj={
+                    fPipelineId:data[0].fPipelineId,
+                    startTime:this.startTime,
+                    endTime:this.endTime
+                }
+                this.changeTime(obj)
+                //  指定管道读取数据量统计
+                this.conLineKernelWeekData(obj);
+                // 指定管道写入数据量统计
+                this.conLineKernelMonthData(obj);
+                //  指定管道去重数据统计
+                this.conOneKernelDataAll(obj);
+                // 指定管道去空值数据统计
+                this.conOneKernelDataAdd(obj);
+              })
+    },
+      // 时间改变触发时间
+      changeTime() {
+          let end_time=new Date();
+          let start_time=new Date(end_time -7*24*3600*1000);
+          console.log(end_time)
+          let time=[start_time,end_time]
+          let d = new Date(time[0])//.format("yyyy-MM-dd")
+          this.startTime=d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate() ;
+          let b = new Date(time[1])//.format("yyyy-MM-dd")
+          this.endTime=b.getFullYear() + '-' + (b.getMonth() + 1) + '-' + b.getDate() ;
+          //console.log(time1,time2)
+
+      },
+    getData1(valId) {
+        this.changeTime()
       let getObj = {};
       getObj = this.options.find(item => {
-        return item.value === valId;
+        return item.name === valId;
       });
-      console.log(getObj.label);
+      let obj={
+            fPipelineId:getObj.value,
+            startTime:this.startTime,
+            endTime:this.endTime
+        }
+        this.conLineKernelWeekData(obj);
     },
-    // 本周数据湖数据总量变化图
-    conLineKernelWeekData() {
-      this.getLineKernelTable(this.getTable, this.$refs.getLineKernelWeekData);
+    getData2(valId) {
+        this.changeTime()
+      let getObj = {};
+      getObj = this.options.find(item => {
+        return item.name === valId;
+      });
+        let obj={
+            fPipelineId:getObj.value,
+            startTime:this.startTime,
+            endTime:this.endTime
+        }
+        this.conLineKernelMonthData(obj);
     },
-    // 数据湖数据总量月变化趋势图
-    conLineKernelMonthData() {
-      this.getLineKernelTable(this.getTable, this.$refs.getLineKernelMonthData);
+    getData3(valId) {
+        this.changeTime()
+      let getObj = {};
+      getObj = this.options.find(item => {
+        return item.name === valId;
+      });
+        let obj={
+            fPipelineId:getObj.value,
+            startTime:this.startTime,
+            endTime:this.endTime
+        }
+        this.conOneKernelDataAll(obj);
     },
-    // 单表数据总量变化趋势
-    conOneKernelDataAll() {
-      this.getLineKernelTable(this.getTable, this.$refs.getOneKernelDataAll);
+    getData4(valId) {
+        this.changeTime()
+      let getObj = {};
+      getObj = this.options.find(item => {
+        return item.name === valId;
+      });
+        let obj={
+            fPipelineId:getObj.value,
+            startTime:this.startTime,
+            endTime:this.endTime
+        }
+        this.conOneKernelDataAdd(obj);
     },
-    // 单表数据增量变化趋势
-    conOneKernelDataAdd() {
-      this.getLineKernelTable(this.getTable, this.$refs.getOneKernelDataAdd);
+
+   /* fPipelineId: "PatientBaseInfoETLPipelineb2bdef1c-e942-400b-a7a4-f4028d2129cb"
+    fRdCount: "1" //去重
+    fReadSum: "2" 读
+    fRnCount: "1" 去空
+    fSelectTime: "2019-03-22 10:18:59"
+    fWriteSum: "2"*/ //写
+    //  指定管道读取数据量统计
+    conLineKernelWeekData(obj) {
+
+      let listA=[];
+      let listY=[];
+      selectOneTimeAtamp(obj).then(({data}) =>{
+          console.log(data)
+        for(let i=0;i<data.length;i++){
+          listA.push(data[i].fSelectTime)
+          listY.push(data[i].fReadSum)
+        }
+          let getTable={
+              listA:listA,
+              listY:listY
+          };
+          this.getLineKernelTable(getTable, this.$refs.getLineKernelWeekData);
+      })
+
+    },
+    // 指定管道写入数据量统计
+    conLineKernelMonthData(obj) {
+      //let getTable={};
+      let listA=[];
+      let listY=[];
+      selectOneTimeAtamp(obj).then(({data}) =>{
+        console.log(data)
+        for(let i=0;i<data.length;i++){
+          listA.push(data[i].fSelectTime)
+          listY.push(data[i].fWriteSum)
+        }
+          let getTable={
+              listA:listA,
+              listY:listY
+          };
+          this.getLineKernelTable(getTable, this.$refs.getLineKernelMonthData);
+      })
+
+
+    },
+    //  指定管道去重数据统计
+    conOneKernelDataAll(obj) {
+      let listA=[];
+      let listY=[];
+      selectOneTimeAtamp(obj).then(({data}) =>{
+        console.log(data)
+        for(let i=0;i<data.length;i++){
+          listA.push(data[i].fSelectTime)
+          listY.push(data[i].fRdCount)
+        }
+          let getTable={
+              listA:listA,
+              listY:listY
+          };
+          this.getLineKernelTable(getTable, this.$refs.getOneKernelDataAll);
+      })
+
+    },
+    //指定管道去空值数据统计
+    conOneKernelDataAdd(obj) {
+      let listA=[];
+      let listY=[];
+      selectOneTimeAtamp(obj).then(({data}) =>{
+        console.log(data)
+        for(let i=0;i<data.length;i++){
+          listA.push(data[i].fSelectTime)
+          listY.push(data[i].fRnCount)
+        }
+          let getTable={
+              listA:listA,
+              listY:listY
+          };
+          this.getLineKernelTable(getTable, this.$refs.getOneKernelDataAdd);
+      })
+
     },
 
     // 获取echarts函数
     getLineKernelTable(getTable, getRef) {
       let dataSourcePie = this.$echarts.init(getRef);
-      let legentData = [];
-      let seriesData = [];
       const option = {
         tooltip: {
           trigger: "axis"
         },
         xAxis: {
+          name:"时间",
           type: "category",
           boundaryGap: false,
-          data: ["周一", "周二", "周三", "周四", "周五", "周六", "周日"]
+          data: getTable.listA
         },
         yAxis: {
+          name:"数据量",
           type: "value",
           axisLabel: {
             formatter: "{value}"
@@ -197,7 +323,7 @@ export default {
           {
             name: "最高数据",
             type: "line",
-            data: [11, 11, 15, 13, 12, 13, 20],
+            data: getTable.listY,
             itemStyle: {
               color: "#6ED6D7"
             },
@@ -207,9 +333,9 @@ export default {
                 { type: "min", name: "最小值" }
               ]
             },
-            markLine: {
+           /* markLine: {
               data: [{ type: "average", name: "平均值" }]
-            }
+            }*/
           }
         ],
         animation: false

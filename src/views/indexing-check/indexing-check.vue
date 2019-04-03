@@ -18,7 +18,7 @@
             </el-col>
             <el-col :span="9">
                 请输入关键字查询：
-                <el-input placeholder="请输入内容" v-model="input" clearable></el-input>
+                <el-input placeholder="请输入查询名称" v-model="input" clearable></el-input>
             </el-col>
             <el-col :span="5">
                 <el-button type="primary" @click="selectRule">查 询</el-button>
@@ -36,12 +36,11 @@
                         :cell-style="cellStyle"
                         :header-cell-style="rowClass"
                 >
-                    <el-table-column prop="ruleName" label="规则名称" width="180"></el-table-column>
-                    <el-table-column prop="ruleDec" label="规则描述" width="180"></el-table-column>
-                    <el-table-column prop="ruleTab" label="规则对应表名"></el-table-column>
-                    <el-table-column prop="ruleStr" label="规则对应字段名"></el-table-column>
-                    <el-table-column prop="ruleDefine" label="规则定义"></el-table-column>
-                    <el-table-column prop="ruleTiem" label="创建时间"></el-table-column>
+                    <el-table-column prop="fRuleName" label="规则名称" width="180"></el-table-column>
+                    <el-table-column prop="fRuleDes" label="规则描述" width="180"></el-table-column>
+                    <el-table-column prop="fTableName" label="规则对应表名"></el-table-column>
+                    <el-table-column prop="fTableField" label="规则对应字段名"></el-table-column>
+                    <el-table-column prop="fRuleDefine" label="规则定义"></el-table-column>
                     <el-table-column prop="ruleOpera" label="操作">
                         <template slot-scope="scope">
                             <el-button type="text" size="small" @click="editBtn(scope.$index, tableData)">编辑</el-button>
@@ -59,10 +58,10 @@
             <el-dialog title="编辑数据规则" :visible.sync="dialogFormVisible">
                 <el-form :model="form">
                     <el-form-item label="规则名称" :label-width="formLabelWidth">
-                        <el-input v-model="form.name" autocomplete="off"></el-input>
+                        <el-input v-model="form.fRuleDefine" autocomplete="off"></el-input>
                     </el-form-item>
-                    <el-form-item label="规则类别" :label-width="formLabelWidth">
-                        <el-input v-model="form.class" autocomplete="off"></el-input>
+                    <el-form-item label="规则描述" :label-width="formLabelWidth">
+                        <el-input v-model="form.fRuleDes" autocomplete="off"></el-input>
                     </el-form-item>
                     <el-form-item label="数据库名" :label-width="formLabelWidth">
                         <el-select v-model="form.dataName" placeholder="请选择数据库名">
@@ -134,29 +133,30 @@
 
 <script>
     import MTopNav from "@/components/m-topNav/m-topNav";
-
+    import {
+        selectAll,
+        selectByRuleName,
+        insert,
+        deleteTabRule,
+        update
+    } from "@/api/indexing-check"
     export default {
+        watch: {
+            input(val) {
+              if(val==null || val==""){
+                  //console.log(val)
+                  this.init();
+              }else{
+                  //this.input()
+                  this.selectRule(val);
+              }
+            }
+        },
         name: "indexingCheck",
         data() {
             return {
-                tableData: [
-                    {
-                        ruleName: "空值判断",
-                        ruleDec: "身份证不能为空",
-                        ruleTab: "tab_chuyuan",
-                        ruleStr: "id_card",
-                        ruleDefine: "id_card!=null",
-                        ruleTiem: "2019-03-12 12:12:11"
-                    },
-                    {
-                        ruleName: "空值判断123",
-                        ruleDec: "身份证不能为空123",
-                        ruleTab: "tab_chuyuan123",
-                        ruleStr: "id_card123",
-                        ruleDefine: "id_card!=null123",
-                        ruleTiem: "2019-03-12 12:12:11"
-                    }
-                ],
+
+                tableData: [],
                 input: "",
                 getRuleData: null,   //  保存tableData中数据
                 dialogFormVisible: false,
@@ -194,6 +194,9 @@
                 formLabelWidth: "120px"
             };
         },
+        mounted(){
+            this.init();
+        },
         methods: {
             cellStyle() {
                 return "text-align:center";
@@ -202,8 +205,10 @@
                 return "text-align:center";
             },
             selectRule() {
-                if (this.input.trim() == "") return;
-                console.log(this.input);
+                selectByRuleName(this.input).then(({data}) =>{
+                    console.log(data)
+                    this.tableData=data
+                })
             },
             // 新增按钮功能实现
             addRule() {
@@ -212,7 +217,26 @@
             },
             // 删除按钮功能实现
             deleteRow(index, rows) {
-                rows.splice(index, 1);
+                let id=rows[index].fRuleId
+                this.$confirm("确认删除名称为:"+rows[index].fRuleName+"的这条规则吗？", "提示", {})
+                    .then(() => {
+                        deleteTabRule(id).then(({data}) =>{
+                            if(data.status=="200"){
+                                this.$message({
+                                    message: '删除成功',
+                                    type: 'success'
+                                });
+                                this.init();
+                            }else if(data.status=="400"){
+                                this.$message.error("删除失败")
+
+                            }
+                        })
+                        //rows.splice(index, 1);
+                    })
+                    .catch(() => {
+                        //console.log("取消");
+                    });
             },
             // 点击编辑按钮
             editBtn(index, rows) {
@@ -233,8 +257,16 @@
             // 新增按钮的确定按钮
             addConfirmBtn() {
                 this.adddialogFormVisible = false;
+            },
+            init(){
+                //tableData
+                selectAll().then(ref =>{
+                    console.log(ref.data)
+                    this.tableData=ref.data
+                })
             }
         },
+
         components: {
             MTopNav
         }

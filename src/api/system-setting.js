@@ -1,7 +1,8 @@
 
 import axios from 'axios'
 import baseURL from '@/assets/js/config'
-
+//relationShip/selectSuccessAndFail
+//{"primaryTabName":["健康档案","全员人口","公卫","电子病历"],"failRelatedSum":["6450","0","0","4300"],"successRelatedSum":["5250","0","0","2700"]}
 // 数据湖当前数据统计
 export const select_shujuhu = params => {
     const url = `${baseURL}/hive/selectByBase`
@@ -32,4 +33,9 @@ export const selectotle_week = params => {
     const url = `${baseURL}/tabAllRows/selectTotalDay?tableName=total`
     return axios.post(url, { params: params })
 }
-
+//当前关联信息统计
+//relationShip/selectSuccessAndFail
+export const select_guanlian = params => {
+    const url = `${baseURL}/relationShip/selectSuccessAndFail`
+    return axios.post(url, { params: params })
+}

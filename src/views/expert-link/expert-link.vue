@@ -91,12 +91,14 @@ export default {
             },
             xAxis: [
               {
+                name:"名称",
                 type: "category",
                 data: listX
               }
             ],
             yAxis: [
               {
+                name:"数据量",
                 type: "value"
               }
             ],
@@ -111,7 +113,7 @@ export default {
                 label: {
                   normal: {
                     show: true,
-                    position: ["39%", 10],
+                    position: 'inside',
                     color: "#fff"
                   }
                 },
@@ -182,10 +184,17 @@ export default {
       let dataSourcePie = this.$echarts.init(getRef);
      /* let legentData = [];
       let seriesData = [];*/
+     //let name=null
+      console.log(tablePie)
       const option = {
         tooltip: {
           trigger: "item",
           formatter: "{a} <br/>{b} : {c} ({d}%)"
+        },
+        legend: {
+          orient: 'vertical',
+          x: 'left',
+          data:tablePie
         },
         series: [
           {

@@ -2,8 +2,8 @@
     <el-col :span="24" class="main-header">
         <el-col :span="4" class="logoBox" :class="collapsed ? 'logo-collapse-width' : 'logo-width'">
             <el-col :span="20" class="logoText" v-show="!collapsed">
-                <i class="el-icon-menu logoPic"></i>
-                <span class="text">数据标引系统</span>
+                <i class="logoPic"></i>
+                <span class="text">数据质量控制系统</span>
             </el-col>
             <div class="toolBtn" @click.prevent="collapse">
                 <i class="fa fa-bars"></i>
@@ -65,15 +65,19 @@ export default {
         height: 6 * $fontSize12;
         @include clearfix;
         .logoPic {
-            vertical-align: top;
-            margin-top: $fontSize20;
-            font-size: 2 * $fontSize16;
+            width: 45px;
+            height: 45px;
+            position: absolute;
+            top: 20px;
             margin-right: $fontSize8 / 2;
+            background: url('uugai.com-1553134847220.png');
+            background-size: cover;
         }
         .text {
             font-size: $fontSize22;
             font-weight: normal;
             letter-spacing: 1px;
+            margin-left: 46px;
         }
         .toolBtn {
             float: right;
@@ -90,7 +94,7 @@ export default {
         }
     }
     .logo-width {
-        width: 25 * $fontSize10; 
+        width: 30 * $fontSize10; 
     }
     .logo-collapse-width {
         width: 6 * $fontSize10;

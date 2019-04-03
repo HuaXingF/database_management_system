@@ -98,12 +98,13 @@ export default new Router({
             flagHidden: false,
             children: [
                 {
-                    path: '/SystemRule',
-                    name: '数据规则管理',
-                    component: () => import(/* webpackChunkName: "indexingCheck" */ '@/views/indexing-check/indexing-check.vue')
+                    path: '/SystemDictionary',
+                    name: '字典规范',
+                    component: () => import('./views/System-dictionary/SystemDictionary.vue')
                 }
             ]
         },
+
         // {
         //   path: 'SystemAddRule',
         //   name: '新增数据规则',
@@ -125,21 +126,45 @@ export default new Router({
                 }
             ]
         },
-        {
+        // {
+        //   path: '/',
+        //   name: '',
+        //   iconCls: 'indexingCheck',
+        //   component: Home,
+        //   leaf: true,
+        //   flagHidden: true,
+        //   children: [
+        //     {
+        //       path: '/SystemAddRule',
+        //       name: '新增数据规则',
+        //       component: () => import('./views/SystemAddRule/SystemAddRule.vue')
+        //     }
+        //   ]
+        // },
+        /*{
             path: '/',
-            name: '',
+            name: '数据规则历史信息统计',
             iconCls: 'indexingCheck',
             component: Home,
-            leaf: true,
-            flagHidden: true,
+            flagHidden: false,
             children: [
                 {
-                    path: '/SystemAddRule',
-                    name: '新增数据规则',
-                    component: () => import('./views/SystemAddRule/SystemAddRule.vue')
-                }
+                    path: '/SystemRuleHistoryData',
+                    name: '数据规则历史统计信息(数据库)',
+                    component: () => import('./views/SystemRuleHistory/SystemRuleHistoryData.vue')
+                },
+                {
+                    path: '/SystemRuleHistoryTable',
+                    name: '数据规则历史统计信息(表)',
+                    component: () => import('./views/SystemRuleHistory/SystemRuleHistoryTable.vue')
+                },
+                {
+                    path: '/SystemRuleHistoryStr',
+                    name: '数据规则历史统计信息(字段)',
+                    component: () => import('./views/SystemRuleHistory/SystemRuleHistoryStr.vue')
+                },
             ]
-        },
+        },*/
         {
             path: '/',
             name: '',
@@ -149,9 +174,9 @@ export default new Router({
             flagHidden: false,
             children: [
                 {
-                    path: '/SystemDictionary',
-                    name: '字典规范',
-                    component: () => import('./views/System-dictionary/SystemDictionary.vue')
+                    path: '/SystemRule',
+                    name: '数据规则管理',
+                    component: () => import(/* webpackChunkName: "indexingCheck" */ '@/views/indexing-check/indexing-check.vue')
                 }
             ]
         },

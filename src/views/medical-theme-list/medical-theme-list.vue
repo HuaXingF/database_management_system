@@ -28,7 +28,7 @@
       <el-col :sm="12">
         <el-row :gutter="10" class="selectBox" >
           <el-col :span="8">
-            <p>单表数据总量变化趋势</p>
+            <p>单库数据总量变化趋势</p>
           </el-col>
           <el-col :span="8">
             请选择数据库: &nbsp;
@@ -60,7 +60,7 @@
       <el-col :sm="12">
         <el-row :gutter="10" class="selectBox">
           <el-col :span="8">
-            <p>单表数据增量变化趋势</p>
+            <p>单库数据增量变化趋势</p>
           </el-col>
           <el-col :span="8">
             请选择数据库: &nbsp;
@@ -186,9 +186,9 @@ export default {
     this.conLineWeekData();
     // 数据湖数据总量月变化趋势图
     this.conLineMonthData();
-    // 单表数据总量变化趋势
+    // 单库数据总量变化趋势
     this.conOneDataAll();
-    // 单表数据增量变化趋势
+    // 单库数据增量变化趋势
     this.conOneDataAdd();
   },
   methods: {
@@ -225,7 +225,7 @@ export default {
       })
 
     },
-    // 单表数据总量变化趋势
+    // 单库数据总量变化趋势
     conOneDataAll() {
       let obj={
         value1:this.value1,
@@ -239,7 +239,7 @@ export default {
       })
 
     },
-    // 单表数据增量变化趋势
+    // 单库数据增量变化趋势
     conOneDataAdd() {
       let obj={
         value1:this.value3,
@@ -266,12 +266,17 @@ export default {
           trigger: "axis"
         },
         xAxis: {
+          name:"时间",
           type: "category",
           boundaryGap: false,
-          inverse:true,
-          data: getTable.listA/*["周一", "周二", "周三", "周四", "周五", "周六", "周日"]*/
+           inverse:true,
+          data: getTable.listA,
+          nameTextStyle: {
+            padding: [0, -590, 0, 0]
+          }
         },
         yAxis: {
+          name:"数据量",
           type: "value",
           axisLabel: {
             formatter: "{value}"
@@ -291,9 +296,9 @@ export default {
                 { type: "min", name: "最小值" }
               ]
             },
-            markLine: {
+           /* markLine: {
               data: [{ type: "average", name: "平均值" }]
-            }
+            }*/
           }
         ],
         animation: false
