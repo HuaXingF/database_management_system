@@ -44,14 +44,14 @@
           <el-table-column prop="notes" label="字典描述"></el-table-column>
           <el-table-column prop="ruleOpera" label="操作">
             <template slot-scope="scope">
-              <el-button type="text" size="small" @click="editBtn(scope.$index, scope.row)">编辑</el-button>
+              <el-button type="text" size="small" @click="editBtn(scope.$index, scope.row)"><i style="font-size: 25px;" class="el-icon-edit" title="编辑"></i></el-button>
               <el-button
                       @click.native.prevent="deleteRow(scope.$index, scope.row)"
                       type="text"
                       size="small"
-              >删除</el-button>
-              <el-button type="text" size="small" @click="addBtn(scope.$index, scope.row)">增加扩展项</el-button>
-              <el-button type="text" size="small" @click="selectBtn(scope.$index, scope.row)">查看扩展项</el-button>
+              ><i style="font-size: 25px;" class="el-icon-delete" title="删除"></i></el-button>
+              <el-button type="text" size="small" @click="addBtn(scope.$index, scope.row)" ><i style="font-size: 25px;" class="el-icon-circle-plus" title="增加扩展项"></i></el-button>
+              <el-button type="text" size="small" @click="selectBtn(scope.$index, scope.row)"><i style="font-size: 25px;" class="el-icon-view" title="查看扩展项"></i></el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -68,14 +68,14 @@
 
       <!-- 编辑按钮单击进行的页面弹出 -->
       <el-dialog title="编辑字典" :visible.sync="dialogFormVisible">
-        <el-form :model="editForm" ref="editForm">
-          <el-form-item label="字典类别" :label-width="formLabelWidth">
+        <el-form :model="editForm" :rules="rules" ref="editForm">
+          <el-form-item label="字典类别" :label-width="formLabelWidth" prop="category">
             <el-input v-model="editForm.category" auto-complete="off"></el-input>
           </el-form-item>
-          <el-form-item label="字典项" :label-width="formLabelWidth">
+          <el-form-item label="字典项" :label-width="formLabelWidth" prop="name">
             <el-input v-model="editForm.name" auto-complete="off"></el-input>
           </el-form-item>
-          <el-form-item label="字典编码" :label-width="formLabelWidth">
+          <el-form-item label="字典编码" :label-width="formLabelWidth" prop="code">
             <el-input v-model="editForm.code" auto-complete="off"></el-input>
           </el-form-item>
           <el-form-item label="字典规范" :label-width="formLabelWidth">
@@ -175,19 +175,19 @@
                 :cell-style="cellStyle"
                 :header-cell-style="rowClass"
         >
-          <el-table-column prop="extensionName" label="扩展名称" width="100"></el-table-column>
-          <el-table-column prop="extensionCode" label="扩展编码" width="100"></el-table-column>
-          <el-table-column prop="extensionDatabase" label="扩展库" width="100"></el-table-column>
-          <el-table-column prop="extensionTable" label="扩展表名" width="100"></el-table-column>
-          <el-table-column prop="extensionField" label="扩展表字段" width="100"></el-table-column>
+          <!--<el-table-column prop="extensionName" label="扩展名称" width="160"></el-table-column>-->
+          <el-table-column prop="extensionCode" label="扩展取值" width="120"></el-table-column>
+          <el-table-column prop="extensionDatabase" label="映射库" width="120"></el-table-column>
+          <el-table-column prop="extensionTable" label="映射表名" width="120"></el-table-column>
+          <el-table-column prop="extensionField" label="映射表字段" width="120"></el-table-column>
           <el-table-column prop="ruleOpera" label="操作">
           <template slot-scope="scope">
-          <el-button type="text" size="small" @click="editBtn_kz(scope.$index, scope.row)">编辑</el-button>
+          <el-button type="text" size="small" @click="editBtn_kz(scope.$index, scope.row)"><i style="font-size: 25px;" class="el-icon-edit" title="编辑"></i></el-button>
           <el-button
                   @click.native.prevent="delete_kz(scope.$index, scope.row)"
                   type="text"
                   size="small"
-          >删除</el-button>
+          ><i style="font-size: 25px;" class="el-icon-delete" title="删除"></i></el-button>
           </template>
           </el-table-column>
         </el-table>
@@ -251,7 +251,8 @@
         page: 1,
         pageNum : 1,
         pageSize : 10,
-        editLoading: false
+        editLoading: false,
+        word:""
       };
     },
     methods: {
@@ -288,7 +289,7 @@
       // 删除按钮功能实现
       deleteRow(index, rows) {
         //rows.splice(index, 1);
-        this.$confirm('确认删除吗？', '提示', {}).then(() => {
+        this.$confirm('确认删除该记录及扩展数据吗？', '提示', {}).then(() => {
           deleteById(rows.id).then(({data})=>{
             if(data){
               this.$message({
@@ -312,6 +313,7 @@
       editBtn_kz(index, rows) {
         this.editFormVisible = true;
         this.editForm_kz= rows;
+        this.editForm_kz.extensionName = this.word;
       },
       // 扩展项编辑按钮确定按钮
       update_kz() {
@@ -381,6 +383,7 @@
       },
       //扩展项查询
       selectBtn(index, rows){
+        this.word = rows.category+"-"+rows.name;
         queryByDictionaryId(rows.id).then(({data})=>{
           this.selectForm_kz = data;
           this.selectFormVisible = true;
