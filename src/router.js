@@ -140,5 +140,20 @@ export default new Router({
                 }
             ]
         },
+        {
+            path: '/',
+            name: '',
+            iconCls: 'indexingCheck',
+            component: Home,
+            leaf: true,
+            flagHidden: false,
+            children: [
+                {
+                    path: '/SystemDictionary',
+                    name: '字典规范',
+                    component: () => import('./views/System-dictionary/SystemDictionary.vue')
+                }
+            ]
+        },
     ]
 })
