@@ -53,12 +53,18 @@
                     </el-table-column>
                 </el-table>
             </el-col>
-
+            fRuleDefine: (...)
+            fRuleDes: (...)
+            fRuleId: (...)
+            fRuleName: (...)
+            fRuleType: (...)
+            fTableField: (...)
+            fTableName: (...)
             <!-- 编辑按钮单击进行的页面弹出 -->
             <el-dialog title="编辑数据规则" :visible.sync="dialogFormVisible">
                 <el-form :model="form">
                     <el-form-item label="规则名称" :label-width="formLabelWidth">
-                        <el-input v-model="form.fRuleDefine" autocomplete="off"></el-input>
+                        <el-input v-model="form.fRuleName" autocomplete="off"></el-input>
                     </el-form-item>
                     <el-form-item label="规则描述" :label-width="formLabelWidth">
                         <el-input v-model="form.fRuleDes" autocomplete="off"></el-input>
@@ -92,34 +98,40 @@
             </el-dialog>
 
             <!-- 点击新增按钮进行页面的弹出 -->
+            /* fRuleType,
+            fRuleName,
+            fRuleDefine,
+            fTableField,
+            fTableName,
+            fBaseName*/
             <el-dialog title="编辑数据规则" :visible.sync="adddialogFormVisible">
                 <el-form :model="addForm">
                     <el-form-item label="规则名称" :label-width="formLabelWidth">
-                        <el-input v-model="addForm.name" autocomplete="off"></el-input>
+                        <el-input v-model="addForm.fRuleName" autocomplete="off"></el-input>
                     </el-form-item>
                     <el-form-item label="规则类别" :label-width="formLabelWidth">
-                        <el-input v-model="addForm.class" autocomplete="off"></el-input>
+                        <el-input v-model="addForm.fRuleType" autocomplete="off"></el-input>
                     </el-form-item>
                     <el-form-item label="数据库名" :label-width="formLabelWidth">
-                        <el-select v-model="addForm.dataName" placeholder="请选择数据库名">
+                        <el-select v-model="addForm.fBaseName" placeholder="请选择数据库名">
                             <el-option label="区域一" value="shanghai"></el-option>
                             <el-option label="区域二" value="beijing"></el-option>
                         </el-select>
                     </el-form-item>
                     <el-form-item label="数据表名" :label-width="formLabelWidth">
-                        <el-select v-model="addForm.dataTableName" placeholder="请选择数据表名">
+                        <el-select v-model="addForm.fTableName" placeholder="请选择数据表名">
                             <el-option label="区域一" value="shanghai"></el-option>
                             <el-option label="区域二" value="beijing"></el-option>
                         </el-select>
                     </el-form-item>
                     <el-form-item label="字 段 名" :label-width="formLabelWidth">
-                        <el-select v-model="addForm.strName" placeholder="请选择字 段 名">
+                        <el-select v-model="addForm.fTableField" placeholder="请选择字 段 名">
                             <el-option label="区域一" value="shanghai"></el-option>
                             <el-option label="区域二" value="beijing"></el-option>
                         </el-select>
                     </el-form-item>
                     <el-form-item label="规则定义" :label-width="formLabelWidth">
-                        <el-input v-model="addForm.define" autocomplete="off"></el-input>
+                        <el-input v-model="addForm.fRuleDefine" autocomplete="off"></el-input>
                     </el-form-item>
                 </el-form>
                 <div slot="footer" class="dialog-footer">
@@ -255,6 +267,12 @@
                 this.dialogFormVisible = false;
             },
             // 新增按钮的确定按钮
+            /* fRuleType,
+                 fRuleName,
+                 fRuleDefine,
+                 fTableField,
+                 fTableName,
+                 fBaseName*/
             addConfirmBtn() {
                 this.adddialogFormVisible = false;
             },

@@ -158,12 +158,24 @@ export default {
           //console.log(end_time)
           let time=[start_time,end_time]
           let d = new Date(time[0])//.format("yyyy-MM-dd")
-          this.startTime=d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate() ;
+          this.startTime=this.jointStr(d);
           let b = new Date(time[1])//.format("yyyy-MM-dd")
-          this.endTime=b.getFullYear() + '-' + (b.getMonth() + 1) + '-' + b.getDate() ;
-          //console.log(time1,time2)
+          this.endTime=this.jointStr(b);
+          //console.log(this.startTime,this.endTime)
 
       },
+    jointStr(time){
+      let str=time.getFullYear()+"-"
+      //let month="";
+     // alert((time.getMonth()+1))
+      if((time.getMonth()+1)<10){
+        str+="0"+(time.getMonth()+1)
+      }else{
+        str+=time.getMonth()+1
+      }
+      str+="-"+time.getDate()
+      return str;
+    },
     getData1(valId) {
         this.changeTime()
       let getObj = {};
