@@ -59,7 +59,7 @@
 
 <script>
 import MTopNav from "@/components/m-topNav/m-topNav";
-import { selectTiem, selectBing } from "@/api/SystemRuleHistoyr.js";
+import { selectTiem } from "@/api/SystemRuleHistoyr.js";
 export default {
   data() {
     return {
@@ -122,7 +122,7 @@ export default {
     changeAllTable(start_time, end_time) {
       this.change1(start_time, end_time);
       this.change2(start_time, end_time);
-      this.change3()
+    //   this.change3()
     },
     change1(start_time, end_time) {
       let getTableData = [];
@@ -172,14 +172,14 @@ export default {
         this.getLineTable(getTableData, getTable, this.$refs.getLineWeekData);
       });
     },
-    change3() {
-      let getTableData = [];
-      let getTable = [];
-      selectBing().then(({ data }) => {
-        // console.log(getTable);
-        // this.getLineTable(getTableData, getTable, this.$refs.getLineWeekData);
-      });
-    },
+    // change3() {
+    //   let getTableData = [];
+    //   let getTable = [];
+    //   selectBing().then(({ data }) => {
+    //     // console.log(getTable);
+    //     // this.getLineTable(getTableData, getTable, this.$refs.getLineWeekData);
+    //   });
+    // },
 
     // // 数据库信息合格率统计
     // conLineWeekData() {
