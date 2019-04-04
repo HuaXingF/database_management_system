@@ -53,13 +53,13 @@
                     </el-table-column>
                 </el-table>
             </el-col>
-            fRuleDefine: (...)
+            <!--fRuleDefine: (...)
             fRuleDes: (...)
             fRuleId: (...)
             fRuleName: (...)
             fRuleType: (...)
             fTableField: (...)
-            fTableName: (...)
+            fTableName: (...)-->
             <!-- 编辑按钮单击进行的页面弹出 -->
             <el-dialog title="编辑数据规则" :visible.sync="dialogFormVisible">
                 <el-form :model="form">
@@ -70,25 +70,25 @@
                         <el-input v-model="form.fRuleDes" autocomplete="off"></el-input>
                     </el-form-item>
                     <el-form-item label="数据库名" :label-width="formLabelWidth">
-                        <el-select v-model="form.dataName" placeholder="请选择数据库名">
+                        <el-select v-model="form.fBaseName" placeholder="请选择数据库名">
                             <el-option label="区域一" value="shanghai"></el-option>
                             <el-option label="区域二" value="beijing"></el-option>
                         </el-select>
                     </el-form-item>
                     <el-form-item label="数据表名" :label-width="formLabelWidth">
-                        <el-select v-model="form.dataTableName" placeholder="请选择数据表名">
+                        <el-select v-model="form.fTableName" placeholder="请选择数据表名">
                             <el-option label="区域一" value="shanghai"></el-option>
                             <el-option label="区域二" value="beijing"></el-option>
                         </el-select>
                     </el-form-item>
                     <el-form-item label="字 段 名" :label-width="formLabelWidth">
-                        <el-select v-model="form.strName" placeholder="请选择字 段 名">
+                        <el-select v-model="form.fTableField" placeholder="请选择字 段 名">
                             <el-option label="区域一" value="shanghai"></el-option>
                             <el-option label="区域二" value="beijing"></el-option>
                         </el-select>
                     </el-form-item>
                     <el-form-item label="规则定义" :label-width="formLabelWidth">
-                        <el-input v-model="form.define" autocomplete="off"></el-input>
+                        <el-input v-model="form.fRuleDefine" autocomplete="off"></el-input>
                     </el-form-item>
                 </el-form>
                 <div slot="footer" class="dialog-footer">
@@ -98,12 +98,12 @@
             </el-dialog>
 
             <!-- 点击新增按钮进行页面的弹出 -->
-            /* fRuleType,
+             <!--fRuleType,
             fRuleName,
             fRuleDefine,
             fTableField,
             fTableName,
-            fBaseName*/
+            fBaseName-->
             <el-dialog title="编辑数据规则" :visible.sync="adddialogFormVisible">
                 <el-form :model="addForm">
                     <el-form-item label="规则名称" :label-width="formLabelWidth">
