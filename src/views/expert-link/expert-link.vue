@@ -77,7 +77,7 @@ export default {
       let listX = [];
       let listY = [];
       selectTableSumDesc().then(({data}) =>{
-        console.log(data)
+       // console.log(data)
         for(let i=0; i<data.length;i++){
           listX.push(data[i].fDimName)
           listY.push(data[i].fRelatedCountSum)
@@ -185,7 +185,7 @@ export default {
      /* let legentData = [];
       let seriesData = [];*/
      //let name=null
-      console.log(tablePie)
+      //console.log(tablePie)
       const option = {
         tooltip: {
           trigger: "item",

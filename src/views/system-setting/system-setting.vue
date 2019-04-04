@@ -84,12 +84,12 @@
       this.shujuku();// 核心数据库当前数据统计
     },
     methods: {
-      cellStyle({ row, column, rowIndex, colunIndex }) {
+     /* cellStyle({ row, column, rowIndex, colunIndex }) {
         return "text-align:center";
       },
       rowClass({ row, rowIndex }) {
         return "text-align:center";
-      },
+      },*/
 
       // 圆形图
       containerCircle() {
@@ -344,7 +344,7 @@
         option = {};
         myChart.setOption(option);
         select_conGetAllTab().then(({data})=>{
-          console.log(data,"777")
+          //console.log(data,"777")
           let listA=["关联成功","关联失败"]
           let listY=[]
           let listY1=[]
@@ -364,10 +364,10 @@
             listY.push(listY2[i])
           }
           let list = [map1,map2];
-          console.log(list);
-          console.log(listA)
-          console.log(listY1)
-          console.log(listY2)
+          //console.log(list);
+         //console.log(listA)
+          //console.log(listY1)
+         // console.log(listY2)
           //name=list
           myChart.setOption({
             tooltip: {

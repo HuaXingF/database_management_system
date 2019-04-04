@@ -136,9 +136,9 @@
     import {
         selectAll,
         selectByRuleName,
-        insert,
+        //insert,
         deleteTabRule,
-        update
+        //update
     } from "@/api/indexing-check"
     export default {
         watch: {

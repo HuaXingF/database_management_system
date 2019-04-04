@@ -21,7 +21,7 @@
 <script>
 import MHeader from '@/components/m-header/m-header'
 import MAside from '@/components/m-aside/m-aside'
-import MTopTip from '@/components/m-topTip/m-topTip'
+//import MTopTip from '@/components/m-topTip/m-topTip'
 
 export default {
     data() {
@@ -72,7 +72,7 @@ export default {
     components: {
         MHeader,
         MAside,
-        MTopTip
+        //MTopTip
     }
 }
 </script>

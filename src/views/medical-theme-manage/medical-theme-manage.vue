@@ -107,7 +107,7 @@ export default {
     initTime(){
       let end_time=new Date();
       let start_time=new Date(end_time -7*24*3600*1000);
-      console.log(end_time)
+      //console.log(end_time)
         let time=[start_time,end_time]
       this.changeTime(time)
     },
@@ -125,7 +125,7 @@ export default {
       let  time1=d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate() ;
       let b = new Date(value5[1])//.format("yyyy-MM-dd")
       let time2=b.getFullYear() + '-' + (b.getMonth() + 1) + '-' + b.getDate() ;
-        console.log(time1,time2)
+       // console.log(time1,time2)
       this.initValue(time1,time2);
     },
     initValue(start_time,end_time){
@@ -139,7 +139,7 @@ export default {
       let obj = {"fDimId": "001", "startTime": start_time, "endTime": end_time};
       selectDimRelatedCountSum(obj).then(({data}) => {
         this.getTable_patients = data;
-        console.log(this.getTable_patients);
+        //console.log(this.getTable_patients);
         this.getLineKernelTable(this.getTable_patients, this.$refs.getLineKernelWeekData);
       })
     },
@@ -164,7 +164,7 @@ export default {
         endTime: end_time
       }
       selectDimRelatedCountSum(obj).then(({data}) => {
-        console.log(data)
+       // console.log(data)
         getTable = data;
         this.getLineKernelTable(getTable, this.$refs.getOneKernelDataAll);
       })
@@ -178,9 +178,9 @@ export default {
         endTime: end_time
       }
       selectDimRelatedCountSum(obj).then(({data}) => {
-        console.log(data, "666")
+       // console.log(data, "666")
         getTable = data
-        console.log(getTable)
+        //console.log(getTable)
         this.getLineKernelTable(getTable, this.$refs.getOneKernelDataAdd);
       })
     },

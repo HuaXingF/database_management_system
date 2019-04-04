@@ -116,46 +116,46 @@ export default {
   methods: {
     // 获取规则名称
     getRuleName() {
-      console.log(this.ruleNameInput);
+      //console.log(this.ruleNameInput);
       if (this.ruleNameInput.trim() == "") {
         this.open("规则名称");
       }
     },
     // 获取规则定义
     getRuleClass() {
-      console.log(this.ruleClassInput);
+      //console.log(this.ruleClassInput);
     },
     // 规则类名
-    getRuleData(valId) {
+   /* getRuleData(valId) {
       let obj = {};
       obj = this.options.find(item => {
         return item.value == valId;
       });
-      console.log(obj.label);
-    },
+      //console.log(obj.label);
+    },*/
     // 数据表名
-    getRuleDataName(valId) {
+   /* getRuleDataName(valId) {
       let obj = {};
       obj = this.options.find(item => {
         return item.value == valId;
       });
-      console.log(obj.label);
-    },
-    //字 段 名
+      //console.log(obj.label);
+    },*/
+   /* //字 段 名
     getRuleStrName(valId) {
       let obj = {};
       obj = this.options.find(item => {
         return item.value == valId;
       });
-      console.log(obj.label);
-    },
+      //console.log(obj.label);
+    },*/
     // 规则定义
     getRuleDfn() {
-      console.log(this.ruleDfnInput);
+     // console.log(this.ruleDfnInput);
     },
     // 提交
     submitBtn() {
-      console.log(this.ruleNameInput + "-----" + this.ruleClassInput);
+      //console.log(this.ruleNameInput + "-----" + this.ruleClassInput);
     },
     //消息提示
     open(getType) {

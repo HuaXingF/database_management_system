@@ -80,7 +80,7 @@ export default {
       getObj = this.options.find(item => {
         return item.value === valId;
       });
-      console.log(getObj.label);
+      //console.log(getObj.label);
     },
     // 数据库中表规则合格数据量统计
     ColumnAllQualified() {

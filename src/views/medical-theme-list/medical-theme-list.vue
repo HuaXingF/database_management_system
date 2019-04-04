@@ -205,7 +205,7 @@ export default {
      // console.log("getObj + 11111")
      let getTable={}
       selectTotalDay().then(({data}) => {
-        console.log(data)
+       // console.log(data)
         getTable.listA=data.fSelectTimeList
         getTable.listY=data.fTableRowsList
         this.getLineTable(getTable, this.$refs.getLineWeekData);
@@ -218,7 +218,7 @@ export default {
     conLineMonthData() {
       let getTable={}
       selectTotalMonth().then(({data}) =>{
-        console.log(data)
+       // console.log(data)
         getTable.listA=data.fSelectTimeList
         getTable.listY=data.fTableRowsList
         this.getLineTable(getTable, this.$refs.getLineMonthData);
@@ -260,7 +260,7 @@ export default {
       let dataSourcePie = this.$echarts.init(getRef);
       //let legentData = [];
       //let seriesData = [];
-      console.log(getTable,"666")
+     // console.log(getTable,"666")
       const option = {
         tooltip: {
           trigger: "axis"

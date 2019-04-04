@@ -202,7 +202,7 @@ export default {
     conLineKernelMonthData() {
       selectotle_month().then(({data})=>{
         this.getTable_month= data;
-        console.log(data,"777")
+        //console.log(data,"777")
         this.getLineKernelTable(this.getTable_month, this.$refs.getLineKernelMonthData);
       });
     },

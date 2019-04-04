@@ -133,7 +133,7 @@ export default {
                 for(let i=0;i<data.length;i++){
                   this.options.push({"name":data[i].fPipelineTitle,"value":data[i].fPipelineId})
                 }
-                console.log(this.options)
+                //console.log(this.options)
                 this.changeTime()
                 let obj={
                     fPipelineId:data[0].fPipelineId,
@@ -155,7 +155,7 @@ export default {
       changeTime() {
           let end_time=new Date();
           let start_time=new Date(end_time -7*24*3600*1000);
-          console.log(end_time)
+          //console.log(end_time)
           let time=[start_time,end_time]
           let d = new Date(time[0])//.format("yyyy-MM-dd")
           this.startTime=d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate() ;
@@ -229,7 +229,7 @@ export default {
       let listA=[];
       let listY=[];
       selectOneTimeAtamp(obj).then(({data}) =>{
-          console.log(data)
+         // console.log(data)
         for(let i=0;i<data.length;i++){
           listA.push(data[i].fSelectTime)
           listY.push(data[i].fReadSum)
@@ -248,7 +248,7 @@ export default {
       let listA=[];
       let listY=[];
       selectOneTimeAtamp(obj).then(({data}) =>{
-        console.log(data)
+        //console.log(data)
         for(let i=0;i<data.length;i++){
           listA.push(data[i].fSelectTime)
           listY.push(data[i].fWriteSum)
@@ -267,7 +267,7 @@ export default {
       let listA=[];
       let listY=[];
       selectOneTimeAtamp(obj).then(({data}) =>{
-        console.log(data)
+        //console.log(data)
         for(let i=0;i<data.length;i++){
           listA.push(data[i].fSelectTime)
           listY.push(data[i].fRdCount)
@@ -285,7 +285,7 @@ export default {
       let listA=[];
       let listY=[];
       selectOneTimeAtamp(obj).then(({data}) =>{
-        console.log(data)
+       // console.log(data)
         for(let i=0;i<data.length;i++){
           listA.push(data[i].fSelectTime)
           listY.push(data[i].fRnCount)
