@@ -180,5 +180,29 @@ export default new Router({
                 }
             ]
         },
+        {
+          path: '/',
+          name: '数据规则历史信息统计',
+          iconCls: 'indexingCheck',
+          component: Home,
+          flagHidden: false,
+          children: [
+            {
+              path: '/SystemRuleHistoryData',
+              name: '数据规则历史统计信息(数据库)',
+              component: () => import('./views/SystemRuleHistory/SystemRuleHistoryData.vue')
+            },
+            {
+              path: '/SystemRuleHistoryTable',
+              name: '数据规则历史统计信息(表)',
+              component: () => import('./views/SystemRuleHistory/SystemRuleHistoryTable.vue')
+            },
+            {
+              path: '/SystemRuleHistoryStr',
+              name: '数据规则历史统计信息(字段)',
+              component: () => import('./views/SystemRuleHistory/SystemRuleHistoryStr.vue')
+            },
+          ]
+        },
     ]
 })

@@ -11,23 +11,24 @@
       </template>
       <template slot="operation"></template>
     </MTopNav>
-      <el-row :gutter="5" class="selectBox">
-        <el-col :sm="7" class="selectTimeQuery" style="text-align:right;margin-right: 22.5px;">
-          <i class="el-icon-date"></i>
-          <span>请选择查询时间</span>
-        </el-col>
-        <el-col :sm="14" class="selectTimeBox">
-          <div class="block dataSelect">
-            <el-date-picker
-                    v-model="AllEndHistoryValue"
-                    type="daterange"
-                    range-separator="至"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期">
-            </el-date-picker>
-          </div>
-        </el-col>
-      </el-row>
+    <el-row :gutter="5" class="selectBox">
+      <el-col :sm="7" class="selectTimeQuery" style="text-align:right;margin-right: 22.5px;">
+        <i class="el-icon-date"></i>
+        <span>请选择查询时间</span>
+      </el-col>
+      <el-col :sm="14" class="selectTimeBox">
+        <div class="block dataSelect">
+          <el-date-picker
+            v-model="AllStartHistoryValue"
+            type="daterange"
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            @change="timeChange"
+          ></el-date-picker>
+        </div>
+      </el-col>
+    </el-row>
     <el-row :gutter="50">
       <el-col :sm="12">
         <p>数据库信息合格率统计</p>
@@ -58,78 +59,208 @@
 
 <script>
 import MTopNav from "@/components/m-topNav/m-topNav";
+import { selectTiem, selectBing } from "@/api/SystemRuleHistoyr.js";
 export default {
   data() {
     return {
-      getTable: null, // 后台获取的数据  到时候直接覆盖
+      getTable: [], // 后台获取的数据  到时候直接覆盖
       AllStartHistoryValue: "", // 开始时间
-      AllEndHistoryValue: "" // 结束时间
+      timeValue: "",
+      startTime: null,
+      endTime: null,
+      getTableData: []
     };
   },
   mounted() {
+    this.getNowData();
     // 数据库信息合格率统计
-    this.conLineWeekData();
+    // this.conLineWeekData();
     // 数据库合格率排行榜
-    this.conLineMonthData();
+    // this.conLineMonthData();
     // 数据库合规数据量统计
-    this.conOneDataAll();
+    // this.conOneDataAll();
   },
   methods: {
-    // 数据库信息合格率统计
-    conLineWeekData() {
-      this.getLineTable(this.getTable, this.$refs.getLineWeekData);
+    getNowData() {
+      var endTime = new Date();
+      var startTime = new Date(endTime - 7 * 24 * 3600 * 1000);
+      var time = [startTime, endTime];
+      this.timeChange(time);
+    }, 
+    //时间改变触发时间
+    timeChange(getTime) {
+      let value = [];
+      if (getTime == null || getTime.length < 1) {
+        value = this.timeValue;
+      } else {
+        value = getTime;
+      }
+      let d = new Date(value[0]); //.format("yyyy-MM-dd")
+      this.startTime = this.jointStr(d);
+      let b = new Date(value[1]); //.format("yyyy-MM-dd")
+      this.endTime = this.jointStr(b);
+      this.changeAllTable(this.startTime, this.endTime);
     },
-    // 数据库合格率排行榜
-    conLineMonthData() {
-      this.getPieTable(this.getTable, this.$refs.getLineMonthData);
+    jointStr(time) {
+      let str = time.getFullYear() + "-";
+      //let month="";
+      // alert((time.getMonth()+1))
+      if (time.getMonth() + 1 < 10) {
+        str += "0" + (time.getMonth() + 1);
+      } else {
+        str += time.getMonth() + 1;
+      }
+      if (time.getDate() < 10) {
+        str += "-" + "0" + time.getDate();
+      } else {
+        str += "-" + time.getDate();
+      }
+      return str;
     },
-    // 数据库合规数据量统计
-    conOneDataAll() {
-      this.getLineTable(this.getTable, this.$refs.getOneDataAll);
+
+    changeAllTable(start_time, end_time) {
+      this.change1(start_time, end_time);
+      this.change2(start_time, end_time);
+      this.change3();
     },
+    change1(start_time, end_time) {
+      let getTableData = [];
+      let getTable = [];
+      let getTipName = [];
+      let getAllTime = { startTime: start_time, endTime: end_time };
+      selectTiem(getAllTime).then(({ data }) => {
+        getTableData.push({ data: data.day });
+        data.ku.forEach(item => {
+          getTipName.push(item);
+          getTable.push({
+            name: item,
+            type: "line",
+            stack: "总量",
+            data: null
+          });
+        });
+        getTable.forEach((item, index) => {
+          data.zonghegelist.forEach((item1, index1) => {
+            if (index == index1) {
+              item.data = item1;
+            }
+          });
+        });
+        this.getLineTable(
+          getTipName,
+          getTableData,
+          getTable,
+          this.$refs.getOneDataAll
+        );
+      });
+    },
+    change2(start_time, end_time) {
+      let getTableData = [];
+      let getTable = [];
+      let getTipName = [];
+      let getAllTime = { startTime: start_time, endTime: end_time };
+      selectTiem(getAllTime).then(({ data }) => {
+        getTableData.push({ data: data.day });
+        data.ku.forEach(item => {
+          getTipName.push(item);
+          getTable.push({
+            name: item,
+            type: "line",
+            stack: "总量",
+            data: null
+          });
+        });
+        getTable.forEach((item, index) => {
+          data.zongHegelvList.forEach((item1, index1) => {
+            if (index == index1) {
+              item.data = item1;
+            }
+          });
+        });
+        this.getLineTable(
+          getTipName,
+          getTableData,
+          getTable,
+          this.$refs.getLineWeekData
+        );
+      });
+    },
+    change3() {
+      let getAllData = [];
+      let getSelectData = [];
+      let getOutsideData = [];
+      selectBing().then(({ data }) => {
+        console.log(data)
+        data.allList.forEach(item => {
+          getAllData.push(item.fTableName);
+          getOutsideData.push({
+            value: item.fRegularOrNot,
+            name: item.fTableName
+          });
+        });
+        data.kuList.forEach(item => {
+          getAllData.push(item.fTableName);
+          getSelectData.push({
+            value: item.fRegularOrNot,
+            name: item.fTableName
+          });
+        });
+        this.getPieTable(
+          getAllData,
+          getSelectData,
+          getOutsideData,
+          this.$refs.getLineMonthData
+        );
+      });
+    },
+
+    // // 数据库信息合格率统计
+    // conLineWeekData() {
+    //     this.getLineTable(this.getTableData,this.getTable, this.$refs.getLineWeekData);
+    // },
+    // // 数据库合格率排行榜
+    // conLineMonthData() {
+    //   this.getPieTable(this.getTable, this.$refs.getLineMonthData);
+    // },
+    // // 数据库合规数据量统计
+    // conOneDataAll() {
+    //   this.getLineTable(this.getTable,this.$refs.getOneDataAll);
+    // },
     // 获取 折线图line的 echarts函数
-    getLineTable(getTable, getRef) {
+    getLineTable(getTipName, getTableData, getTable, getRef) {
       let dataSourcePie = this.$echarts.init(getRef);
-      /*let legentData = [];
-      let seriesData = [];*/
       const option = {
         tooltip: {
           trigger: "axis"
+        },
+        legend: {
+          data: getTipName,
+          selectedMode: false
         },
         xAxis: {
           name: "名称",
           type: "category",
           boundaryGap: false,
-          data: ["周一", "周二", "周三", "周四", "周五", "周六", "周日"]
+          data: getTableData[0].data
         },
         yAxis: {
           name: "数量",
           type: "value"
         },
-        series: [
-          {
-            name: "邮件营销",
-            type: "line",
-            stack: "总量",
-            data: [120, 132, 101, 134, 90, 230, 210]
-          },
-          {
-            name: "联盟广告",
-            type: "line",
-            stack: "总量",
-            data: [220, 182, 191, 234, 290, 330, 310]
-          }
-        ],
+        series: getTable,
         animation: false
       };
       dataSourcePie.setOption(option);
       window.addEventListener("resize", function() {
         dataSourcePie.resize();
       });
+      dataSourcePie.on("click", function(res) {
+        console.log(res);
+      });
     },
 
     // 获取饼图echarts  函数
-    getPieTable(getTable, getRef) {
+    getPieTable(getAllData, getSelectData, getOutsideData, getRef) {
       let dataSourcePie = this.$echarts.init(getRef);
       /*let legentData = [];
       let seriesData = [];*/
@@ -142,14 +273,7 @@ export default {
           orient: "vertical",
           x: "left",
           selectedMode: false,
-          data: [
-            "直达",
-            "营销广告",
-            "搜索引擎",
-            "邮件营销",
-            "联盟广告",
-            "视频广告"
-          ]
+          data: getAllData
         },
         series: [
           {
@@ -167,11 +291,7 @@ export default {
                 show: false
               }
             },
-            data: [
-              { value: 335, name: "直达", selected: true },
-              { value: 679, name: "营销广告" },
-              { value: 1548, name: "搜索引擎" }
-            ]
+            data: getSelectData
           },
           {
             name: "访问来源",
@@ -197,24 +317,19 @@ export default {
                     height: 0
                   },
                   b: {
-                    fontSize: 16,
-                    lineHeight: 33
+                    fontSize: 14,
+                    lineHeight: 14
                   },
                   per: {
                     color: "#eee",
                     backgroundColor: "#334455",
-                    padding: [2, 4],
+                    padding: [1, 1],
                     borderRadius: 2
                   }
                 }
               }
             },
-            data: [
-              { value: 335, name: "直达" },
-              { value: 310, name: "邮件营销" },
-              { value: 234, name: "联盟广告" },
-              { value: 135, name: "视频广告" }
-            ]
+            data: getOutsideData
           }
         ],
         animation: false
