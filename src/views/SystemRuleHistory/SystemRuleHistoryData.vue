@@ -59,7 +59,7 @@
 
 <script>
 import MTopNav from "@/components/m-topNav/m-topNav";
-import { selectTiem } from "@/api/SystemRuleHistoyr.js";
+import { selectTiem, selectBing } from "@/api/SystemRuleHistoyr.js";
 export default {
   data() {
     return {
@@ -76,7 +76,7 @@ export default {
     // 数据库信息合格率统计
     // this.conLineWeekData();
     // 数据库合格率排行榜
-    this.conLineMonthData();
+    // this.conLineMonthData();
     // 数据库合规数据量统计
     // this.conOneDataAll();
   },
@@ -86,10 +86,9 @@ export default {
       var startTime = new Date(endTime - 7 * 24 * 3600 * 1000);
       var time = [startTime, endTime];
       this.timeChange(time);
-    },
-    // 时间改变触发时间
+    }, 
+    //时间改变触发时间
     timeChange(getTime) {
-      //   console.log(getTime);
       let value = [];
       if (getTime == null || getTime.length < 1) {
         value = this.timeValue;
@@ -122,15 +121,17 @@ export default {
     changeAllTable(start_time, end_time) {
       this.change1(start_time, end_time);
       this.change2(start_time, end_time);
-    //   this.change3()
+      this.change3();
     },
     change1(start_time, end_time) {
       let getTableData = [];
       let getTable = [];
+      let getTipName = [];
       let getAllTime = { startTime: start_time, endTime: end_time };
       selectTiem(getAllTime).then(({ data }) => {
         getTableData.push({ data: data.day });
         data.ku.forEach(item => {
+          getTipName.push(item);
           getTable.push({
             name: item,
             type: "line",
@@ -145,16 +146,23 @@ export default {
             }
           });
         });
-        this.getLineTable(getTableData, getTable, this.$refs.getOneDataAll);
+        this.getLineTable(
+          getTipName,
+          getTableData,
+          getTable,
+          this.$refs.getOneDataAll
+        );
       });
     },
     change2(start_time, end_time) {
       let getTableData = [];
       let getTable = [];
+      let getTipName = [];
       let getAllTime = { startTime: start_time, endTime: end_time };
       selectTiem(getAllTime).then(({ data }) => {
         getTableData.push({ data: data.day });
         data.ku.forEach(item => {
+          getTipName.push(item);
           getTable.push({
             name: item,
             type: "line",
@@ -169,36 +177,65 @@ export default {
             }
           });
         });
-        this.getLineTable(getTableData, getTable, this.$refs.getLineWeekData);
+        this.getLineTable(
+          getTipName,
+          getTableData,
+          getTable,
+          this.$refs.getLineWeekData
+        );
       });
     },
-    // change3() {
-    //   let getTableData = [];
-    //   let getTable = [];
-    //   selectBing().then(({ data }) => {
-    //     // console.log(getTable);
-    //     // this.getLineTable(getTableData, getTable, this.$refs.getLineWeekData);
-    //   });
-    // },
+    change3() {
+      let getAllData = [];
+      let getSelectData = [];
+      let getOutsideData = [];
+      selectBing().then(({ data }) => {
+        console.log(data)
+        data.allList.forEach(item => {
+          getAllData.push(item.fTableName);
+          getOutsideData.push({
+            value: item.fRegularOrNot,
+            name: item.fTableName
+          });
+        });
+        data.kuList.forEach(item => {
+          getAllData.push(item.fTableName);
+          getSelectData.push({
+            value: item.fRegularOrNot,
+            name: item.fTableName
+          });
+        });
+        this.getPieTable(
+          getAllData,
+          getSelectData,
+          getOutsideData,
+          this.$refs.getLineMonthData
+        );
+      });
+    },
 
     // // 数据库信息合格率统计
     // conLineWeekData() {
     //     this.getLineTable(this.getTableData,this.getTable, this.$refs.getLineWeekData);
     // },
     // // 数据库合格率排行榜
-    conLineMonthData() {
-      this.getPieTable(this.getTable, this.$refs.getLineMonthData);
-    },
+    // conLineMonthData() {
+    //   this.getPieTable(this.getTable, this.$refs.getLineMonthData);
+    // },
     // // 数据库合规数据量统计
     // conOneDataAll() {
     //   this.getLineTable(this.getTable,this.$refs.getOneDataAll);
     // },
     // 获取 折线图line的 echarts函数
-    getLineTable(getTableData, getTable, getRef) {
+    getLineTable(getTipName, getTableData, getTable, getRef) {
       let dataSourcePie = this.$echarts.init(getRef);
       const option = {
         tooltip: {
           trigger: "axis"
+        },
+        legend: {
+          data: getTipName,
+          selectedMode: false
         },
         xAxis: {
           name: "名称",
@@ -217,10 +254,13 @@ export default {
       window.addEventListener("resize", function() {
         dataSourcePie.resize();
       });
+      dataSourcePie.on("click", function(res) {
+        console.log(res);
+      });
     },
 
     // 获取饼图echarts  函数
-    getPieTable(getTable, getRef) {
+    getPieTable(getAllData, getSelectData, getOutsideData, getRef) {
       let dataSourcePie = this.$echarts.init(getRef);
       /*let legentData = [];
       let seriesData = [];*/
@@ -233,14 +273,7 @@ export default {
           orient: "vertical",
           x: "left",
           selectedMode: false,
-          data: [
-            "直达",
-            "营销广告",
-            "搜索引擎",
-            "邮件营销",
-            "联盟广告",
-            "视频广告"
-          ]
+          data: getAllData
         },
         series: [
           {
@@ -258,11 +291,7 @@ export default {
                 show: false
               }
             },
-            data: [
-              { value: 335, name: "直达", selected: true },
-              { value: 679, name: "营销广告" },
-              { value: 1548, name: "搜索引擎" }
-            ]
+            data: getSelectData
           },
           {
             name: "访问来源",
@@ -288,24 +317,19 @@ export default {
                     height: 0
                   },
                   b: {
-                    fontSize: 16,
-                    lineHeight: 33
+                    fontSize: 14,
+                    lineHeight: 14
                   },
                   per: {
                     color: "#eee",
                     backgroundColor: "#334455",
-                    padding: [2, 4],
+                    padding: [1, 1],
                     borderRadius: 2
                   }
                 }
               }
             },
-            data: [
-              { value: 335, name: "直达" },
-              { value: 310, name: "邮件营销" },
-              { value: 234, name: "联盟广告" },
-              { value: 135, name: "视频广告" }
-            ]
+            data: getOutsideData
           }
         ],
         animation: false

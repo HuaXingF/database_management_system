@@ -12,7 +12,6 @@
       <template slot="operation"></template>
     </MTopNav>
 
-
     <el-row :gutter="5" class="selectBox">
       <el-col :sm="7" class="selectTimeQuery" style="text-align:right;margin-right: 22.5px;">
         <i class="el-icon-date"></i>
@@ -21,12 +20,13 @@
       <el-col :sm="14" class="selectTimeBox">
         <div class="block dataSelect">
           <el-date-picker
-                  v-model="AllEndHistoryValue"
-                  type="daterange"
-                  range-separator="至"
-                  start-placeholder="开始日期"
-                  end-placeholder="结束日期">
-          </el-date-picker>
+            v-model="AllStartHistoryValue"
+            type="daterange"
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            @change="selectTime"
+          ></el-date-picker>
         </div>
       </el-col>
     </el-row>
@@ -59,74 +59,156 @@
 
 <script>
 import MTopNav from "@/components/m-topNav/m-topNav";
-
+import {
+  selectRuleTable,
+  selectRuleComTable
+} from "@/api/SystemRuleHistoyr.js";
 export default {
   name: "messageSearch",
   data() {
     return {
       AllStartHistoryValue: "", // 开始时间
-      AllEndHistoryValue: "" // 结束时间
+      flagTime: 0
     };
   },
   mounted() {
-    // 数据库中表规则合格数据量统计
-    this.ColumnAllQualified();
-    // 数据库中表合规数据量统计
-    this.conLineAllQualified();
+    this.init();
   },
   methods: {
-    getOneData(valId) {
-      let getObj = {};
-      getObj = this.options.find(item => {
-        return item.value === valId;
-      });
-      //console.log(getObj.label);
+    init(timeId) {
+      this.selectTime(timeId);
+    },
+    // 时间选择器改变时触发，获取时间
+    selectTime(timeId) {
+      let startTime = null;
+      let endTime = null;
+      if (timeId == undefined) {
+        startTime = this.$moment()
+          .day(-6)
+          .format("YYYY-MM-DD");
+        endTime = this.$moment().format("YYYY-MM-DD");
+      } else {
+        startTime = this.$moment(timeId[0]).format("YYYY-MM-DD");
+        endTime = this.$moment(timeId[1]).format("YYYY-MM-DD");
+      }
+      // // console.log(timeId);
+      // console.log(startTime);
+      // console.log(endTime);
+      this.initQualified(startTime, endTime);
+      this.initCompliance(startTime, endTime);
     },
     // 数据库中表规则合格数据量统计
-    ColumnAllQualified() {
-      this.getColumnAssociTable(
-        this.getTable,
-        this.$refs.getColumnAllQualified
-      );
+    initQualified(startTime, endTime) {
+      let getXlist = [];
+      let getYlist = [];
+      let getAllList = [];
+      let getAllData = [];
+      selectRuleTable({ startTime, endTime }).then(({ data }) => {
+        console.log(data);
+        data.xList.forEach(item => {
+          getXlist.push(item);
+        });
+        data.yList.forEach(item => {
+          getYlist.push(item);
+        });
+        getYlist.forEach((item, index) => {
+          this.flagTime++;
+          // console.log(item)
+          getXlist.forEach((item2, index2) => {
+            if (index == index2) {
+              let getNum = [];
+              if (item.length != 0) {
+                item.forEach((item1, index1) => {
+                  getNum.push(item1.fRegularOrNot);
+                  // console.log(item1)
+                  getAllData.push({
+                    name: item1.fRuleName,
+                    type: "bar",
+                    stack: "总量",
+                    selectedMode: "single",
+                    label: {
+                      normal: {
+                        show: true,
+                        position: "inside"
+                      }
+                    },
+                    series: [{ data: item1.fRegularOrNot }]
+                    //data: [item1.fRegularOrNot]
+                  });
+                });
+              } else {
+                getAllData.forEach(item => {
+                  item.data.push("0");
+                });
+              }
+            }
+          });
+        });
+        console.log(getAllData);
+        this.getColumnAssociTable(
+          getXlist,
+          getAllData,
+          this.$refs.getColumnAllQualified
+        );
+      });
     },
     // 数据库中表合规数据量统计
-    conLineAllQualified() {
-      this.getLineKernelTable(this.getTable, this.$refs.getLineAllQualified);
+    initCompliance(startTime, endTime) {
+      let getXlist = [];
+      let getYlist = [];
+      let getAllData = [];
+      let getAllLine = [];
+      selectRuleComTable({ startTime, endTime }).then(({ data }) => {
+        console.log(data);
+        data.xList.forEach((item, index) => {
+          getXlist.push(item);
+        });
+        data.genList.forEach(item => {
+          getAllLine.push(item);
+        });
+        // console.log(getAllData);
+        data.yList.forEach((item, index) => {
+          getYlist.push(item);
+          getAllLine.forEach((item1, index1) => {
+            if (index == index1) {
+              getAllData.push({
+                name: item1,
+                type: "line",
+                stack: "总量",
+                data: item
+              });
+            }
+          });
+        });
+        console.log(getAllData);
+        this.getLineKernelTable(
+          getXlist,
+          getAllData,
+          this.$refs.getLineAllQualified
+        );
+      });
     },
-
     // 获取折线图  echarts函数
-    getLineKernelTable(getTable, getRef) {
+    getLineKernelTable(getXlist, getAllData, getRef) {
       let dataSourcePie = this.$echarts.init(getRef);
-      let legentData = [];
-      let seriesData = [];
       const option = {
         tooltip: {
           trigger: "axis"
+        },
+        legend: {
+          selectedMode: false
         },
         xAxis: {
           name: "数量",
           type: "category",
           boundaryGap: false,
-          data: ["周一", "周二", "周三", "周四", "周五", "周六", "周日"]
+          data: getXlist
         },
         yAxis: {
           name: "名称",
           type: "value"
         },
-        series: [
-          {
-            name: "邮件营销",
-            type: "line",
-            stack: "总量",
-            data: [120, 132, 101, 134, 90, 230, 210]
-          },
-          {
-            name: "联盟广告",
-            type: "line",
-            stack: "总量",
-            data: [220, 182, 191, 234, 290, 330, 310]
-          }
-        ],
+        series: getAllData,
         animation: false
       };
       dataSourcePie.setOption(option);
@@ -136,10 +218,8 @@ export default {
     },
 
     // 获取柱形图 echarts
-    getColumnAssociTable(getTable, getRef) {
+    getColumnAssociTable(getXlist, getAllData, getRef) {
       let dataSourcePie = this.$echarts.init(getRef);
-      let legentData = [];
-      let seriesData = [];
       const option = {
         tooltip: {
           trigger: "axis",
@@ -147,6 +227,9 @@ export default {
             // 坐标轴指示器，坐标轴触发有效
             type: "shadow" // 默认为直线，可选为：'line' | 'shadow'
           }
+        },
+        legend: {
+          selectedMode: false
         },
         grid: {
           left: "3%",
@@ -161,21 +244,20 @@ export default {
         xAxis: {
           name: "名称",
           type: "category",
-          data: ["周一", "周二", "周三", "周四", "周五", "周六", "周日"]
+          data: getXlist
         },
         series: [
           {
             name: "直接访问",
             type: "bar",
             stack: "总量",
-            selectedMode: "single",
             label: {
               normal: {
                 show: true,
-                position: "inside"
+                position: "insideRight"
               }
             },
-            data: [320, 302, 301, 334, 390, 330, 320]
+            data: [0, 302, 111]
           },
           {
             name: "邮件营销",
@@ -184,22 +266,10 @@ export default {
             label: {
               normal: {
                 show: true,
-                position: "inside"
+                position: "insideRight"
               }
             },
-            data: [120, 132, 101, 134, 90, 230, 210]
-          },
-          {
-            name: "联盟广告",
-            type: "bar",
-            stack: "总量",
-            label: {
-              normal: {
-                show: true,
-                position: "inside"
-              }
-            },
-            data: [220, 182, 191, 234, 290, 330, 310]
+            data: [112, 120, 101]
           },
           {
             name: "视频广告",
@@ -208,22 +278,22 @@ export default {
             label: {
               normal: {
                 show: true,
-                position: "inside"
+                position: "insideRight"
               }
             },
-            data: [150, 212, 201, 154, 190, 330, 410]
+            data: [0, 132, 0]
           },
           {
-            name: "搜索引擎",
+            name: "广告",
             type: "bar",
             stack: "总量",
             label: {
               normal: {
                 show: true,
-                position: "inside"
+                position: "insideRight"
               }
             },
-            data: [820, 832, 901, 934, 1290, 1330, 1320]
+            data: [0, 132, 0]
           }
         ]
       };

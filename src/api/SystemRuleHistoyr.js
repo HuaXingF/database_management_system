@@ -13,3 +13,15 @@ export const selectBing = params => {
   // const url1 = `${baseURL}/pipelien/selectOneTimeAtamp?fPipelineId=${params.fPipelineId}&&startTime=${params.startTime}&&endTime=${params.endTime}`
   return axios.post(url, { params: params })
 }
+
+export const selectRuleTable = params => {
+  const url = `${baseURL}/ruleApplyResult/selectRuleHeGe?startTime=${params.startTime}&endTime=${params.endTime}`
+  // const url1 = `${baseURL}/pipelien/selectOneTimeAtamp?fPipelineId=${params.fPipelineId}&&startTime=${params.startTime}&&endTime=${params.endTime}`
+  return axios.post(url, { params: params })
+}
+
+export const selectRuleComTable = params => {
+  const url = `${baseURL}/ruleApplyResult/selectTabHeGe?startTime=${params.startTime}&endTime=${params.endTime}`
+  // const url1 = `${baseURL}/pipelien/selectOneTimeAtamp?fPipelineId=${params.fPipelineId}&&startTime=${params.startTime}&&endTime=${params.endTime}`
+  return axios.post(url, { params: params })
+}

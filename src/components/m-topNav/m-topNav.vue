@@ -1,11 +1,11 @@
 <template>
     <el-col :span="24" class="topNav">
-        <el-col :span="6" class="topNav-pageName">
+        <el-col :span="24" class="topNav-pageName">
             <slot name="pageName"></slot>
         </el-col>
-        <el-col :span="18" class="topNav-operation">
+        <!-- <el-col :span="18" class="topNav-operation">
             <slot name="operation"></slot>
-        </el-col>
+        </el-col> -->
     </el-col>
 </template>
 

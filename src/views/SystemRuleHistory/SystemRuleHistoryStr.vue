@@ -90,8 +90,6 @@ export default {
     // 获取 折线图line的 echarts函数
     getLineTable(getTable, getRef) {
       let dataSourcePie = this.$echarts.init(getRef);
-      let legentData = [];
-      let seriesData = [];
       const option = {
         tooltip: {
           trigger: "axis"
@@ -130,8 +128,6 @@ export default {
     // 获取饼图echarts  函数
     getPieTable(getTable, getRef) {
       let dataSourcePie = this.$echarts.init(getRef);
-      let legentData = [];
-      let seriesData = [];
       const option = {
         tooltip: {
           trigger: "item",
