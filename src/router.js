@@ -126,21 +126,6 @@ export default new Router({
                 }
             ]
         },
-        // {
-        //   path: '/',
-        //   name: '',
-        //   iconCls: 'indexingCheck',
-        //   component: Home,
-        //   leaf: true,
-        //   flagHidden: true,
-        //   children: [
-        //     {
-        //       path: '/SystemAddRule',
-        //       name: '新增数据规则',
-        //       component: () => import('./views/SystemAddRule/SystemAddRule.vue')
-        //     }
-        //   ]
-        // },
         /*{
             path: '/',
             name: '数据规则历史信息统计',
@@ -181,28 +166,74 @@ export default new Router({
             ]
         },
         {
-          path: '/',
-          name: '数据规则历史信息统计',
-          iconCls: 'indexingCheck',
-          component: Home,
-          flagHidden: false,
-          children: [
-            {
-              path: '/SystemRuleHistoryData',
-              name: '数据规则历史统计信息(数据库)',
-              component: () => import('./views/SystemRuleHistory/SystemRuleHistoryData.vue')
-            },
-            {
-              path: '/SystemRuleHistoryTable',
-              name: '数据规则历史统计信息(表)',
-              component: () => import('./views/SystemRuleHistory/SystemRuleHistoryTable.vue')
-            },
-            {
-              path: '/SystemRuleHistoryStr',
-              name: '数据规则历史统计信息(字段)',
-              component: () => import('./views/SystemRuleHistory/SystemRuleHistoryStr.vue')
-            },
-          ]
+            path: '/',
+            name: '',  // 数据规则历史信息统计
+            iconCls: 'indexingCheck',
+            component: Home,
+            flagHidden: false,
+            leaf: true,
+            children: [
+                {
+                    path: '/SystemRuleHistoryData',
+                    name: '数据规则历史信息统计',   //数据规则历史统计信息(数据库)
+                    component: () => import('./views/SystemRuleHistory/SystemRuleHistoryData.vue')
+                },
+                // {
+                //   path: '/SystemRuleHistoryTable',
+                //   name: '数据规则历史统计信息(表)',
+                //   component: () => import('./views/SystemRuleHistory/SystemRuleHistoryTable.vue')
+                // },
+                // {
+                //   path: '/SystemRuleHistoryStr',
+                //   name: '数据规则历史统计信息(字段)',
+                //   component: () => import('./views/SystemRuleHistory/SystemRuleHistoryStr.vue')
+                // },
+            ]
+        },
+        // {
+        //   path: '/',
+        //   name: '',
+        //   iconCls: 'indexingCheck',
+        //   component: Home,
+        //   leaf: true,
+        //   flagHidden: true,
+        //   children: [
+        //     {
+        //       path: '/SystemAddRule',
+        //       name: '新增数据规则',
+        //       component: () => import('./views/SystemAddRule/SystemAddRule.vue')
+        //     }
+        //   ]
+        // },
+        {
+            path: '/',
+            name: '',
+            iconCls: '',
+            component: Home,
+            leaf: true,
+            flagHidden: true,
+            children: [
+                {
+                    path: '/SystemRuleHistoryTable',
+                    name: '数据规则历史统计信息(表)',
+                    component: () => import('./views/SystemRuleHistory/SystemRuleHistoryTable.vue')
+                }
+            ]
+        },
+        {
+            path: '/',
+            name: '',
+            iconCls: '',
+            component: Home,
+            leaf: true,
+            flagHidden: true,
+            children: [
+                {
+                    path: '/SystemRuleHistoryStr',
+                    name: '数据规则历史统计信息(字段)',
+                    component: () => import('./views/SystemRuleHistory/SystemRuleHistoryStr.vue')
+                }
+            ]
         },
     ]
 })

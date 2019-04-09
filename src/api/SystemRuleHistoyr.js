@@ -15,19 +15,25 @@ export const selectBing = params => {
 }
 
 export const selectRuleTable = params => {
-  const url = `${baseURL}/ruleApplyResult/selectRuleHeGe?startTime=${params.startTime}&endTime=${params.endTime}`
+  const url = `${baseURL}/ruleApplyResult/selectRuleHeGe?startTime=${params.startTime}&endTime=${params.endTime}&baseName=${params.baseName}`
   // const url1 = `${baseURL}/pipelien/selectOneTimeAtamp?fPipelineId=${params.fPipelineId}&&startTime=${params.startTime}&&endTime=${params.endTime}`
   return axios.post(url, { params: params })
 }
 
 export const selectRuleComTable = params => {
-  const url = `${baseURL}/ruleApplyResult/selectTabHeGe?startTime=${params.startTime}&endTime=${params.endTime}`
+  const url = `${baseURL}/ruleApplyResult/selectTabHeGe?startTime=${params.startTime}&endTime=${params.endTime}&baseName=${params.baseName}`
   // const url1 = `${baseURL}/pipelien/selectOneTimeAtamp?fPipelineId=${params.fPipelineId}&&startTime=${params.startTime}&&endTime=${params.endTime}`
   return axios.post(url, { params: params })
 }
 
 export const selectRuleHistoryStr = params => {
-  const url = `${baseURL}/ruleApplyResult/selectFieldHeGe?startTime=${params.startTime}&endTime=${params.endTime}`
+  const url = `${baseURL}/ruleApplyResult/selectFieldHeGe?startTime=${params.startTime}&endTime=${params.endTime}&tableName=${params.baseName}`
+  // const url1 = `${baseURL}/pipelien/selectOneTimeAtamp?fPipelineId=${params.fPipelineId}&&startTime=${params.startTime}&&endTime=${params.endTime}`
+  return axios.post(url, { params: params })
+}
+
+export const selectRuleHistoryPieStr = params => {
+  const url = `${baseURL}/ruleApplyResult/selectFieldBing?startTime=${params.startTime}&endTime=${params.endTime}&tableName=${params.baseName}`
   // const url1 = `${baseURL}/pipelien/selectOneTimeAtamp?fPipelineId=${params.fPipelineId}&&startTime=${params.startTime}&&endTime=${params.endTime}`
   return axios.post(url, { params: params })
 }

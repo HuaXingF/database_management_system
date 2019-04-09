@@ -68,12 +68,18 @@ export default {
   data() {
     return {
       AllStartHistoryValue: "", // 开始时间
-      flagTime: 0
+      flagTime: 0,
+      baseName: ""
     };
+  },
+  created() {
+    this.baseName = this.$route.params.baseName;
+    if (this.$route.params.baseName == undefined) {
+      this.$router.push({ name: "数据规则历史信息统计" });
+    }
   },
   mounted() {
     this.init();
-    console.log(this.$route.params.strName)
   },
   methods: {
     init(timeId) {
@@ -101,7 +107,8 @@ export default {
       let getYlist = [];
       let getAllList = [];
       let getAllData = [];
-      selectRuleTable({ startTime, endTime }).then(({ data }) => {
+      let baseName = this.baseName;
+      selectRuleTable({ startTime, endTime, baseName }).then(({ data }) => {
         data.xList.forEach(item => {
           getXlist.push(item);
         });
@@ -132,7 +139,8 @@ export default {
       let getYlist = [];
       let getAllData = [];
       let getAllLine = [];
-      selectRuleComTable({ startTime, endTime }).then(({ data }) => {
+      let baseName = this.baseName;
+      selectRuleComTable({ startTime, endTime, baseName }).then(({ data }) => {
         data.xList.forEach((item, index) => {
           getXlist.push(item);
         });
@@ -167,7 +175,7 @@ export default {
           trigger: "axis"
         },
         legend: {
-          selectedMode: false
+          selectedMode: true
         },
         xAxis: {
           name: "数量",
@@ -183,6 +191,45 @@ export default {
         animation: false
       };
       dataSourcePie.setOption(option);
+      dataSourcePie.setOption(option);
+      var triggerAction = function(action, selected) {
+        option.legend = [];
+        for (name in selected) {
+          if (selected.hasOwnProperty(name)) {
+            option.legend.push({ name: name });
+          }
+        }
+        dataSourcePie.dispatchAction({
+          type: action,
+          batch: option.legend
+        });
+      };
+      // 是否选中其中一个
+      var isOneUnSelect = function(selected) {
+        var unSelectedCount = 0;
+        for (name in selected) {
+          if (!selected.hasOwnProperty(name)) {
+            continue;
+          }
+          if (selected[name] == false) {
+            ++unSelectedCount;
+          }
+        }
+        return unSelectedCount == 1;
+      };
+      dataSourcePie.on("legendselectchanged", obj => {
+        var selected = obj.selected;
+        var legend = obj.name;
+        if (selected != undefined) {
+          if (isOneUnSelect(selected)) {
+            triggerAction("legendSelect", selected);
+            this.$router.push({
+              name: "数据规则历史统计信息(字段)",
+              params: { baseName: legend }
+            });
+          }
+        }
+      });
       window.addEventListener("resize", function() {
         dataSourcePie.resize();
       });

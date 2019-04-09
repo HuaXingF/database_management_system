@@ -249,7 +249,7 @@ export default {
         if (selected != undefined) {
           if (isOneUnSelect(selected)) {
             triggerAction("legendSelect", selected);
-            this.$router.push({name: '数据规则历史统计信息(表)',params: {strName:legend}})
+            this.$router.push({name: '数据规则历史统计信息(表)',params: {baseName:legend}})
           }
         }
       });

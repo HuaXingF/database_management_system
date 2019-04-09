@@ -59,26 +59,26 @@
 
 <script>
 import MTopNav from "@/components/m-topNav/m-topNav";
-import { selectRuleHistoryStr } from "@/api/SystemRuleHistoyr.js";
+import {
+  selectRuleHistoryStr,
+  selectRuleHistoryPieStr
+} from "@/api/SystemRuleHistoyr.js";
 export default {
   data() {
     return {
       getTable: null, // 后台获取的数据  到时候直接覆盖
       AllStartHistoryValue: "", // 开始时间
-      AllEndHistoryValue: "" // 结束时间
-      // getHeGe: []
+      AllEndHistoryValue: "", // 结束时间
+      baseName: ""
     };
   },
+  created() {
+    this.baseName = this.$route.params.baseName;
+    if (this.$route.params.baseName == undefined) {
+      this.$router.push({ name: "数据规则历史信息统计" });
+    }
+  },
   mounted() {
-    // 表中记录合格率统计
-    // this.conLineWeekData();
-    // 数据库合格率排行榜
-    this.conLineMonthData();
-    // 表中字段合格数量统计
-    // this.conOneDataAll();
-    // selectRuleHistoryStr().then(res => {
-    //   console.log(res)
-    // })
     this.init();
   },
   methods: {
@@ -109,49 +109,53 @@ export default {
       let getHeGe = []; // 获取合格的数组
       let getHeGeData = []; // 获取合格的所有数据
       let getHeGeList = []; // 获取单个合格的数组
-      selectRuleHistoryStr({ startTime, endTime }).then(({ data }) => {
-        getXlist = data.xList;
-        getYlist = data.yList;
-        data.allList.forEach((item, index) => {
-          item.forEach((item1, index1) => {
-            getHeGeLv.push(item1.heGeLv);
-            getHeGe.push(item1.heGe);
+      let baseName = this.baseName;
+      // 表中记录合格率统计
+      selectRuleHistoryStr({ startTime, endTime, baseName }).then(
+        ({ data }) => {
+          getXlist = data.xList;
+          getYlist = data.yList;
+          data.allList.forEach((item, index) => {
+            item.forEach((item1, index1) => {
+              getHeGeLv.push(item1.heGeLv);
+              getHeGe.push(item1.heGe);
+            });
+            getList = getHeGeLv.splice(0, item.length);
+            getHeGeList = getHeGe.splice(0, item.length);
+            getYlist.forEach((item2, index2) => {
+              if (index == index2) {
+                getAllData.push({
+                  name: item2,
+                  type: "line",
+                  data: getList
+                });
+                getHeGeData.push({
+                  name: item2,
+                  type: "line",
+                  data: getHeGeList
+                });
+              }
+            });
           });
-          getList = getHeGeLv.splice(0, item.length);
-          getHeGeList = getHeGe.splice(0, item.length);
-          getYlist.forEach((item2, index2) => {
-            if (index == index2) {
-              getAllData.push({
-                name: item2,
-                type: "line",
-                data: getList
-              });
-              getHeGeData.push({
-                name: item2,
-                type: "line",
-                data: getHeGeList
-              });
-            }
-          });
-        });
-        // 表中记录合格率统计
-        this.getLineTable(getXlist, getAllData, this.$refs.getQuantityYield);
-        // 表中字段合格数量统计
-        this.getLineTable(getXlist, getHeGeData, this.$refs.getQuantityAmount);
-      });
+          // 表中记录合格率统计
+          this.getLineTable(getXlist, getAllData, this.$refs.getQuantityYield);
+          // 表中字段合格数量统计
+          this.getLineTable(
+            getXlist,
+            getHeGeData,
+            this.$refs.getQuantityAmount
+          );
+        }
+      );
+      // 表中记录合格率统计饼图
+      selectRuleHistoryPieStr({ startTime, endTime, baseName }).then(
+        ({ data }) => {
+          let getPieData = [];
+          getPieData = data;
+          this.getPieTable(getPieData, this.$refs.getQuantityPie);
+        }
+      );
     },
-    // 表中记录合格率统计
-    // conLineWeekData() {
-    //   this.getLineTable(this.getTable, this.$refs.getQuantityYield);
-    // },
-    // 数据库合格率排行榜
-    conLineMonthData() {
-      this.getPieTable(this.getTable, this.$refs.getQuantityPie);
-    },
-    // // 表中字段合格数量统计
-    // conOneDataAll() {
-    //   this.getLineTable(this.getTable, this.$refs.getQuantityAmount);
-    // },
     // 获取 折线图line的 echarts函数
     getLineTable(getXlist, getAllData, getRef) {
       let dataSourcePie = this.$echarts.init(getRef);
@@ -181,7 +185,7 @@ export default {
       });
     },
     // 获取饼图echarts  函数
-    getPieTable(getTable, getRef) {
+    getPieTable(getPieData, getRef) {
       let dataSourcePie = this.$echarts.init(getRef);
       const option = {
         tooltip: {
@@ -200,12 +204,7 @@ export default {
             type: "pie",
             radius: "65%",
             center: ["50%", "50%"],
-            data: [
-              { value: 535, name: "荆州" },
-              { value: 510, name: "兖州" },
-              { value: 634, name: "益州" },
-              { value: 735, name: "西凉" }
-            ]
+            data: getPieData
           }
         ],
         animation: false
