@@ -66,8 +66,6 @@ export default {
       getTable: [], // 后台获取的数据  到时候直接覆盖
       AllStartHistoryValue: "", // 开始时间
       timeValue: "",
-      startTime: null,
-      endTime: null,
       getTableData: []
     };
   },
@@ -82,42 +80,23 @@ export default {
   },
   methods: {
     getNowData() {
-      var endTime = new Date();
-      var startTime = new Date(endTime - 7 * 24 * 3600 * 1000);
-      var time = [startTime, endTime];
-      this.timeChange(time);
+      this.timeChange();
     }, 
     //时间改变触发时间
-    timeChange(getTime) {
-      let value = [];
-      if (getTime == null || getTime.length < 1) {
-        value = this.timeValue;
+    timeChange(timeId) {
+      let startTime = null;
+      let endTime = null;
+      if (timeId == undefined) {
+        startTime = this.$moment()
+          .day(-6)
+          .format("YYYY-MM-DD");
+        endTime = this.$moment().format("YYYY-MM-DD");
       } else {
-        value = getTime;
+        startTime = this.$moment(timeId[0]).format("YYYY-MM-DD");
+        endTime = this.$moment(timeId[1]).format("YYYY-MM-DD");
       }
-      let d = new Date(value[0]); //.format("yyyy-MM-dd")
-      this.startTime = this.jointStr(d);
-      let b = new Date(value[1]); //.format("yyyy-MM-dd")
-      this.endTime = this.jointStr(b);
-      this.changeAllTable(this.startTime, this.endTime);
+      this.changeAllTable(startTime, endTime);
     },
-    jointStr(time) {
-      let str = time.getFullYear() + "-";
-      //let month="";
-      // alert((time.getMonth()+1))
-      if (time.getMonth() + 1 < 10) {
-        str += "0" + (time.getMonth() + 1);
-      } else {
-        str += time.getMonth() + 1;
-      }
-      if (time.getDate() < 10) {
-        str += "-" + "0" + time.getDate();
-      } else {
-        str += "-" + time.getDate();
-      }
-      return str;
-    },
-
     changeAllTable(start_time, end_time) {
       this.change1(start_time, end_time);
       this.change2(start_time, end_time);

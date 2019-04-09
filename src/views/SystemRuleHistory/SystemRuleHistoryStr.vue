@@ -98,7 +98,6 @@ export default {
         endTime = this.$moment(timeId[1]).format("YYYY-MM-DD");
       }
       this.initTableQualified(startTime, endTime);
-      // this.initCompliance(startTime, endTime);
     },
     // 表中记录合格率统计
     initTableQualified(startTime, endTime) {
