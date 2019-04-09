@@ -29,7 +29,7 @@
         <div id="container-circle" style="height: 300%" ref="getCircle"></div>
       </el-col>
       <el-col :sm="12">
-        <p>当前各库数据合格率统计</p>
+        <p>当前各库数据合格/不合格数量统计</p>
         <div id="container-column" style="height: 300%" ref="getCloumn"></div>
       </el-col>
     </el-row>
@@ -239,7 +239,7 @@ export default {
       });
     },
     hegelu() {
-      // 当前各库数据合格率统计
+      // 当前各库数据合格/不合格统计
       var myChart = this.containerColumn(this.$refs.getCloumn);
       select_hegelu().then(({ data }) => {
         let x = new Array();
@@ -264,7 +264,7 @@ export default {
           },
           series: [
             {
-              name: "总数",
+              name: "不合格数",
               type: "bar",
               stack: "广告",
               label: {
@@ -277,7 +277,7 @@ export default {
               data: tol
             },
             {
-              name: "成功数",
+              name: "合格数",
               type: "bar",
               stack: "广告",
               label: {

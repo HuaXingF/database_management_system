@@ -11,7 +11,7 @@ if (process.env.NODE_ENV === 'production') {
     }
 } else {
     //development 开发环境
-    baseURL = 'http://192.168.10.37:8080/zhikong3'
+    baseURL = 'http://192.168.10.21:8080/'
 }
 
 export default baseURL
