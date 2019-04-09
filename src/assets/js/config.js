@@ -11,7 +11,11 @@ if (process.env.NODE_ENV === 'production') {
     }
 } else {
     //development 开发环境
+<<<<<<< HEAD
     baseURL = 'http://192.168.10.21:8080'
+=======
+    baseURL = 'http://192.168.10.21:8080/'
+>>>>>>> f913baec2f286af84c59b486a2f337fd22b0f77b
 }
 
 export default baseURL

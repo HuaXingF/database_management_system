@@ -23,7 +23,7 @@ export const selectByRuleName = params => {
 ///tabRule/insert?fRuleType=0&fRuleName=0&fRuleDefine=0&fRuleDes=0&fTableField=0&fTableName=0
 export const insert = params => {
     const url = `${baseURL}/tabRule/insert`
-    return axios.post(url,params)
+    return axios.get(url,{params:params})
 }
 //删除
 ///tabRule/delete?fRuleId=
@@ -40,7 +40,27 @@ fTableName,
 fRuleDes,
 fBaseName*/
 ///tabRule/update?fRuleId=
+    //?fRuleId=${params.fRuleId}&&fRuleName=${params.fRuleName}&&fRuleDefine=${params.fRuleDefine}
+    //     &&fTableField=${params.fTableField}&&fTableName=${params.fTableName}&&fRuleDes=${params.fRuleDes}&&fBaseName=${params.fBaseName}
 export const update = params => {
-    const url = `${baseURL}/tabRule/update?fRuleId=${params}`
+    const url = `${baseURL}/tabRule/update`
+    return axios.get(url, { params: params })
+}
+//查询有哪些库
+//tabRule
+export const selectAllBase = params => {
+    const url = `${baseURL}/tabRule/selectAllBase`
+    return axios.post(url, { params: params })
+}
+//根据库查表
+//selectBaseTab
+export const selectBaseTab = params => {
+    const url = `${baseURL}/tabRule/selectBaseTab?fBaseName=${params}`
+    return axios.post(url, { params: params })
+}
+//根据表查字段
+//selectTabFile
+export const selectTabFile = params => {
+    const url = `${baseURL}/tabRule/selectTabFile?fTableName=${params}`
     return axios.post(url, { params: params })
 }

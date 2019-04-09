@@ -21,7 +21,7 @@
         <el-input placeholder="请输入内容" v-model="input" clearable></el-input>
       </el-col>
       <el-col :span="5">
-        <el-button type="primary" @click="getByName">查 询</el-button>
+        <el-button type="primary" @click="clearInput()">重 置</el-button>
       </el-col>
       <el-col :span="5">
         <el-button type="primary" @click="addRule">新增字典</el-button>
@@ -120,8 +120,8 @@
         <el-form :model="addForm_kz" :rules="rules_kz" ref="addForm_kz">
           <el-input v-model="addForm_kz.dictionaryId" autocomplete="off" v-show="flagFlag"></el-input>
           <el-form-item label="扩展名称" :label-width="formLabelWidth" >
-          <el-input v-model="addForm_kz.extensionName" autocomplete="off" :disabled="true"></el-input>
-        </el-form-item>
+            <el-input v-model="addForm_kz.extensionName" autocomplete="off" :disabled="true"></el-input>
+          </el-form-item>
           <el-form-item label="扩展取值" :label-width="formLabelWidth" prop="extensionCode">
             <el-input v-model="addForm_kz.extensionCode" autocomplete="off"></el-input>
           </el-form-item>
@@ -181,14 +181,14 @@
           <el-table-column prop="extensionTable" label="映射表名" width="120"></el-table-column>
           <el-table-column prop="extensionField" label="映射表字段" width="120"></el-table-column>
           <el-table-column prop="ruleOpera" label="操作">
-          <template slot-scope="scope">
-          <el-button type="text" size="small" @click="editBtn_kz(scope.$index, scope.row)"><i style="font-size: 25px;" class="el-icon-edit" title="编辑"></i></el-button>
-          <el-button
-                  @click.native.prevent="delete_kz(scope.$index, scope.row)"
-                  type="text"
-                  size="small"
-          ><i style="font-size: 25px;" class="el-icon-delete" title="删除"></i></el-button>
-          </template>
+            <template slot-scope="scope">
+              <el-button type="text" size="small" @click="editBtn_kz(scope.$index, scope.row)"><i style="font-size: 25px;" class="el-icon-edit" title="编辑"></i></el-button>
+              <el-button
+                      @click.native.prevent="delete_kz(scope.$index, scope.row)"
+                      type="text"
+                      size="small"
+              ><i style="font-size: 25px;" class="el-icon-delete" title="删除"></i></el-button>
+            </template>
           </el-table-column>
         </el-table>
       </el-dialog>
@@ -208,6 +208,17 @@
     deleteById_kz,
     updateById_kz} from "@/api/system-dictionary";
   export default {
+    watch: {
+      input(val) {
+        if(val==null || val==""){
+          //console.log(val)
+          this.init();
+        }else{
+          //this.input()
+          this.getByName();
+        }
+      }
+    },
     name: "indexingCheck",
     data() {
       return {
@@ -256,6 +267,10 @@
       };
     },
     methods: {
+      //清空条件查询
+      clearInput(){
+        this.input=null;
+      },
       cellStyle() {
         return "text-align:center";
       },
@@ -275,11 +290,11 @@
       },
       //根据字典查询
       getByName() {
-          let obj = {"pageNum" : this.pageNum, "pageSize" : this.pageSize, "category" : this.input.trim()};
-          queryPage1(obj).then(({data})=>{
-            this.tableData = data.rows;
-            this.total = data.total;
-          })
+        let obj = {"pageNum" : this.pageNum, "pageSize" : this.pageSize, "category" : this.input.trim()};
+        queryPage1(obj).then(({data})=>{
+          this.tableData = data.rows;
+          this.total = data.total;
+        })
       },
       // 新增按钮功能实现
       addRule() {
