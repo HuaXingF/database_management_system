@@ -91,9 +91,6 @@ export default {
         startTime = this.$moment(timeId[0]).format("YYYY-MM-DD");
         endTime = this.$moment(timeId[1]).format("YYYY-MM-DD");
       }
-      // // console.log(timeId);
-      // console.log(startTime);
-      // console.log(endTime);
       this.initQualified(startTime, endTime);
       this.initCompliance(startTime, endTime);
     },
@@ -104,7 +101,6 @@ export default {
       let getAllList = [];
       let getAllData = [];
       selectRuleTable({ startTime, endTime }).then(({ data }) => {
-        console.log(data);
         data.xList.forEach(item => {
           getXlist.push(item);
         });
@@ -144,7 +140,6 @@ export default {
             }
           });
         });
-        console.log(getAllData);
         this.getColumnAssociTable(
           getXlist,
           getAllData,
@@ -159,7 +154,6 @@ export default {
       let getAllData = [];
       let getAllLine = [];
       selectRuleComTable({ startTime, endTime }).then(({ data }) => {
-        console.log(data);
         data.xList.forEach((item, index) => {
           getXlist.push(item);
         });
@@ -180,7 +174,6 @@ export default {
             }
           });
         });
-        console.log(getAllData);
         this.getLineKernelTable(
           getXlist,
           getAllData,

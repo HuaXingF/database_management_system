@@ -25,3 +25,9 @@ export const selectRuleComTable = params => {
   // const url1 = `${baseURL}/pipelien/selectOneTimeAtamp?fPipelineId=${params.fPipelineId}&&startTime=${params.startTime}&&endTime=${params.endTime}`
   return axios.post(url, { params: params })
 }
+
+export const selectRuleHistoryStr = params => {
+  const url = `${baseURL}/ruleApplyResult/selectFieldHeGe?startTime=${params.startTime}&endTime=${params.endTime}`
+  // const url1 = `${baseURL}/pipelien/selectOneTimeAtamp?fPipelineId=${params.fPipelineId}&&startTime=${params.startTime}&&endTime=${params.endTime}`
+  return axios.post(url, { params: params })
+}

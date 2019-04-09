@@ -123,6 +123,7 @@ export default {
       this.change2(start_time, end_time);
       this.change3();
     },
+    // 数据库信息合格率统计
     change1(start_time, end_time) {
       let getTableData = [];
       let getTable = [];
@@ -154,6 +155,7 @@ export default {
         );
       });
     },
+    // 数据库合格率排行榜
     change2(start_time, end_time) {
       let getTableData = [];
       let getTable = [];
@@ -185,12 +187,12 @@ export default {
         );
       });
     },
+    // 数据库合规数据量统计
     change3() {
       let getAllData = [];
       let getSelectData = [];
       let getOutsideData = [];
       selectBing().then(({ data }) => {
-        console.log(data)
         data.allList.forEach(item => {
           getAllData.push(item.fTableName);
           getOutsideData.push({
@@ -340,14 +342,6 @@ export default {
       });
     }
   },
-  // watch: {
-  //   getTable: {
-  //     handler(newValue,oldValue) {
-  //       this.getLineTable(tableData,getRef);
-  //     },
-  //     deep: true
-  //   }
-  // },
   components: {
     MTopNav
   }
