@@ -81,14 +81,14 @@ export default {
   methods: {
     getNowData() {
       this.timeChange();
-    }, 
+    },
     //时间改变触发时间
     timeChange(timeId) {
       let startTime = null;
       let endTime = null;
       if (timeId == undefined) {
         startTime = this.$moment()
-          .day(-6)
+          .day(-4)
           .format("YYYY-MM-DD");
         endTime = this.$moment().format("YYYY-MM-DD");
       } else {
@@ -115,7 +115,6 @@ export default {
           getTable.push({
             name: item,
             type: "line",
-            stack: "总量",
             data: null
           });
         });
@@ -147,7 +146,6 @@ export default {
           getTable.push({
             name: item,
             type: "line",
-            stack: "总量",
             data: null
           });
         });
@@ -194,19 +192,6 @@ export default {
         );
       });
     },
-
-    // // 数据库信息合格率统计
-    // conLineWeekData() {
-    //     this.getLineTable(this.getTableData,this.getTable, this.$refs.getLineWeekData);
-    // },
-    // // 数据库合格率排行榜
-    // conLineMonthData() {
-    //   this.getPieTable(this.getTable, this.$refs.getLineMonthData);
-    // },
-    // // 数据库合规数据量统计
-    // conOneDataAll() {
-    //   this.getLineTable(this.getTable,this.$refs.getOneDataAll);
-    // },
     // 获取 折线图line的 echarts函数
     getLineTable(getTipName, getTableData, getTable, getRef) {
       let dataSourcePie = this.$echarts.init(getRef);
@@ -215,8 +200,8 @@ export default {
           trigger: "axis"
         },
         legend: {
-          data: getTipName,
-          selectedMode: false
+          data: getTipName
+          // selectedMode: false
         },
         xAxis: {
           name: "名称",
@@ -232,11 +217,44 @@ export default {
         animation: false
       };
       dataSourcePie.setOption(option);
+      var triggerAction = function(action, selected) {
+        option.legend = [];
+        for (name in selected) {
+          if (selected.hasOwnProperty(name)) {
+            option.legend.push({ name: name });
+          }
+        }
+        dataSourcePie.dispatchAction({
+          type: action,
+          batch: option.legend
+        });
+      };
+      // 是否选中其中一个
+      var isOneUnSelect = function(selected) {
+        var unSelectedCount = 0;
+        for (name in selected) {
+          if (!selected.hasOwnProperty(name)) {
+            continue;
+          }
+
+          if (selected[name] == false) {
+            ++unSelectedCount;
+          }
+        }
+        return unSelectedCount == 1;
+      };
+      dataSourcePie.on("legendselectchanged", obj => {
+        var selected = obj.selected;
+        var legend = obj.name;
+        if (selected != undefined) {
+          if (isOneUnSelect(selected)) {
+            triggerAction("legendSelect", selected);
+            this.$router.push({name: '数据规则历史统计信息(表)',params: {strName:legend}})
+          }
+        }
+      });
       window.addEventListener("resize", function() {
         dataSourcePie.resize();
-      });
-      dataSourcePie.on("click", function(res) {
-        console.log(res);
       });
     },
 

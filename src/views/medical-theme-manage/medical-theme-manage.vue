@@ -106,7 +106,7 @@ export default {
       },
     initTime(){
       let end_time=new Date();
-      let start_time=new Date(end_time -7*24*3600*1000);
+      let start_time=new Date(end_time -6*24*3600*1000);
       //console.log(end_time)
         let time=[start_time,end_time]
       this.changeTime(time)

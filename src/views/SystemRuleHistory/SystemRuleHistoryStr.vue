@@ -90,7 +90,7 @@ export default {
       let endTime = null;
       if (timeId == null) {
         startTime = this.$moment()
-          .day(-6)
+          .day(-4)
           .format("YYYY-MM-DD");
         endTime = this.$moment().format("YYYY-MM-DD");
       } else {
@@ -124,13 +124,11 @@ export default {
               getAllData.push({
                 name: item2,
                 type: "line",
-                stack: "总量",
                 data: getList
               });
               getHeGeData.push({
                 name: item2,
                 type: "line",
-                stack: "总量",
                 data: getHeGeList
               });
             }

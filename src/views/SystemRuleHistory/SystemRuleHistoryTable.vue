@@ -73,6 +73,7 @@ export default {
   },
   mounted() {
     this.init();
+    console.log(this.$route.params.strName)
   },
   methods: {
     init(timeId) {
@@ -84,7 +85,7 @@ export default {
       let endTime = null;
       if (timeId == undefined) {
         startTime = this.$moment()
-          .day(-6)
+          .day(-4)
           .format("YYYY-MM-DD");
         endTime = this.$moment().format("YYYY-MM-DD");
       } else {
@@ -104,40 +105,18 @@ export default {
         data.xList.forEach(item => {
           getXlist.push(item);
         });
-        data.yList.forEach(item => {
-          getYlist.push(item);
-        });
-        getYlist.forEach((item, index) => {
-          this.flagTime++;
-          // console.log(item)
-          getXlist.forEach((item2, index2) => {
-            if (index == index2) {
-              let getNum = [];
-              if (item.length != 0) {
-                item.forEach((item1, index1) => {
-                  getNum.push(item1.fRegularOrNot);
-                  // console.log(item1)
-                  getAllData.push({
-                    name: item1.fRuleName,
-                    type: "bar",
-                    stack: "总量",
-                    selectedMode: "single",
-                    label: {
-                      normal: {
-                        show: true,
-                        position: "inside"
-                      }
-                    },
-                    series: [{ data: item1.fRegularOrNot }]
-                    //data: [item1.fRegularOrNot]
-                  });
-                });
-              } else {
-                getAllData.forEach(item => {
-                  item.data.push("0");
-                });
+        data.all.forEach(item => {
+          getAllData.push({
+            name: item.name[0],
+            type: "bar",
+            stack: "总量",
+            label: {
+              normal: {
+                show: true,
+                position: "insideRight"
               }
-            }
+            },
+            data: item.num
           });
         });
         this.getColumnAssociTable(
@@ -168,7 +147,6 @@ export default {
               getAllData.push({
                 name: item1,
                 type: "line",
-                stack: "总量",
                 data: item
               });
             }
@@ -239,56 +217,7 @@ export default {
           type: "category",
           data: getXlist
         },
-        series: [
-          {
-            name: "直接访问",
-            type: "bar",
-            stack: "总量",
-            label: {
-              normal: {
-                show: true,
-                position: "insideRight"
-              }
-            },
-            data: [0, 302, 111]
-          },
-          {
-            name: "邮件营销",
-            type: "bar",
-            stack: "总量",
-            label: {
-              normal: {
-                show: true,
-                position: "insideRight"
-              }
-            },
-            data: [112, 120, 101]
-          },
-          {
-            name: "视频广告",
-            type: "bar",
-            stack: "总量",
-            label: {
-              normal: {
-                show: true,
-                position: "insideRight"
-              }
-            },
-            data: [0, 132, 0]
-          },
-          {
-            name: "广告",
-            type: "bar",
-            stack: "总量",
-            label: {
-              normal: {
-                show: true,
-                position: "insideRight"
-              }
-            },
-            data: [0, 132, 0]
-          }
-        ]
+        series: getAllData
       };
       dataSourcePie.setOption(option);
       window.addEventListener("resize", function() {
