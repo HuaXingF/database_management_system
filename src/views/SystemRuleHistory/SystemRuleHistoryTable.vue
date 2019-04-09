@@ -191,7 +191,6 @@ export default {
         animation: false
       };
       dataSourcePie.setOption(option);
-      dataSourcePie.setOption(option);
       var triggerAction = function(action, selected) {
         option.legend = [];
         for (name in selected) {

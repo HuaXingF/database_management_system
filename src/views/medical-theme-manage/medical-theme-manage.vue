@@ -24,7 +24,7 @@
                   range-separator="至"
                   start-placeholder="开始日期"
                   end-placeholder="结束日期"
-                  @change="changeTime()"
+                  @change="changeTime"
           >
           </el-date-picker>
         </div>
@@ -104,29 +104,30 @@ export default {
           //this.changeTime();
           this.initTime()
       },
-    initTime(){
+    initTime(timeId){
       let end_time=new Date();
       let start_time=new Date(end_time -6*24*3600*1000);
       //console.log(end_time)
         let time=[start_time,end_time]
-      this.changeTime(time)
+      this.changeTime(timeId)
     },
 
     // 时间改变触发时间
-    changeTime(time) {
-      //console.log(this.timeValue,"777")
-      let value5=[]
-      if(time==null || time.length<1){
-         value5=this.timeValue;
-      }else{
-         value5=time;
+    changeTime(timeId) {
+      let startTime = null;
+      let endTime = null;
+      if (timeId == null) {
+        startTime = this.$moment()
+          .day(-4)
+          .format("YYYY-MM-DD");
+        endTime = this.$moment().format("YYYY-MM-DD");
+      } else {
+        startTime = this.$moment(timeId[0]).format("YYYY-MM-DD");
+        endTime = this.$moment(timeId[1]).format("YYYY-MM-DD");
       }
-      let d = new Date(value5[0])//.format("yyyy-MM-dd")
-      let  time1=d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate() ;
-      let b = new Date(value5[1])//.format("yyyy-MM-dd")
-      let time2=b.getFullYear() + '-' + (b.getMonth() + 1) + '-' + b.getDate() ;
+      console.log(startTime +'----' + endTime)
        // console.log(time1,time2)
-      this.initValue(time1,time2);
+      this.initValue(startTime,endTime);
     },
     initValue(start_time,end_time){
       this.change1(start_time,end_time)
