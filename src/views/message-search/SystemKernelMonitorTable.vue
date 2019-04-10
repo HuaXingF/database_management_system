@@ -120,7 +120,6 @@ export default {
     conKelnelTableAddWeek() {
       let baseName = this.baseName;
       SystemTableAddWeek({ baseName }).then(({ data }) => {
-        console.log(data);
         let getName = [];
         let getData = data;
         data.forEach(item => {
