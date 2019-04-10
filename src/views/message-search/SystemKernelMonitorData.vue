@@ -48,7 +48,8 @@ import MTopNav from "@/components/m-topNav/m-topNav";
 import {
   SystemDataNowWeek,
   SystemDataNowMonth,
-  SystemDataAddWeek
+  SystemDataAddWeek,
+  SystemDataAddMonth
 } from "@/api/message-search.js";
 export default {
   data() {
@@ -120,7 +121,15 @@ export default {
     },
     // 本月核心数据库中各库数据增量排行榜
     conKelnelDataAddMonth() {
-      this.getColumnTable(this.getTable, this.$refs.getKelnelDataAddMonth);
+      SystemDataAddMonth().then(({ data }) => {
+        let getXlist = data.xlist;
+        let getData = data.ylist;
+        this.getColumnTable(
+          getXlist,
+          getData,
+          this.$refs.getKelnelDataAddMonth
+        );
+      });
     },
     // 获取 折线图line的 echarts函数
     getLineTable(getXlist, getData, getRef) {
@@ -223,7 +232,7 @@ export default {
       });
     },
     // 获取柱形图  echarts函数
-    getColumnTable(tablePie, getRef) {
+    getColumnTable(getXlist, getData, getRef) {
       let dataSourcePie = this.$echarts.init(getRef);
       const option = {
         tooltip: {
@@ -239,14 +248,7 @@ export default {
         xAxis: [
           {
             type: "category",
-            data: [
-              "电子病历",
-              "健康档案",
-              "全员人口",
-              "公卫",
-              "基础信息",
-              "门诊记录"
-            ]
+            data: getXlist
           }
         ],
         yAxis: [
@@ -256,9 +258,8 @@ export default {
         ],
         series: [
           {
-            name: "联盟广告",
+            name: "总数",
             type: "bar",
-            stack: "广告",
             itemStyle: {
               color: "#C23531"
             },
@@ -269,7 +270,7 @@ export default {
                 color: "#fff"
               }
             },
-            data: [220, 182, 191, 234, 290, 330]
+            data: getData
           }
         ],
         animation: false

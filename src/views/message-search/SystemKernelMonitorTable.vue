@@ -45,7 +45,11 @@
 
 <script>
 import MTopNav from "@/components/m-topNav/m-topNav";
-import { SystemTableAllWeek,SystemTableAllMonth } from "../../api/message-search.js";
+import {
+  SystemTableAllWeek,
+  SystemTableAllMonth,
+  SystemTableAddWeek
+} from "../../api/message-search.js";
 export default {
   data() {
     return {
@@ -95,7 +99,7 @@ export default {
     // 每月核心数据库中各表数据总量变化趋势图
     conKelnelTableAllMonth() {
       let baseName = this.baseName;
-      SystemTableAllMonth({baseName}).then(({data}) => {
+      SystemTableAllMonth({ baseName }).then(({ data }) => {
         let getXlist = data.xList;
         let getData = [];
         data.genList.forEach((item, index) => {
@@ -109,12 +113,21 @@ export default {
             }
           });
         });
-      this.getLineTable(getXlist, getData,this.$refs.getKelnelTableAllMonth);
-      })
+        this.getLineTable(getXlist, getData, this.$refs.getKelnelTableAllMonth);
+      });
     },
     // 本周核心数据库中各表数据增量比例图
     conKelnelTableAddWeek() {
-      this.getPieTable(this.getTable, this.$refs.getKelnelTableAddWeek);
+      let baseName = this.baseName;
+      SystemTableAddWeek({ baseName }).then(({ data }) => {
+        console.log(data);
+        let getName = [];
+        let getData = data;
+        data.forEach(item => {
+          getName.push(item.name);
+        });
+        this.getPieTable(getName, getData, this.$refs.getKelnelTableAddWeek);
+      });
     },
     // 本月核心数据库中各表数据增量排行榜
     conKelnelTableAddMonth() {
@@ -151,7 +164,7 @@ export default {
       });
     },
     // 获取饼图echarts  函数
-    getPieTable(getTable, getRef) {
+    getPieTable(getName, getData, getRef) {
       let dataSourcePie = this.$echarts.init(getRef);
       const option = {
         tooltip: {
@@ -161,7 +174,7 @@ export default {
         legend: {
           bottom: 10,
           left: "center",
-          data: ["西凉", "益州", "兖州", "荆州", "幽州"],
+          data: getName,
           selectedMode: false
         },
         series: [
@@ -170,12 +183,7 @@ export default {
             type: "pie",
             radius: "65%",
             center: ["50%", "50%"],
-            data: [
-              { value: 535, name: "荆州" },
-              { value: 510, name: "兖州" },
-              { value: 634, name: "益州" },
-              { value: 735, name: "西凉" }
-            ]
+            data: getData
           }
         ],
         animation: false
