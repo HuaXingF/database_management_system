@@ -46,17 +46,26 @@ export default new Router({
         },
         {
             path: '/',
-            name: '',
+            name: '核心数据库数据监控',
             iconCls: 'messageSearch',
             component: Home,
-            leaf: true,
             flagHidden: false,
             children: [
                 {
                     path: '/SystemKernelData',
                     name: '核心数据库数据监控',
-                    component: () => import(/* webpackChunkName: "messageSearch" */ '@/views/message-search/message-search.vue')
-                }
+                    component: () => import('./views/message-search/message-search.vue')
+                },
+                {
+                    path: '/SystemKernelMonitorData',
+                    name: '核心数据库数据监控(库)',
+                    component: () => import('./views/message-search/SystemKernelMonitorData.vue')
+                },
+                // {
+                //   path: '/SystemKernelMonitorTable',
+                //   name: '核心数据库数据监控(表)',
+                //   component: () => import('./views/message-search/SystemKernelMonitorTable.vue')
+                // },
             ]
         },
         {
@@ -104,13 +113,6 @@ export default new Router({
                 }
             ]
         },
-
-        // {
-        //   path: 'SystemAddRule',
-        //   name: '新增数据规则',
-        //   component: () => import('./views/SystemAddRule')
-        // }
-
         {
             path: '/',
             name: '',
@@ -208,6 +210,21 @@ export default new Router({
         {
             path: '/',
             name: '',
+            iconCls: 'indexingCheck',
+            component: Home,
+            leaf: true,
+            flagHidden: false,
+            children: [
+                {
+                    path: '/SystemStatistics',
+                    name: '数据规则当前统计信息',
+                    component: () => import('./views/SystemStatistics/SystemStatistics.vue')
+                }
+            ]
+        },
+        {
+            path: '/',
+            name: '',
             iconCls: '',
             component: Home,
             leaf: true,
@@ -232,6 +249,22 @@ export default new Router({
                     path: '/SystemRuleHistoryStr',
                     name: '数据规则历史统计信息(字段)',
                     component: () => import('./views/SystemRuleHistory/SystemRuleHistoryStr.vue')
+                }
+            ]
+        },
+
+        {
+            path: '/',
+            name: '',
+            iconCls: '',
+            component: Home,
+            leaf: true,
+            flagHidden: true,
+            children: [
+                {
+                    path: '/SystemKernelMonitorTable',
+                    name: '核心数据库数据监控(表)',
+                    component: () => import('./views/message-search/SystemKernelMonitorTable.vue')
                 }
             ]
         },

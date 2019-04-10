@@ -193,6 +193,9 @@ export default {
         tooltip: {
           trigger: "axis"
         },
+        legend: {
+          selectedMode: false
+        },
         xAxis: {
           name:"时间",
           type: "category",

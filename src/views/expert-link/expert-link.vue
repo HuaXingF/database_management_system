@@ -46,15 +46,12 @@
 
 <script>
 import MTopNav from "@/components/m-topNav/m-topNav";
-import {
-  selectTableSumDesc,
-  selectDimRatio
- } from "@/api/expert-link.js"
+import { selectTableSumDesc, selectDimRatio } from "@/api/expert-link.js";
 export default {
   name: "expertLink",
   data() {
     return {
-      tablePie:[]
+      tablePie: []
     };
   },
   mounted() {
@@ -76,11 +73,11 @@ export default {
       //fDimName: "mesh", fRelatedCountSum: "160"
       let listX = [];
       let listY = [];
-      selectTableSumDesc().then(({data}) =>{
-       // console.log(data)
-        for(let i=0; i<data.length;i++){
-          listX.push(data[i].fDimName)
-          listY.push(data[i].fRelatedCountSum)
+      selectTableSumDesc().then(({ data }) => {
+        // console.log(data)
+        for (let i = 0; i < data.length; i++) {
+          listX.push(data[i].fDimName);
+          listY.push(data[i].fRelatedCountSum);
           dataSourcePie.setOption({
             tooltip: {
               trigger: "axis",
@@ -89,16 +86,19 @@ export default {
                 type: "shadow" // 默认为直线，可选为：'line' | 'shadow'
               }
             },
+            legend: {
+              selectedMode: false
+            },
             xAxis: [
               {
-                name:"名称",
+                name: "名称",
                 type: "category",
                 data: listX
               }
             ],
             yAxis: [
               {
-                name:"数据量",
+                name: "数据量",
                 type: "value"
               }
             ],
@@ -113,7 +113,7 @@ export default {
                 label: {
                   normal: {
                     show: true,
-                    position: 'inside',
+                    position: "inside",
                     color: "#fff"
                   }
                 },
@@ -121,70 +121,91 @@ export default {
               }
             ],
             animation: false
-          })
+          });
         }
-      })
+      });
 
       //dataSourcePie.setOption(option);
       window.addEventListener("resize", function() {
         dataSourcePie.resize();
       });
     },
-   /* fDimId: "001"
+    /* fDimId: "001"
     fDimName: "患者"
     fFailCountSum: "120"
     fRelatedCountSum: "130"*/
     // 当前患者信息关联总量
     conPiePatientAssoci() {
-      let fDimId="001"
-      let  tablePie=[]
-      selectDimRatio(fDimId).then(({data}) =>{
-         //console.log(data)
-        tablePie.push({"name":"关联成功","value":parseInt(data[0].fRelatedCountSum)})
-        tablePie.push({"name":"关联失败","value":parseInt(data[0].fFailCountSum)})
+      let fDimId = "001";
+      let tablePie = [];
+      selectDimRatio(fDimId).then(({ data }) => {
+        //console.log(data)
+        tablePie.push({
+          name: "关联成功",
+          value: parseInt(data[0].fRelatedCountSum)
+        });
+        tablePie.push({
+          name: "关联失败",
+          value: parseInt(data[0].fFailCountSum)
+        });
         //console.log(tablePie,"666")
         this.getPieAssociTable(tablePie, this.$refs.getPiePatientAssoci);
-      })
-
+      });
     },
     // 当前医生信息关联总量
     conPieDoctorAssoci() {
-      let fDimId="002"
-      let  tablePie=[]
-      selectDimRatio(fDimId).then(({data}) =>{
-        tablePie.push({"name":"关联成功","value":parseInt(data[0].fRelatedCountSum)})
-        tablePie.push({"name":"关联失败","value":parseInt(data[0].fFailCountSum)})
+      let fDimId = "002";
+      let tablePie = [];
+      selectDimRatio(fDimId).then(({ data }) => {
+        tablePie.push({
+          name: "关联成功",
+          value: parseInt(data[0].fRelatedCountSum)
+        });
+        tablePie.push({
+          name: "关联失败",
+          value: parseInt(data[0].fFailCountSum)
+        });
         this.getPieAssociTable(tablePie, this.$refs.getPieDoctorAssoci);
-      })
-
+      });
     },
     // 当前费用信息关联总量
     conPieCostAssoci() {
-      let fDimId="003"
-      let  tablePie=[]
-      selectDimRatio(fDimId).then(({data}) =>{
-        tablePie.push({"name":"关联成功","value":parseInt(data[0].fRelatedCountSum)})
-        tablePie.push({"name":"关联失败","value":parseInt(data[0].fFailCountSum)})
+      let fDimId = "003";
+      let tablePie = [];
+      selectDimRatio(fDimId).then(({ data }) => {
+        tablePie.push({
+          name: "关联成功",
+          value: parseInt(data[0].fRelatedCountSum)
+        });
+        tablePie.push({
+          name: "关联失败",
+          value: parseInt(data[0].fFailCountSum)
+        });
         this.getPieAssociTable(tablePie, this.$refs.getPieCostAssoci);
-      })
-
+      });
     },
     // 当前mesh信息关联总量
     conPieMeshAssoci() {
-      let fDimId="004"
-      let  tablePie=[]
-      selectDimRatio(fDimId).then(({data}) =>{
-        tablePie.push({"name":"关联成功","value":parseInt(data[0].fRelatedCountSum)})
-        tablePie.push({"name":"关联失败","value":parseInt(data[0].fFailCountSum)})
+      let fDimId = "004";
+      let tablePie = [];
+      selectDimRatio(fDimId).then(({ data }) => {
+        tablePie.push({
+          name: "关联成功",
+          value: parseInt(data[0].fRelatedCountSum)
+        });
+        tablePie.push({
+          name: "关联失败",
+          value: parseInt(data[0].fFailCountSum)
+        });
         this.getPieAssociTable(tablePie, this.$refs.getPieMeshAssoci);
-      })
+      });
     },
     // 获取饼形图
     getPieAssociTable(tablePie, getRef) {
       let dataSourcePie = this.$echarts.init(getRef);
-     /* let legentData = [];
+      /* let legentData = [];
       let seriesData = [];*/
-     //let name=null
+      //let name=null
       //console.log(tablePie)
       const option = {
         tooltip: {
@@ -192,9 +213,10 @@ export default {
           formatter: "{a} <br/>{b} : {c} ({d}%)"
         },
         legend: {
-          orient: 'vertical',
-          x: 'left',
-          data:tablePie
+          orient: "vertical",
+          x: "left",
+          data: tablePie,
+          selectedMode: false
         },
         series: [
           {

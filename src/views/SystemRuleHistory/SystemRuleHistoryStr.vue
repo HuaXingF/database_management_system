@@ -181,9 +181,13 @@ export default {
       // 表中记录合格率统计饼图
       selectRuleHistoryPieStr({ startTime, endTime, baseName }).then(
         ({ data }) => {
+          let getName = []
           let getPieData = [];
+          data.forEach(item => {
+            getName.push(item.name)
+          })
           getPieData = data;
-          this.getPieTable(getPieData, this.$refs.getQuantityPie);
+          this.getPieTable(getName,getPieData, this.$refs.getQuantityPie);
         }
       );
     },
@@ -216,7 +220,7 @@ export default {
       });
     },
     // 获取饼图echarts  函数
-    getPieTable(getPieData, getRef) {
+    getPieTable(getName,getPieData, getRef) {
       let dataSourcePie = this.$echarts.init(getRef);
       const option = {
         tooltip: {
@@ -226,7 +230,7 @@ export default {
         legend: {
           bottom: 10,
           left: "center",
-          data: ["西凉", "益州", "兖州", "荆州", "幽州"],
+          data: getName,
           selectedMode: false
         },
         series: [
