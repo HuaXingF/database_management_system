@@ -402,7 +402,6 @@
             init(){
                 //tableData
                 selectAll().then(ref =>{
-                    console.log(ref.data)
                     this.tableData=ref.data
                 })
                 //this.selectAllBase();

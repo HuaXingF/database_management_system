@@ -64,15 +64,11 @@ export default {
   name: "systemSetting",
   data() {
     return {
-      //   containerCircle: "containerCircle",
-      //   containerColumn: "containerColumn",
       tableData: [],
       tableData1: [] //核心数据库当前数据统计
-      //tableData2: [ ]//当前关联信息统计
     };
   },
   mounted() {
-    //console.log(this.$refs.getCloumn);
     this.containerCircle(); // 当前ETL流程状态分布统计
     this.hegelu(); // 当前各库数据合格率统计
     this.conGetAllTab(); // 当前总关联成功比例
@@ -85,13 +81,6 @@ export default {
     this.shujuku(); // 核心数据库当前数据统计
   },
   methods: {
-    /* cellStyle({ row, column, rowIndex, colunIndex }) {
-        return "text-align:center";
-      },
-      rowClass({ row, rowIndex }) {
-        return "text-align:center";
-      },*/
-
     // 圆形图
     containerCircle() {
       var myChart = this.$echarts.init(this.$refs.getCircle);
@@ -141,9 +130,7 @@ export default {
       var myChart = this.containerColumn(this.$refs.gitGuanLian);
       let listX = ["data", "关联成功", "关联失败"];
       let listY1 = [];
-      //let listY2=[];
       select_guanlian().then(({ data }) => {
-        // console.log(data,"666")
         for (let i = 0; i < data.failRelatedSum.length; i++) {
           listY1.push({
             data: data.primaryTabName[i],
@@ -151,8 +138,6 @@ export default {
             关联失败: data.failRelatedSum[i]
           });
         }
-        //console.log(listX,"x")
-        // console.log(listY1,"y")
         let option = {
           legend: {
             selectedMode: false
@@ -162,10 +147,8 @@ export default {
             dimensions: listX,
             source: listY1
           },
-          xAxis: { type: "category" },
-          yAxis: {},
-          // Declare several bar series, each will be mapped
-          // to a column of dataset.source by default.
+          xAxis: { type: "category", name: "库名" },
+          yAxis: { name: "数据量" },
           series: [
             {
               type: "bar",
@@ -217,8 +200,6 @@ export default {
       // 核心数据库当前数据统计
       var myChart = this.containerColumn(this.$refs.getCloumn2);
       select_shujuku().then(({ data }) => {
-        //this.tableData=data;
-        // console.log(data,"555")
         myChart.setOption({
           legend: {
             selectedMode: false
@@ -256,7 +237,7 @@ export default {
           },
           tooltip: {},
           xAxis: {
-            name: "表名",
+            name: "库名",
             data: x
           },
           yAxis: {
@@ -283,7 +264,6 @@ export default {
               label: {
                 normal: {
                   show: true
-                  //position: "top"
                 }
               },
               data: hege
@@ -344,20 +324,9 @@ export default {
     conGetAllTab() {
       var myChart = this.$echarts.init(this.$refs.getLineMonthData);
       let option = null;
-      //let name=null;
-      /*fail: 860
-        other: Array(4)
-        0: {base: "健康档案", baseSuccess: 880, baseFail: 190}
-        1: {base: "全员人口", baseSuccess: 690, baseFail: 160}
-        2: {base: "公卫", baseSuccess: 870, baseFail: 200}
-        3: {base: "电子病历", baseSuccess: 1100, baseFail: 310}
-        length: 4
-        __proto__: Array(0)
-        success: "2680"*/
       option = {};
       myChart.setOption(option);
       select_conGetAllTab().then(({ data }) => {
-        //console.log(data,"777")
         let listA = ["关联成功", "关联失败"];
         let listY = [];
         let listY1 = [];
@@ -383,11 +352,6 @@ export default {
           listY.push(listY2[i]);
         }
         let list = [map1, map2];
-        //console.log(list);
-        //console.log(listA)
-        //console.log(listY1)
-        // console.log(listY2)
-        //name=list
         myChart.setOption({
           tooltip: {
             trigger: "item",

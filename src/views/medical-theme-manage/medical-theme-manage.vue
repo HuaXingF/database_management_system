@@ -125,7 +125,6 @@ export default {
         startTime = this.$moment(timeId[0]).format("YYYY-MM-DD");
         endTime = this.$moment(timeId[1]).format("YYYY-MM-DD");
       }
-      console.log(startTime +'----' + endTime)
        // console.log(time1,time2)
       this.initValue(startTime,endTime);
     },

@@ -238,10 +238,7 @@ export default {
           boundaryGap: false,
            inverse:true,
           data: getTable.fSelectTimeList,
-          nameTextStyle: {
-            padding: [0, -590, 0, 0]
-          }
-
+          nameLocation: 'start',
         },
         yAxis: {
           name:"数据量",

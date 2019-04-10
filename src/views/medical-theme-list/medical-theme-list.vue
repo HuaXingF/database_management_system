@@ -26,13 +26,13 @@
 
     <el-row :gutter="50">
       <el-col :sm="12">
-        <el-row :gutter="10" class="selectBox" >
+        <el-row :gutter="10" class="selectBox">
           <el-col :span="8">
             <p>单库数据总量变化趋势</p>
           </el-col>
           <el-col :span="8">
             请选择数据库: &nbsp;
-            <el-select v-model="value1"  @change="getValue1">
+            <el-select v-model="value1" @change="getValue1">
               <el-option
                 v-for="item in options1"
                 :key="item.value"
@@ -98,7 +98,7 @@ import {
   selectTotalDay,
   selectTotalMonth,
   selectTotal
-} from "@/api/medical-theme-list.js"
+} from "@/api/medical-theme-list.js";
 //import tableLine from "../../components/echarts/table-line";
 export default {
   name: "medicalThemeList",
@@ -106,9 +106,9 @@ export default {
     return {
       lineWeekData: "lineWeekData",
       lineMonthData: "lineMonthData",
-      getTable:{
-        listA:[],
-        listY:[]
+      getTable: {
+        listA: [],
+        listY: []
       }, // 后台获取的数据  到时候直接覆盖
       options1: [
         {
@@ -178,7 +178,6 @@ export default {
       value2: "selectTotalWeek",
       value3: "健康档案",
       value4: "selectAddWeek"
-
     };
   },
   mounted() {
@@ -202,57 +201,52 @@ export default {
     },
     // 本周数据湖数据总量变化图
     conLineWeekData() {
-     // console.log("getObj + 11111")
-     let getTable={}
-      selectTotalDay().then(({data}) => {
-       // console.log(data)
-        getTable.listA=data.fSelectTimeList
-        getTable.listY=data.fTableRowsList
+      // console.log("getObj + 11111")
+      let getTable = {};
+      selectTotalDay().then(({ data }) => {
+        // console.log(data)
+        getTable.listA = data.fSelectTimeList;
+        getTable.listY = data.fTableRowsList;
         this.getLineTable(getTable, this.$refs.getLineWeekData);
-
-      })
-     // console.log(getTable,"6666")
-
+      });
+      console.log(getTable,"6666")
     },
     // 数据湖数据总量月变化趋势图
     conLineMonthData() {
-      let getTable={}
-      selectTotalMonth().then(({data}) =>{
-       // console.log(data)
-        getTable.listA=data.fSelectTimeList
-        getTable.listY=data.fTableRowsList
+      let getTable = {};
+      selectTotalMonth().then(({ data }) => {
+        // console.log(data)
+        getTable.listA = data.fSelectTimeList;
+        getTable.listY = data.fTableRowsList;
         this.getLineTable(getTable, this.$refs.getLineMonthData);
-      })
-
+      });
     },
     // 单库数据总量变化趋势
     conOneDataAll() {
-      let obj={
-        value1:this.value1,
-        value2:this.value2
-      }
-      let getTable={}
-      selectTotal(obj).then(({data}) =>{
-        getTable.listA=data.fSelectTimeList
-        getTable.listY=data.fTableRowsList
+      let obj = {
+        value1: this.value1,
+        value2: this.value2
+      };
+      let getTable = {};
+      selectTotal(obj).then(({ data }) => {
+        getTable.listA = data.fSelectTimeList;
+        getTable.listY = data.fTableRowsList;
         this.getLineTable(getTable, this.$refs.getOneDataAll);
-      })
-
+      });
     },
     // 单库数据增量变化趋势
     conOneDataAdd() {
-      let obj={
-        value1:this.value3,
-        value2:this.value4
-      }
-      let getTable={}
-      selectTotal(obj).then(({data}) =>{
+      let obj = {
+        value1: this.value3,
+        value2: this.value4
+      };
+      let getTable = {};
+      selectTotal(obj).then(({ data }) => {
         //console.log(data,"999999")
-        getTable.listA=data.fSelectTimeList
-        getTable.listY=data.fTableRowsList
+        getTable.listA = data.fSelectTimeList;
+        getTable.listY = data.fTableRowsList;
         this.getLineTable(getTable, this.$refs.getOneDataAdd);
-      })
-
+      });
     },
 
     // 获取echarts函数
@@ -260,23 +254,21 @@ export default {
       let dataSourcePie = this.$echarts.init(getRef);
       //let legentData = [];
       //let seriesData = [];
-     // console.log(getTable,"666")
+      // console.log(getTable,"666")
       const option = {
         tooltip: {
           trigger: "axis"
         },
         xAxis: {
-          name:"时间",
+          name: "时间",
           type: "category",
           boundaryGap: false,
-           inverse:true,
           data: getTable.listA,
-          nameTextStyle: {
-            padding: [0, -590, 0, 0]
-          }
+          nameLocation: 'start',
+          inverse: true
         },
         yAxis: {
-          name:"数据量",
+          name: "数据量",
           type: "value",
           axisLabel: {
             formatter: "{value}"
@@ -286,7 +278,7 @@ export default {
           {
             name: "最高数据",
             type: "line",
-            data: getTable.listY/* [11, 11, 15, 13, 12, 13, 20]*/,
+            data: getTable.listY /* [11, 11, 15, 13, 12, 13, 20]*/,
             itemStyle: {
               color: "#6ED6D7"
             },
@@ -295,8 +287,8 @@ export default {
                 { type: "max", name: "最大值" },
                 { type: "min", name: "最小值" }
               ]
-            },
-           /* markLine: {
+            }
+            /* markLine: {
               data: [{ type: "average", name: "平均值" }]
             }*/
           }

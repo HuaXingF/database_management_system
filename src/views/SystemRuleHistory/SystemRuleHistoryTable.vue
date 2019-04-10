@@ -109,6 +109,7 @@ export default {
       let getAllData = [];
       let baseName = this.baseName;
       selectRuleTable({ startTime, endTime, baseName }).then(({ data }) => {
+        console.log(data)
         data.xList.forEach(item => {
           getXlist.push(item);
         });
