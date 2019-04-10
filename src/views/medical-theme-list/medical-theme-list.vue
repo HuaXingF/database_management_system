@@ -209,7 +209,6 @@ export default {
         getTable.listY = data.fTableRowsList;
         this.getLineTable(getTable, this.$refs.getLineWeekData);
       });
-      console.log(getTable,"6666")
     },
     // 数据湖数据总量月变化趋势图
     conLineMonthData() {

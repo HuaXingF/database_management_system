@@ -9,7 +9,7 @@ export const selectTiem = params => {
 }
 
 export const selectBing = params => {
-  const url = `${baseURL}/ruleApplyResult/selectBing`
+  const url = `${baseURL}/ruleApplyResult/selectBing?startTime=${params.startTime}&endTime=${params.endTime}`
   // const url1 = `${baseURL}/pipelien/selectOneTimeAtamp?fPipelineId=${params.fPipelineId}&&startTime=${params.startTime}&&endTime=${params.endTime}`
   return axios.post(url, { params: params })
 }

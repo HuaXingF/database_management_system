@@ -100,9 +100,9 @@ export default {
     changeAllTable(start_time, end_time) {
       this.change1(start_time, end_time);
       this.change2(start_time, end_time);
-      this.change3();
+      this.change3(start_time, end_time);
     },
-    // 数据库信息合格率统计
+    // 数据库合规数据量统计
     change1(start_time, end_time) {
       let getTableData = [];
       let getTable = [];
@@ -133,15 +133,20 @@ export default {
         );
       });
     },
-    // 数据库合格率排行榜
+    // 数据库信息合格率统计
     change2(start_time, end_time) {
       let getTableData = [];
       let getTable = [];
       let getTipName = [];
+      let getFormatter = "";
       let getAllTime = { startTime: start_time, endTime: end_time };
       selectTiem(getAllTime).then(({ data }) => {
         getTableData.push({ data: data.day });
-        data.ku.forEach(item => {
+        data.ku.forEach((item, index) => {
+          if (index == 0) {
+            getFormatter = `{b${index}}<br/>`;
+          }
+          getFormatter += `{a${index}}:{c${index}}%<br />`;
           getTipName.push(item);
           getTable.push({
             name: item,
@@ -156,20 +161,86 @@ export default {
             }
           });
         });
-        this.getLineTable(
-          getTipName,
-          getTableData,
-          getTable,
-          this.$refs.getLineWeekData
-        );
+
+        let dataSourcePie = this.$echarts.init(this.$refs.getLineWeekData);
+        const option = {
+          tooltip: {
+            trigger: "axis",
+            formatter: `${getFormatter}`
+          },
+          legend: {
+            data: getTipName
+          },
+          xAxis: {
+            name: "名称",
+            type: "category",
+            boundaryGap: false,
+            data: getTableData[0].data
+          },
+          yAxis: {
+            name: "数量",
+            type: "value",
+            axisLabel: {
+              show: true,
+              interval: "auto",
+              formatter: "{value}%"
+            }
+          },
+          series: getTable,
+          animation: false
+        };
+        dataSourcePie.setOption(option);
+        var triggerAction = function(action, selected) {
+          option.legend = [];
+          for (name in selected) {
+            if (selected.hasOwnProperty(name)) {
+              option.legend.push({ name: name });
+            }
+          }
+          dataSourcePie.dispatchAction({
+            type: action,
+            batch: option.legend
+          });
+        };
+        // 是否选中其中一个
+        var isOneUnSelect = function(selected) {
+          var unSelectedCount = 0;
+          for (name in selected) {
+            if (!selected.hasOwnProperty(name)) {
+              continue;
+            }
+
+            if (selected[name] == false) {
+              ++unSelectedCount;
+            }
+          }
+          return unSelectedCount == 1;
+        };
+        dataSourcePie.on("legendselectchanged", obj => {
+          var selected = obj.selected;
+          var legend = obj.name;
+          if (selected != undefined) {
+            if (isOneUnSelect(selected)) {
+              triggerAction("legendSelect", selected);
+              this.$router.push({
+                name: "数据规则历史统计信息(表)",
+                params: { baseName: legend }
+              });
+            }
+          }
+        });
+        window.addEventListener("resize", function() {
+          dataSourcePie.resize();
+        });
       });
     },
-    // 数据库合规数据量统计
-    change3() {
+    // 数据库合格率排行榜
+    change3(start_time, end_time) {
       let getAllData = [];
       let getSelectData = [];
       let getOutsideData = [];
-      selectBing().then(({ data }) => {
+      let getAllTime = { startTime: start_time, endTime: end_time };
+      selectBing(getAllTime).then(({ data }) => {
         data.allList.forEach(item => {
           getAllData.push(item.fTableName);
           getOutsideData.push({
@@ -201,7 +272,6 @@ export default {
         },
         legend: {
           data: getTipName
-          // selectedMode: false
         },
         xAxis: {
           name: "名称",
@@ -249,7 +319,10 @@ export default {
         if (selected != undefined) {
           if (isOneUnSelect(selected)) {
             triggerAction("legendSelect", selected);
-            this.$router.push({name: '数据规则历史统计信息(表)',params: {baseName:legend}})
+            this.$router.push({
+              name: "数据规则历史统计信息(表)",
+              params: { baseName: legend }
+            });
           }
         }
       });

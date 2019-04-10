@@ -110,6 +110,7 @@ export default {
       let getHeGeData = []; // 获取合格的所有数据
       let getHeGeList = []; // 获取单个合格的数组
       let baseName = this.baseName;
+      let getFormatter = ""; // 获取百分比
       // 表中记录合格率统计
       selectRuleHistoryStr({ startTime, endTime, baseName }).then(
         ({ data }) => {
@@ -123,6 +124,10 @@ export default {
             getList = getHeGeLv.splice(0, item.length);
             getHeGeList = getHeGe.splice(0, item.length);
             getYlist.forEach((item2, index2) => {
+              if (index2 == 0) {
+                getFormatter = `{b${index2}}<br/>`;
+              }
+              getFormatter += `{a${index2}}:{c${index2}}%<br />`;
               if (index == index2) {
                 getAllData.push({
                   name: item2,
@@ -137,14 +142,40 @@ export default {
               }
             });
           });
-          // 表中记录合格率统计
-          this.getLineTable(getXlist, getAllData, this.$refs.getQuantityYield);
           // 表中字段合格数量统计
           this.getLineTable(
             getXlist,
             getHeGeData,
             this.$refs.getQuantityAmount
           );
+
+          // 表中记录合格率统计
+          let dataSourcePie = this.$echarts.init(this.$refs.getQuantityYield);
+          const option = {
+            legend: {
+              selectedMode: false
+            },
+            tooltip: {
+              trigger: "axis",
+              formatter: `${getFormatter}`
+            },
+            xAxis: {
+              name: "名称",
+              type: "category",
+              boundaryGap: false,
+              data: getXlist
+            },
+            yAxis: {
+              name: "数量",
+              type: "value"
+            },
+            series: getAllData,
+            animation: false
+          };
+          dataSourcePie.setOption(option);
+          window.addEventListener("resize", function() {
+            dataSourcePie.resize();
+          });
         }
       );
       // 表中记录合格率统计饼图
