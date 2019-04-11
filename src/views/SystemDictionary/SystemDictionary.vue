@@ -43,14 +43,20 @@
           <el-table-column prop="notes" label="字典描述"></el-table-column>
           <el-table-column prop="ruleOpera" label="操作">
             <template slot-scope="scope">
-              <el-button type="text" size="small" @click="editBtn(scope.$index, scope.row)"><i style="font-size: 25px;" class="el-icon-edit" title="编辑"></i></el-button>
-              <el-button
-                      @click.native.prevent="deleteRow(scope.$index, scope.row)"
+              <el-button type="text" size="small" @click="editBtn(scope.$index, scope.row)">
+                <i style="font-size: 18px;" class="el-icon-edit" title="编辑"></i>
+              </el-button>
+              <el-button @click.native.prevent="deleteRow(scope.$index, scope.row)"
                       type="text"
-                      size="small"
-              ><i style="font-size: 25px;" class="el-icon-delete" title="删除"></i></el-button>
-              <el-button type="text" size="small" @click="addBtn(scope.$index, scope.row)" ><i style="font-size: 25px;" class="el-icon-circle-plus" title="增加扩展项"></i></el-button>
-              <el-button type="text" size="small" @click="selectBtn(scope.$index, scope.row)"><i style="font-size: 25px;" class="el-icon-view" title="查看扩展项"></i></el-button>
+                      size="small">
+                <i style="font-size: 18px;" class="el-icon-delete" title="删除"></i>
+              </el-button>
+              <el-button type="text" size="small" @click="addBtn(scope.$index, scope.row)">
+                <i style="font-size: 18px;" class="el-icon-circle-plus" title="增加扩展项"></i>
+              </el-button>
+              <el-button type="text" size="small" @click="selectBtn(scope.$index, scope.row)">
+                <i style="font-size: 18px;" class="el-icon-view" title="查看扩展项"></i>
+              </el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -166,14 +172,12 @@
       </el-dialog>
 
       <el-dialog title="扩展项列表" :visible.sync="selectFormVisible">
-        <el-table
-                :data="selectForm_kz"
+        <el-table :data="selectForm_kz"
                 ref="selectForm_kz"
                 border
                 style="width: 100%"
                 :cell-style="cellStyle"
-                :header-cell-style="rowClass"
-        >
+                :header-cell-style="rowClass">
           <!--<el-table-column prop="extensionName" label="扩展名称" width="160"></el-table-column>-->
           <el-table-column prop="extensionCode" label="扩展取值" width="120"></el-table-column>
           <el-table-column prop="extensionDatabase" label="映射库" width="120"></el-table-column>
@@ -181,12 +185,14 @@
           <el-table-column prop="extensionField" label="映射表字段" width="120"></el-table-column>
           <el-table-column prop="ruleOpera" label="操作">
             <template slot-scope="scope">
-              <el-button type="text" size="small" @click="editBtn_kz(scope.$index, scope.row)"><i style="font-size: 25px;" class="el-icon-edit" title="编辑"></i></el-button>
-              <el-button
-                      @click.native.prevent="delete_kz(scope.$index, scope.row)"
+              <el-button type="text" size="small" @click="editBtn_kz(scope.$index, scope.row)">
+                <i style="font-size: 18px;" class="el-icon-edit" title="编辑"></i>
+              </el-button>
+              <el-button @click.native.prevent="delete_kz(scope.$index, scope.row)"
                       type="text"
-                      size="small"
-              ><i style="font-size: 25px;" class="el-icon-delete" title="删除"></i></el-button>
+                      size="small">
+              <i style="font-size: 18px;" class="el-icon-delete" title="删除"></i>
+            </el-button>
             </template>
           </el-table-column>
         </el-table>
