@@ -45,45 +45,51 @@
 </template>
 
 <script>
-import MTopNav from "@/components/m-topNav/m-topNav";
+import MTopNav from "@/components/m-topNav/m-topNav"
 import {
   SystemTableAllWeek,
   SystemTableAllMonth,
   SystemTableAddWeek,
   SystemTableAddMonth
-} from "../../api/message-search.js";
+} from "@/api/SystemKernelData"
+
 export default {
+  name: 'SystemKernelMonitorTable',
   data() {
     return {
-      getTable: null, // 后台获取的数据  到时候直接覆盖
-      AllStartHistoryValue: "", // 开始时间
-      AllEndHistoryValue: "", // 结束时间
-      baseName: "" // 传递过来的表名
+      // 后台获取的数据  到时候直接覆盖
+      getTable: null, 
+      // 开始时间
+      AllStartHistoryValue: "", 
+      // 结束时间
+      AllEndHistoryValue: "", 
+      // 传递过来的表名
+      baseName: "" 
     };
   },
   created() {
     if (!this.$route.params.baseName) {
-      this.$router.push({ name: "核心数据库数据监控(库)" });
+      this.$router.push({ name: "核心数据库数据监控(库)" })
     }
-    this.baseName = this.$route.params.baseName;
+    this.baseName = this.$route.params.baseName
   },
   mounted() {
     // 本周核心数据库中各表数据总量变化趋势图
-    this.conKelnelTableAllWeek();
+    this.conKelnelTableAllWeek()
     // 每月核心数据库中各表数据总量变化趋势图
-    this.conKelnelTableAllMonth();
+    this.conKelnelTableAllMonth()
     // 本周核心数据库中各表数据增量比例图
-    this.conKelnelTableAddWeek();
+    this.conKelnelTableAddWeek()
     // 本月核心数据库中各表数据增量排行榜
-    this.conKelnelTableAddMonth();
+    this.conKelnelTableAddMonth()
   },
   methods: {
     // 本周核心数据库中各表数据总量变化趋势图
     conKelnelTableAllWeek() {
-      let baseName = this.baseName;
+      let baseName = this.baseName
       SystemTableAllWeek({ baseName }).then(({ data }) => {
-        let getXlist = data.xList;
-        let getData = [];
+        let getXlist = data.xList
+        let getData = []
         data.genList.forEach((item, index) => {
           data.allList.forEach((item1, index1) => {
             if (index == index1) {
@@ -91,19 +97,19 @@ export default {
                 name: item,
                 type: "line",
                 data: item1
-              });
+              })
             }
-          });
-        });
-        this.getLineTable(getXlist, getData, this.$refs.getKelnelTableAllWeek);
-      });
+          })
+        })
+        this.getLineTable(getXlist, getData, this.$refs.getKelnelTableAllWeek)
+      })
     },
     // 每月核心数据库中各表数据总量变化趋势图
     conKelnelTableAllMonth() {
-      let baseName = this.baseName;
+      let baseName = this.baseName
       SystemTableAllMonth({ baseName }).then(({ data }) => {
-        let getXlist = data.xList;
-        let getData = [];
+        let getXlist = data.xList
+        let getData = []
         data.genList.forEach((item, index) => {
           data.allList.forEach((item1, index1) => {
             if (index == index1) {
@@ -111,41 +117,41 @@ export default {
                 name: item,
                 type: "line",
                 data: item1
-              });
+              })
             }
-          });
-        });
-        this.getLineTable(getXlist, getData, this.$refs.getKelnelTableAllMonth);
-      });
+          })
+        })
+        this.getLineTable(getXlist, getData, this.$refs.getKelnelTableAllMonth)
+      })
     },
     // 本周核心数据库中各表数据增量比例图
     conKelnelTableAddWeek() {
       let baseName = this.baseName;
       SystemTableAddWeek({ baseName }).then(({ data }) => {
-        let getName = [];
-        let getData = data;
+        let getName = []
+        let getData = data
         data.forEach(item => {
-          getName.push(item.name);
-        });
-        this.getPieTable(getName, getData, this.$refs.getKelnelTableAddWeek);
-      });
+          getName.push(item.name)
+        })
+        this.getPieTable(getName, getData, this.$refs.getKelnelTableAddWeek)
+      })
     },
     // 本月核心数据库中各表数据增量排行榜
     conKelnelTableAddMonth() {
-      let baseName = this.baseName;
+      let baseName = this.baseName
       SystemTableAddMonth({ baseName }).then(({ data }) => {
-        let getXlist = data.xlist;
-        let getData = data.ylist;
+        let getXlist = data.xlist
+        let getData = data.ylist
         this.getColumnTable(
           getXlist,
           getData,
           this.$refs.getKelnelTableAddMonth
-        );
-      });
+        )
+      })
     },
     // 获取 折线图line的 echarts函数
     getLineTable(getXlist, getData, getRef) {
-      let dataSourcePie = this.$echarts.init(getRef);
+      let dataSourcePie = this.$echarts.init(getRef)
       const option = {
         tooltip: {
           trigger: "axis"
@@ -167,15 +173,15 @@ export default {
         },
         series: getData,
         animation: false
-      };
-      dataSourcePie.setOption(option);
+      }
+      dataSourcePie.setOption(option)
       window.addEventListener("resize", function() {
-        dataSourcePie.resize();
-      });
+        dataSourcePie.resize()
+      })
     },
     // 获取饼图echarts  函数
     getPieTable(getName, getData, getRef) {
-      let dataSourcePie = this.$echarts.init(getRef);
+      let dataSourcePie = this.$echarts.init(getRef)
       const option = {
         tooltip: {
           trigger: "item",
@@ -197,21 +203,22 @@ export default {
           }
         ],
         animation: false
-      };
-      dataSourcePie.setOption(option);
+      }
+      dataSourcePie.setOption(option)
       window.addEventListener("resize", function() {
-        dataSourcePie.resize();
-      });
+        dataSourcePie.resize()
+      })
     },
     // 获取柱形图  echarts函数
     getColumnTable(getXlist, getData, getRef) {
-      let dataSourcePie = this.$echarts.init(getRef);
+      let dataSourcePie = this.$echarts.init(getRef)
       const option = {
         tooltip: {
           trigger: "axis",
           axisPointer: {
             // 坐标轴指示器，坐标轴触发有效
-            type: "shadow" // 默认为直线，可选为：'line' | 'shadow'
+            // 默认为直线，可选为：'line' | 'shadow'
+            type: "shadow" 
           }
         },
         legend: {
@@ -246,22 +253,22 @@ export default {
           }
         ],
         animation: false
-      };
-      dataSourcePie.setOption(option);
+      }
+      dataSourcePie.setOption(option)
       window.addEventListener("resize", function() {
-        dataSourcePie.resize();
-      });
+        dataSourcePie.resize()
+      })
     }
   },
   destroyed() {
     window.removeEventListener("resize", function() {
-      dataSourcePie.resize();
-    });
+      dataSourcePie.resize()
+    })
   },
   components: {
     MTopNav
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

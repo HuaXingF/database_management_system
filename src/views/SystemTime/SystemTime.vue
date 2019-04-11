@@ -51,7 +51,7 @@
 </template>
 
 <script>
-import MTopNav from "@/components/m-topNav/m-topNav";
+import MTopNav from "@/components/m-topNav/m-topNav"
 import {
   select_guanlian,
   select_shujuku,
@@ -59,33 +59,40 @@ import {
   select_containerCircle,
   select_hegelu,
   select_conGetAllTab
-} from "@/api/system-setting";
+} from "@/api/SystemTime"
+
 export default {
-  name: "systemSetting",
+  name: "SystemTime",
   data() {
     return {
       tableData: [],
-      tableData1: [] //核心数据库当前数据统计
+      //核心数据库当前数据统计
+      tableData1: [] 
     };
   },
   mounted() {
-    this.containerCircle(); // 当前ETL流程状态分布统计
-    this.hegelu(); // 当前各库数据合格率统计
-    this.conGetAllTab(); // 当前总关联成功比例
-    this.conCircle();
-    this.conColumn();
-    this.getAllTab();
-    this.getGuanLian();
-    this.guanlian();
-    this.shujuhu(); // 数据湖当前数据统计
-    this.shujuku(); // 核心数据库当前数据统计
+    // 当前ETL流程状态分布统计
+    this.containerCircle() 
+    // 当前各库数据合格率统计
+    this.hegelu()
+    // 当前总关联成功比例
+    this.conGetAllTab() 
+    this.conCircle()
+    this.conColumn()
+    this.getAllTab()
+    this.getGuanLian()
+    this.guanlian()
+    // 数据湖当前数据统计
+    this.shujuhu() 
+    // 核心数据库当前数据统计
+    this.shujuku() 
   },
   methods: {
     // 圆形图
     containerCircle() {
-      var myChart = this.$echarts.init(this.$refs.getCircle);
-      let option = null;
-      let name = null;
+      var myChart = this.$echarts.init(this.$refs.getCircle)
+      let option = null
+      let name = null
       option = {
         tooltip: {
           trigger: "item",
@@ -107,36 +114,36 @@ export default {
           }
         ],
         animation: false
-      };
-      myChart.setOption(option);
+      }
+      myChart.setOption(option)
       select_containerCircle().then(({ data }) => {
         name = data;
         myChart.setOption({
           series: [{ data: data }]
-        });
-      });
+        })
+      })
       if (option && typeof option === "object") {
-        myChart.setOption(option, true);
+        myChart.setOption(option, true)
       }
-      //   取消鼠标移入高亮
+      // 取消鼠标移入高亮
       myChart.on("mouseover", function() {
         myChart.dispatchAction({
           type: "downplay"
-        });
-      });
+        })
+      })
     },
     guanlian() {
       // 当前关联信息统计
-      var myChart = this.containerColumn(this.$refs.gitGuanLian);
-      let listX = ["data", "关联成功", "关联失败"];
-      let listY1 = [];
+      var myChart = this.containerColumn(this.$refs.gitGuanLian)
+      let listX = ["data", "关联成功", "关联失败"]
+      let listY1 = []
       select_guanlian().then(({ data }) => {
         for (let i = 0; i < data.failRelatedSum.length; i++) {
           listY1.push({
             data: data.primaryTabName[i],
             关联成功: data.successRelatedSum[i],
             关联失败: data.failRelatedSum[i]
-          });
+          })
         }
         let option = {
           legend: {
@@ -169,16 +176,16 @@ export default {
               }
             }
           ]
-        };
+        }
         myChart.setOption(option);
         if (option && typeof option === "object") {
           myChart.setOption(option, true);
         }
-      });
+      })
     },
     shujuhu() {
       // 数据湖当前数据统计
-      var myChart = this.containerColumn(this.$refs.getCloumn1);
+      var myChart = this.containerColumn(this.$refs.getCloumn1)
       select_shujuhu().then(({ data }) => {
         myChart.setOption({
           legend: {
@@ -193,12 +200,12 @@ export default {
             name: "数量"
           },
           series: [{ data: data.sumList }]
-        });
-      });
+        })
+      })
     },
     shujuku() {
       // 核心数据库当前数据统计
-      var myChart = this.containerColumn(this.$refs.getCloumn2);
+      var myChart = this.containerColumn(this.$refs.getCloumn2)
       select_shujuku().then(({ data }) => {
         myChart.setOption({
           legend: {
@@ -216,20 +223,20 @@ export default {
             name: "数量"
           },
           series: [{ data: data.sumList }]
-        });
-      });
+        })
+      })
     },
     hegelu() {
       // 当前各库数据合格/不合格统计
-      var myChart = this.containerColumn(this.$refs.getCloumn);
+      var myChart = this.containerColumn(this.$refs.getCloumn)
       select_hegelu().then(({ data }) => {
-        let x = new Array();
-        let hege = new Array();
-        let tol = new Array();
+        let x = new Array()
+        let hege = new Array()
+        let tol = new Array()
         for (let i = 0; i < data.length; i++) {
-          x[i] = data[i].fTableName;
-          hege[i] = data[i].fRegularOrNot;
-          tol[i] = data[i].rows;
+          x[i] = data[i].fTableName
+          hege[i] = data[i].fRegularOrNot
+          tol[i] = data[i].rows
         }
         myChart.setOption({
           legend: {
@@ -269,19 +276,20 @@ export default {
               data: hege
             }
           ]
-        });
-      });
+        })
+      })
     },
     // 当前ETL流程状态分布统计
     containerColumn: function(a) {
-      var myChart = this.$echarts.init(a);
-      let option = null;
+      var myChart = this.$echarts.init(a)
+      let option = null
       option = {
         tooltip: {
           trigger: "axis",
           axisPointer: {
             // 坐标轴指示器，坐标轴触发有效
-            type: "shadow" // 默认为直线，可选为：'line' | 'shadow'
+            // 默认为直线，可选为：'line' | 'shadow'
+            type: "shadow" 
           }
         },
         legend: {
@@ -313,45 +321,45 @@ export default {
             data: []
           }
         ]
-      };
-      myChart.setOption(option);
-      if (option && typeof option === "object") {
-        myChart.setOption(option, true);
       }
-      return myChart;
+      myChart.setOption(option)
+      if (option && typeof option === "object") {
+        myChart.setOption(option, true)
+      }
+      return myChart
     },
     // 当前总关联成功比例
     conGetAllTab() {
-      var myChart = this.$echarts.init(this.$refs.getLineMonthData);
-      let option = null;
-      option = {};
-      myChart.setOption(option);
+      var myChart = this.$echarts.init(this.$refs.getLineMonthData)
+      let option = null
+      option = {}
+      myChart.setOption(option)
       select_conGetAllTab().then(({ data }) => {
-        let listA = ["关联成功", "关联失败"];
-        let listY = [];
-        let listY1 = [];
-        let listY2 = [];
-        let map1 = { name: "关联成功", value: data.success };
-        let map2 = { name: "关联失败", value: data.fail };
-        let list2 = data.other;
+        let listA = ["关联成功", "关联失败"]
+        let listY = []
+        let listY1 = []
+        let listY2 = []
+        let map1 = { name: "关联成功", value: data.success }
+        let map2 = { name: "关联失败", value: data.fail }
+        let list2 = data.other
         for (let i = 0; i < list2.length; i++) {
-          listA.push(list2[i].base);
+          listA.push(list2[i].base)
           listY1.push({
             name: list2[i].base + "(关联成功)",
             value: list2[i].baseSuccess
-          });
+          })
           listY2.push({
             name: list2[i].base + "(关联失败)",
             value: list2[i].baseFail
-          });
+          })
         }
         for (let i = 0; i < listY1.length; i++) {
-          listY.push(listY1[i]);
+          listY.push(listY1[i])
         }
         for (let i = 0; i < listY2.length; i++) {
-          listY.push(listY2[i]);
+          listY.push(listY2[i])
         }
-        let list = [map1, map2];
+        let list = [map1, map2]
         myChart.setOption({
           tooltip: {
             trigger: "item",
@@ -421,52 +429,52 @@ export default {
               data: listY
             }
           ]
-        });
-      });
+        })
+      })
       if (option && typeof option === "object") {
-        myChart.setOption(option, true);
+        myChart.setOption(option, true)
       }
       //   取消鼠标移入高亮
       myChart.on("mouseover", function() {
         myChart.dispatchAction({
           type: "downplay"
-        });
-      });
+        })
+      })
     },
     // 自适应屏幕
     conCircle() {
       let self = this;
       window.addEventListener("resize", function() {
-        self.chart = self.$echarts.init(self.$refs.getCircle);
-        self.chart.resize();
-      });
+        self.chart = self.$echarts.init(self.$refs.getCircle)
+        self.chart.resize()
+      })
     },
     conColumn() {
-      let self = this;
+      let self = this
       window.addEventListener("resize", function() {
-        self.chart = self.$echarts.init(self.$refs.getCloumn);
-        self.chart.resize();
+        self.chart = self.$echarts.init(self.$refs.getCloumn)
+        self.chart.resize()
       });
     },
     getAllTab() {
-      let self = this;
+      let self = this
       window.addEventListener("resize", function() {
-        self.chart = self.$echarts.init(self.$refs.getAllTab);
-        self.chart.resize();
-      });
+        self.chart = self.$echarts.init(self.$refs.getAllTab)
+        self.chart.resize()
+      })
     },
     getGuanLian() {
-      let self = this;
+      let self = this
       window.addEventListener("resize", function() {
-        self.chart = self.$echarts.init(self.$refs.gitGuanLian);
-        self.chart.resize();
-      });
+        self.chart = self.$echarts.init(self.$refs.gitGuanLian)
+        self.chart.resize()
+      })
     }
   },
   components: {
     MTopNav
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

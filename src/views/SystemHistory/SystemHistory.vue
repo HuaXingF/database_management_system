@@ -24,8 +24,7 @@
                   range-separator="至"
                   start-placeholder="开始日期"
                   end-placeholder="结束日期"
-                  @change="changeTime"
-          >
+                  @change="changeTime">
           </el-date-picker>
         </div>
       </el-col>
@@ -58,7 +57,6 @@
             <p>费用关联数据统计</p>
           </el-col>
         </el-row>
-
         <!-- <tableLine :getId="lineWeekData"></tableLine> -->
         <div id="oneKernelDataAll" style="height: 300%" ref="getOneKernelDataAll"></div>
       </el-col>
@@ -76,57 +74,51 @@
 </template>
 
 <script>
-import MTopNav from "@/components/m-topNav/m-topNav";
+import MTopNav from "@/components/m-topNav/m-topNav"
 import {
   selectDimRelatedCountSum
+} from "@/api/SystemHistory"
 
-} from "@/api/medical-theme-manage.js"
 export default {
-
-  name: "medicalThemeManage",
+  name: "SystemHistory",
   data() {
     return {
       lineWeekData: "lineWeekData",
       lineMonthData: "lineMonthData",
-      getTable: {}, // 后台获取的数据  到时候直接覆盖
-      timeValue:'',//开始时间-结束时间
+      // 后台获取的数据  到时候直接覆盖
+      getTable: {}, 
+      //开始时间-结束时间
+      timeValue:'',
       value: "黄金糕"
-    };
+    }
   },
   mounted() {
-    this.init();
+    this.init()
   },
   methods: {
-      init(){
-          /**********************初始化时间***************************/
-          /*this.AllStartHistoryValue= this.initDate(true); // 开始时间
-          this.AllEndHistoryValue= this.initDate(false); // 结束时间*/
-          //this.changeTime();
-          this.initTime()
-      },
+    init(){
+      this.initTime()
+    },
     initTime(timeId){
-      let end_time=new Date();
-      let start_time=new Date(end_time -6*24*3600*1000);
-      //console.log(end_time)
+      let end_time=new Date()
+      let start_time=new Date(end_time -6*24*3600*1000)
         let time=[start_time,end_time]
       this.changeTime(timeId)
     },
-
     // 时间改变触发时间
     changeTime(timeId) {
-      let startTime = null;
-      let endTime = null;
+      let startTime = null
+      let endTime = null
       if (timeId == null) {
         startTime = this.$moment()
           .day(-4)
           .format("YYYY-MM-DD");
-        endTime = this.$moment().format("YYYY-MM-DD");
+        endTime = this.$moment().format("YYYY-MM-DD")
       } else {
-        startTime = this.$moment(timeId[0]).format("YYYY-MM-DD");
-        endTime = this.$moment(timeId[1]).format("YYYY-MM-DD");
+        startTime = this.$moment(timeId[0]).format("YYYY-MM-DD")
+        endTime = this.$moment(timeId[1]).format("YYYY-MM-DD")
       }
-       // console.log(time1,time2)
-      this.initValue(startTime,endTime);
+      this.initValue(startTime,endTime)
     },
     initValue(start_time,end_time){
       this.change1(start_time,end_time)
@@ -136,11 +128,14 @@ export default {
     },
     //患者关联数据统计
     change1(start_time,end_time){
-      let obj = {"fDimId": "001", "startTime": start_time, "endTime": end_time};
+      let obj = {
+        "fDimId": "001", 
+        "startTime": start_time, 
+        "endTime": end_time
+      }
       selectDimRelatedCountSum(obj).then(({data}) => {
-        this.getTable_patients = data;
-        //console.log(this.getTable_patients);
-        this.getLineKernelTable(this.getTable_patients, this.$refs.getLineKernelWeekData);
+        this.getTable_patients = data
+        this.getLineKernelTable(this.getTable_patients, this.$refs.getLineKernelWeekData)
       })
     },
     //医生关联数据统计
@@ -151,8 +146,8 @@ export default {
         "endTime": end_time
       }
       selectDimRelatedCountSum(obj).then(({data}) => {
-        this.getTable_doctor = data;
-        this.getLineKernelTable(this.getTable_doctor, this.$refs.getLineKernelMonthData);
+        this.getTable_doctor = data
+        this.getLineKernelTable(this.getTable_doctor, this.$refs.getLineKernelMonthData)
       })
     },
     // 费用关联数据统计
@@ -164,12 +159,11 @@ export default {
         endTime: end_time
       }
       selectDimRelatedCountSum(obj).then(({data}) => {
-       // console.log(data)
-        getTable = data;
-        this.getLineKernelTable(getTable, this.$refs.getOneKernelDataAll);
+        getTable = data
+        this.getLineKernelTable(getTable, this.$refs.getOneKernelDataAll)
       })
     },
-        //mesh关联数据统计
+    //mesh关联数据统计
     change4(start_time,end_time){
       let getTable = {}
       let obj = {
@@ -178,17 +172,13 @@ export default {
         endTime: end_time
       }
       selectDimRelatedCountSum(obj).then(({data}) => {
-       // console.log(data, "666")
         getTable = data
-        //console.log(getTable)
-        this.getLineKernelTable(getTable, this.$refs.getOneKernelDataAdd);
+        this.getLineKernelTable(getTable, this.$refs.getOneKernelDataAdd)
       })
     },
-        // 获取echarts函数
+    // 获取echarts函数
     getLineKernelTable(getTable, getRef) {
-      let dataSourcePie = this.$echarts.init(getRef);
-     /* let legentData = [];
-      let seriesData = [];*/
+      let dataSourcePie = this.$echarts.init(getRef)
       const option = {
         tooltip: {
           trigger: "axis"
@@ -222,18 +212,15 @@ export default {
                 { type: "max", name: "最大值" },
                 { type: "min", name: "最小值" }
               ]
-            },
-           /* markLine: {
-              data: [{ type: "average", name: "平均值" }]
-            }*/
+            }
           }
         ],
         animation: false
-      };
-      dataSourcePie.setOption(option);
+      }
+      dataSourcePie.setOption(option)
       window.addEventListener("resize", function() {
         dataSourcePie.resize();
-      });
+      })
     }
   },
   // watch: {

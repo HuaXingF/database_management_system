@@ -93,22 +93,28 @@
 </template>
 
 <script>
-import MTopNav from "@/components/m-topNav/m-topNav";
+import MTopNav from "@/components/m-topNav/m-topNav"
 import {
   selectotle_week,
   selectotle_month,
   select_trend,
-  selectotle_trend} from "@/api/message-search"
+  selectotle_trend
+} from "@/api/SystemKernelData"
+
 export default {
-  name: "messageSearch",
+  name: "SystemKernelData",
   data() {
     return {
       lineWeekData: "lineWeekData",
       lineMonthData: "lineMonthData",
-      getTable_week: null, // 后台获取的数据  到时候直接覆盖
-      getTable_month: null, // 后台获取的数据  到时候直接覆盖
-      getTable_trend_total: null, // 核心库单单库数据总量变化趋势
-      getTable_trend: null, // 核心库单库数据增量变化趋势
+      // 后台获取的数据  到时候直接覆盖
+      getTable_week: null,
+      // 后台获取的数据  到时候直接覆盖 
+      getTable_month: null, 
+      // 核心库单单库数据总量变化趋势
+      getTable_trend_total: null, 
+      // 核心库单库数据增量变化趋势
+      getTable_trend: null, 
       value: "健康档案",
       value4: "健康档案",
       value1: "selectTotalWeek",
@@ -177,57 +183,55 @@ export default {
           label: "公卫"
         }
       ],
-    };
-
+    }
   },
   mounted() {
     // 本周核心数据库数据总量变化图
-    this.conLineKernelWeekData();
+    this.conLineKernelWeekData()
     // 核心数据库数据总量月变化趋势图
-    this.conLineKernelMonthData();
+    this.conLineKernelMonthData()
     // 核心库单库数据总量变化趋势
-    this.conOneKernelDataAll();
+    this.conOneKernelDataAll()
     // 核心库单库数据增量变化趋势
-    this.conOneKernelDataAdd();
+    this.conOneKernelDataAdd()
   },
   methods: {
     // 本周核心数据库数据总量变化图
     conLineKernelWeekData() {
       selectotle_week().then(({data})=>{
-        this.getTable_week = data;
-        this.getLineKernelTable(this.getTable_week, this.$refs.getLineKernelWeekData);
-      });
+        this.getTable_week = data
+        this.getLineKernelTable(this.getTable_week, this.$refs.getLineKernelWeekData)
+      })
     },
     // 核心数据库数据总量月变化趋势图
     conLineKernelMonthData() {
       selectotle_month().then(({data})=>{
-        this.getTable_month= data;
-        //console.log(data,"777")
-        this.getLineKernelTable(this.getTable_month, this.$refs.getLineKernelMonthData);
+        this.getTable_month= data
+        this.getLineKernelTable(this.getTable_month, this.$refs.getLineKernelMonthData)
       });
     },
     // 核心库单库数据总量变化趋势
     conOneKernelDataAll() {
-      let obj = {"value" : this.value, "value1" : this.value1};
+      let obj = {
+        "value" : this.value, 
+        "value1" : this.value1
+      }
       selectotle_trend(obj).then((data)=>{
-        this.getTable_trend_total = data.data;
-        this.getLineKernelTable(this.getTable_trend_total, this.$refs.getOneKernelDataAll);
+        this.getTable_trend_total = data.data
+        this.getLineKernelTable(this.getTable_trend_total, this.$refs.getOneKernelDataAll)
       })
     },
     // 核心库单库数据增量变化趋势
     conOneKernelDataAdd() {
-      let obj = {"value" : this.value4, "value1" : this.value3};
+      let obj = {"value" : this.value4, "value1" : this.value3}
       select_trend(obj).then(({data})=>{
-        this.getTable_trend = data;
-        this.getLineKernelTable(this.getTable_trend, this.$refs.getOneKernelDataAdd);
+        this.getTable_trend = data
+        this.getLineKernelTable(this.getTable_trend, this.$refs.getOneKernelDataAdd)
       })
     },
-
     // 获取echarts函数
     getLineKernelTable(getTable, getRef) {
-      let dataSourcePie = this.$echarts.init(getRef);
-     // let legentData = [];
-      // seriesData = [];
+      let dataSourcePie = this.$echarts.init(getRef)
       const option = {
         tooltip: {
           trigger: "axis"
@@ -263,18 +267,15 @@ export default {
                 { type: "max", name: "最大值" },
                 { type: "min", name: "最小值" }
               ]
-            },
-           /* markLine: {
-              data: [{ type: "average", name: "平均值" }]
-            }*/
+            }
           }
         ],
         animation: false
       };
-      dataSourcePie.setOption(option);
+      dataSourcePie.setOption(option)
       window.addEventListener("resize", function() {
-        dataSourcePie.resize();
-      });
+        dataSourcePie.resize()
+      })
     }
   },
   // watch: {

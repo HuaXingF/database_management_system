@@ -58,111 +58,122 @@
 </template>
 
 <script>
-import MTopNav from "@/components/m-topNav/m-topNav";
-import { selectTiem, selectBing } from "@/api/SystemRuleHistoyr.js";
+import MTopNav from "@/components/m-topNav/m-topNav"
+import { 
+  selectTiem, 
+  selectBing 
+} from "@/api/SystemRuleHistoy"
+
 export default {
+  name: 'SystemRuleHistoyData',
   data() {
     return {
-      getTable: [], // 后台获取的数据  到时候直接覆盖
-      AllStartHistoryValue: "", // 开始时间
+      // 后台获取的数据  到时候直接覆盖
+      getTable: [], 
+      // 开始时间
+      AllStartHistoryValue: "", 
       timeValue: "",
       getTableData: []
     };
   },
   mounted() {
-    this.getNowData();
+    this.getNowData()
     // 数据库信息合格率统计
-    // this.conLineWeekData();
+    // this.conLineWeekData()
     // 数据库合格率排行榜
-    // this.conLineMonthData();
+    // this.conLineMonthData()
     // 数据库合规数据量统计
-    // this.conOneDataAll();
+    // this.conOneDataAll()
   },
   methods: {
     getNowData() {
-      this.timeChange();
+      this.timeChange()
     },
     //时间改变触发时间
     timeChange(timeId) {
-      let startTime = null;
-      let endTime = null;
+      let startTime = null
+      let endTime = null
       if (timeId == undefined) {
         startTime = this.$moment()
           .day(-4)
           .format("YYYY-MM-DD");
-        endTime = this.$moment().format("YYYY-MM-DD");
+        endTime = this.$moment().format("YYYY-MM-DD")
       } else {
-        startTime = this.$moment(timeId[0]).format("YYYY-MM-DD");
-        endTime = this.$moment(timeId[1]).format("YYYY-MM-DD");
+        startTime = this.$moment(timeId[0]).format("YYYY-MM-DD")
+        endTime = this.$moment(timeId[1]).format("YYYY-MM-DD")
       }
-      this.changeAllTable(startTime, endTime);
+      this.changeAllTable(startTime, endTime)
     },
     changeAllTable(start_time, end_time) {
-      this.change1(start_time, end_time);
-      this.change2(start_time, end_time);
-      this.change3(start_time, end_time);
+      this.change1(start_time, end_time)
+      this.change2(start_time, end_time)
+      this.change3(start_time, end_time)
     },
     // 数据库合规数据量统计
     change1(start_time, end_time) {
-      let getTableData = [];
-      let getTable = [];
-      let getTipName = [];
-      let getAllTime = { startTime: start_time, endTime: end_time };
+      let getTableData = []
+      let getTable = []
+      let getTipName = []
+      let getAllTime = { startTime: start_time, endTime: end_time }
       selectTiem(getAllTime).then(({ data }) => {
-        getTableData.push({ data: data.day });
+        getTableData.push({ 
+          data: data.day 
+        })
         data.ku.forEach(item => {
-          getTipName.push(item);
+          getTipName.push(item)
           getTable.push({
             name: item,
             type: "line",
             data: null
-          });
-        });
+          })
+        })
         getTable.forEach((item, index) => {
           data.zonghegelist.forEach((item1, index1) => {
             if (index == index1) {
-              item.data = item1;
+              item.data = item1
             }
-          });
-        });
+          })
+        })
         this.getLineTable(
           getTipName,
           getTableData,
           getTable,
           this.$refs.getOneDataAll
-        );
-      });
+        )
+      })
     },
     // 数据库信息合格率统计
     change2(start_time, end_time) {
-      let getTableData = [];
-      let getTable = [];
-      let getTipName = [];
-      let getFormatter = "";
-      let getAllTime = { startTime: start_time, endTime: end_time };
+      let getTableData = []
+      let getTable = []
+      let getTipName = []
+      let getFormatter = ""
+      let getAllTime = { 
+        startTime: start_time, 
+        endTime: end_time 
+      }
       selectTiem(getAllTime).then(({ data }) => {
-        getTableData.push({ data: data.day });
+        getTableData.push({ data: data.day })
         data.ku.forEach((item, index) => {
           if (index == 0) {
-            getFormatter = `{b${index}}<br/>`;
+            getFormatter = `{b${index}}<br/>`
           }
-          getFormatter += `{a${index}}:{c${index}}%<br />`;
-          getTipName.push(item);
+          getFormatter += `{a${index}}:{c${index}}%<br />`
+          getTipName.push(item)
           getTable.push({
             name: item,
             type: "line",
             data: null
-          });
-        });
+          })
+        })
         getTable.forEach((item, index) => {
           data.zongHegelvList.forEach((item1, index1) => {
             if (index == index1) {
-              item.data = item1;
+              item.data = item1
             }
-          });
-        });
-
-        let dataSourcePie = this.$echarts.init(this.$refs.getLineWeekData);
+          })
+        })
+        let dataSourcePie = this.$echarts.init(this.$refs.getLineWeekData)
         const option = {
           tooltip: {
             trigger: "axis",
@@ -188,84 +199,83 @@ export default {
           },
           series: getTable,
           animation: false
-        };
-        dataSourcePie.setOption(option);
+        }
+        dataSourcePie.setOption(option)
         var triggerAction = function(action, selected) {
-          option.legend = [];
+          option.legend = []
           for (name in selected) {
             if (selected.hasOwnProperty(name)) {
-              option.legend.push({ name: name });
+              option.legend.push({ name: name })
             }
           }
           dataSourcePie.dispatchAction({
             type: action,
             batch: option.legend
-          });
-        };
+          })
+        }
         // 是否选中其中一个
         var isOneUnSelect = function(selected) {
-          var unSelectedCount = 0;
+          var unSelectedCount = 0
           for (name in selected) {
             if (!selected.hasOwnProperty(name)) {
-              continue;
+              continue
             }
-
             if (selected[name] == false) {
-              ++unSelectedCount;
+              ++unSelectedCount
             }
           }
-          return unSelectedCount == 1;
-        };
+          return unSelectedCount == 1
+        }
         dataSourcePie.on("legendselectchanged", obj => {
-          var selected = obj.selected;
-          var legend = obj.name;
+          var selected = obj.selected
+          var legend = obj.name
           if (selected != undefined) {
             if (isOneUnSelect(selected)) {
               triggerAction("legendSelect", selected);
               this.$router.push({
                 name: "数据规则历史统计信息(表)",
                 params: { baseName: legend }
-              });
+              })
             }
           }
-        });
+        })
         window.addEventListener("resize", function() {
-          dataSourcePie.resize();
-        });
-      });
+          dataSourcePie.resize()
+        })
+      })
     },
     // 数据库合格率排行榜
     change3(start_time, end_time) {
-      let getAllData = [];
-      let getSelectData = [];
-      let getOutsideData = [];
-      let getAllTime = { startTime: start_time, endTime: end_time };
+      let getAllData = []
+      let getSelectData = []
+      let getOutsideData = []
+      let getAllTime = { startTime: start_time, endTime: end_time }
       selectBing(getAllTime).then(({ data }) => {
         data.allList.forEach(item => {
-          getAllData.push(item.fTableName);
+          getAllData.push(item.fTableName)
           getOutsideData.push({
             value: item.fRegularOrNot,
             name: item.fTableName
-          });
-        });
+          })
+        })
         data.kuList.forEach(item => {
-          getAllData.push(item.fTableName);
+          getAllData.push(item.fTableName)
           getSelectData.push({
             value: item.fRegularOrNot,
             name: item.fTableName
-          });
-        });
+          })
+        })
         this.getPieTable(
           getAllData,
           getSelectData,
           getOutsideData,
           this.$refs.getLineMonthData
-        );
-      });
+        )
+      })
     },
     // 获取 折线图line的 echarts函数
     getLineTable(getTipName, getTableData, getTable, getRef) {
-      let dataSourcePie = this.$echarts.init(getRef);
+      let dataSourcePie = this.$echarts.init(getRef)
       const option = {
         tooltip: {
           trigger: "axis"
@@ -285,58 +295,54 @@ export default {
         },
         series: getTable,
         animation: false
-      };
-      dataSourcePie.setOption(option);
+      }
+      dataSourcePie.setOption(option)
       var triggerAction = function(action, selected) {
-        option.legend = [];
+        option.legend = []
         for (name in selected) {
           if (selected.hasOwnProperty(name)) {
-            option.legend.push({ name: name });
+            option.legend.push({ name: name })
           }
         }
         dataSourcePie.dispatchAction({
           type: action,
           batch: option.legend
-        });
-      };
+        })
+      }
       // 是否选中其中一个
       var isOneUnSelect = function(selected) {
-        var unSelectedCount = 0;
+        var unSelectedCount = 0
         for (name in selected) {
           if (!selected.hasOwnProperty(name)) {
-            continue;
+            continue
           }
-
           if (selected[name] == false) {
-            ++unSelectedCount;
+            ++unSelectedCount
           }
         }
-        return unSelectedCount == 1;
-      };
+        return unSelectedCount == 1
+      }
       dataSourcePie.on("legendselectchanged", obj => {
-        var selected = obj.selected;
-        var legend = obj.name;
+        var selected = obj.selected
+        var legend = obj.name
         if (selected != undefined) {
           if (isOneUnSelect(selected)) {
-            triggerAction("legendSelect", selected);
-            localStorage.setItem("baseName", legend);
+            triggerAction("legendSelect", selected)
+            localStorage.setItem("baseName", legend)
             this.$router.push({
               name: "数据规则历史统计信息(表)",
               params: { baseName: legend }
-            });
+            })
           }
         }
-      });
+      })
       window.addEventListener("resize", function() {
         dataSourcePie.resize();
-      });
+      })
     },
-
     // 获取饼图echarts  函数
     getPieTable(getAllData, getSelectData, getOutsideData, getRef) {
-      let dataSourcePie = this.$echarts.init(getRef);
-      /*let legentData = [];
-      let seriesData = [];*/
+      let dataSourcePie = this.$echarts.init(getRef)
       const option = {
         tooltip: {
           trigger: "item",
@@ -406,17 +412,17 @@ export default {
           }
         ],
         animation: false
-      };
-      dataSourcePie.setOption(option);
+      }
+      dataSourcePie.setOption(option)
       window.addEventListener("resize", function() {
-        dataSourcePie.resize();
-      });
+        dataSourcePie.resize()
+      })
     }
   },
   components: {
     MTopNav
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

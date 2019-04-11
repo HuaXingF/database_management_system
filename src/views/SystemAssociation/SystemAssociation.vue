@@ -40,14 +40,18 @@
 </template>
 
 <script>
-import MTopNav from "@/components/m-topNav/m-topNav";
-import { selectTableSumDesc, selectDimRatio } from "@/api/expert-link.js";
+import MTopNav from "@/components/m-topNav/m-topNav"
+import { 
+  selectTableSumDesc, 
+  selectDimRatio 
+} from "@/api/SystemAssociation"
+
 export default {
-  name: "expertLink",
+  name: "SystemAssociation",
   data() {
     return {
       tablePie: []
-    };
+    }
   },
   mounted() {
     // 当前各表据关联总量排行榜

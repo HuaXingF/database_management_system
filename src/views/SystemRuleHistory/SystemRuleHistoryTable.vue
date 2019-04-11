@@ -59,60 +59,59 @@
 </template>
 
 <script>
-import MTopNav from "@/components/m-topNav/m-topNav";
+import MTopNav from "@/components/m-topNav/m-topNav"
 import {
   selectRuleTable,
   selectRuleComTable
-} from "@/api/SystemRuleHistoyr.js";
+} from "@/api/SystemRuleHistoy"
+
 export default {
-  name: "messageSearch",
+  name: "SystemRuleHistoyTable",
   data() {
     return {
-      AllStartHistoryValue: "", // 开始时间
+      // 开始时间
+      AllStartHistoryValue: "", 
       flagTime: 0,
       baseName: ""
-    };
+    }
   },
   created() {
-    this.baseName = this.$route.params.baseName;
-    // if (this.$route.params.baseName == undefined) {
-    //   this.$router.push({ name: "数据规则历史信息统计" });
-    // }
+    this.baseName = this.$route.params.baseName
   },
   mounted() {
-    this.init();
+    this.init()
   },
   methods: {
     init(timeId) {
-      this.selectTime(timeId);
+      this.selectTime(timeId)
     },
     // 时间选择器改变时触发，获取时间
     selectTime(timeId) {
-      let startTime = null;
-      let endTime = null;
+      let startTime = null
+      let endTime = null
       if (timeId == undefined) {
         startTime = this.$moment()
           .day(-4)
-          .format("YYYY-MM-DD");
-        endTime = this.$moment().format("YYYY-MM-DD");
+          .format("YYYY-MM-DD")
+        endTime = this.$moment().format("YYYY-MM-DD")
       } else {
-        startTime = this.$moment(timeId[0]).format("YYYY-MM-DD");
-        endTime = this.$moment(timeId[1]).format("YYYY-MM-DD");
+        startTime = this.$moment(timeId[0]).format("YYYY-MM-DD")
+        endTime = this.$moment(timeId[1]).format("YYYY-MM-DD")
       }
-      this.initQualified(startTime, endTime);
-      this.initCompliance(startTime, endTime);
+      this.initQualified(startTime, endTime)
+      this.initCompliance(startTime, endTime)
     },
     // 数据库中表规则合格数据量统计
     initQualified(startTime, endTime) {
-      let getXlist = [];
-      let getYlist = [];
-      let getAllList = [];
-      let getAllData = [];
-      let baseName = this.baseName;
+      let getXlist = []
+      let getYlist = []
+      let getAllList = []
+      let getAllData = []
+      let baseName = this.baseName
       selectRuleTable({ startTime, endTime, baseName }).then(({ data }) => {
         data.xList.forEach(item => {
-          getXlist.push(item);
-        });
+          getXlist.push(item)
+        })
         data.all.forEach(item => {
           getAllData.push({
             name: item.name[0],
@@ -125,30 +124,29 @@ export default {
               }
             },
             data: item.num
-          });
-        });
+          })
+        })
         this.getColumnAssociTable(
           getXlist,
           getAllData,
           this.$refs.getColumnAllQualified
-        );
-      });
+        )
+      })
     },
     // 数据库中表合规数据量统计
     initCompliance(startTime, endTime) {
-      let getXlist = [];
-      let getYlist = [];
-      let getAllData = [];
-      let getAllLine = [];
-      let baseName = this.baseName;
+      let getXlist = []
+      let getYlist = []
+      let getAllData = []
+      let getAllLine = []
+      let baseName = this.baseName
       selectRuleComTable({ startTime, endTime, baseName }).then(({ data }) => {
         data.xList.forEach((item, index) => {
-          getXlist.push(item);
-        });
+          getXlist.push(item)
+        })
         data.genList.forEach(item => {
-          getAllLine.push(item);
-        });
-        // console.log(getAllData);
+          getAllLine.push(item)
+        })
         data.yList.forEach((item, index) => {
           getYlist.push(item);
           getAllLine.forEach((item1, index1) => {
@@ -157,20 +155,20 @@ export default {
                 name: item1,
                 type: "line",
                 data: item
-              });
+              })
             }
-          });
-        });
+          })
+        })
         this.getLineKernelTable(
           getXlist,
           getAllData,
           this.$refs.getLineAllQualified
-        );
-      });
+        )
+      })
     },
     // 获取折线图  echarts函数
     getLineKernelTable(getXlist, getAllData, getRef) {
-      let dataSourcePie = this.$echarts.init(getRef);
+      let dataSourcePie = this.$echarts.init(getRef)
       const option = {
         tooltip: {
           trigger: "axis"
@@ -191,59 +189,59 @@ export default {
         series: getAllData,
         animation: false
       };
-      dataSourcePie.setOption(option);
+      dataSourcePie.setOption(option)
       var triggerAction = function(action, selected) {
-        option.legend = [];
+        option.legend = []
         for (name in selected) {
           if (selected.hasOwnProperty(name)) {
-            option.legend.push({ name: name });
+            option.legend.push({ name: name })
           }
         }
         dataSourcePie.dispatchAction({
           type: action,
           batch: option.legend
-        });
-      };
+        })
+      }
       // 是否选中其中一个
       var isOneUnSelect = function(selected) {
-        var unSelectedCount = 0;
+        var unSelectedCount = 0
         for (name in selected) {
           if (!selected.hasOwnProperty(name)) {
-            continue;
+            continue
           }
           if (selected[name] == false) {
-            ++unSelectedCount;
+            ++unSelectedCount
           }
         }
-        return unSelectedCount == 1;
-      };
+        return unSelectedCount == 1
+      }
       dataSourcePie.on("legendselectchanged", obj => {
-        var selected = obj.selected;
-        var legend = obj.name;
+        var selected = obj.selected
+        var legend = obj.name
         if (selected != undefined) {
           if (isOneUnSelect(selected)) {
-            triggerAction("legendSelect", selected);
+            triggerAction("legendSelect", selected)
             this.$router.push({
               name: "数据规则历史统计信息(字段)",
               params: { baseName: legend }
-            });
+            })
           }
         }
-      });
+      })
       window.addEventListener("resize", function() {
         dataSourcePie.resize();
-      });
+      })
     },
-
     // 获取柱形图 echarts
     getColumnAssociTable(getXlist, getAllData, getRef) {
-      let dataSourcePie = this.$echarts.init(getRef);
+      let dataSourcePie = this.$echarts.init(getRef)
       const option = {
         tooltip: {
           trigger: "axis",
           axisPointer: {
             // 坐标轴指示器，坐标轴触发有效
-            type: "shadow" // 默认为直线，可选为：'line' | 'shadow'
+            // 默认为直线，可选为：'line' | 'shadow'
+            type: "shadow" 
           }
         },
         legend: {
@@ -265,17 +263,17 @@ export default {
           data: getXlist
         },
         series: getAllData
-      };
-      dataSourcePie.setOption(option);
+      }
+      dataSourcePie.setOption(option)
       window.addEventListener("resize", function() {
-        dataSourcePie.resize();
-      });
+        dataSourcePie.resize()
+      })
     }
   },
   components: {
     MTopNav
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

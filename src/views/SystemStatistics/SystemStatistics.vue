@@ -39,18 +39,18 @@
 </template>
 
 <script>
-import MTopNav from "@/components/m-topNav/m-topNav";
+import MTopNav from "@/components/m-topNav/m-topNav"
 
 export default {
-  name: "expertLink",
+  name: "SystemStatistics",
   data() {
     return {
       tablePie: null
-    };
+    }
   },
   mounted() {
     // 当前各规则统计数据合格率排行榜（top10）
-    this.conColumnRule();
+    this.conColumnRule()
     // 当前各库数据合格率排行榜（top10）
     this.conColumnData()
     // 当前各表数据合格率排行榜（top10）
@@ -61,29 +61,30 @@ export default {
   methods: {
     // 当前各规则统计数据合格率排行榜（top10）
     conColumnRule() {
-      this.getColumnTable(this.tablePie, this.$refs.getColumnRule);
+      this.getColumnTable(this.tablePie, this.$refs.getColumnRule)
     },
     // 当前各库数据合格率排行榜（top10）
     conColumnData() {
-      this.getColumnTable(this.tablePie, this.$refs.getColumnData);
+      this.getColumnTable(this.tablePie, this.$refs.getColumnData)
     },
     // 当前各表数据合格率排行榜（top10）
     conColumnTable() {
-      this.getColumnTable(this.tablePie, this.$refs.getColumnTable);
+      this.getColumnTable(this.tablePie, this.$refs.getColumnTable)
     },
     // 当前各字段数据合格率排行榜（top10）
     conColumnStr() {
-      this.getColumnTable(this.tablePie, this.$refs.getColumnStr);
+      this.getColumnTable(this.tablePie, this.$refs.getColumnStr)
     },
     // 获取柱形图  echarts函数
     getColumnTable(tablePie, getRef) {
-      let dataSourcePie = this.$echarts.init(getRef);
+      let dataSourcePie = this.$echarts.init(getRef)
       const option = {
         tooltip: {
           trigger: "axis",
           axisPointer: {
             // 坐标轴指示器，坐标轴触发有效
-            type: "shadow" // 默认为直线，可选为：'line' | 'shadow'
+            // 默认为直线，可选为：'line' | 'shadow'
+            type: "shadow" 
           }
         },
         legend: {
@@ -126,17 +127,17 @@ export default {
           }
         ],
         animation: false
-      };
-      dataSourcePie.setOption(option);
+      }
+      dataSourcePie.setOption(option)
       window.addEventListener("resize", function() {
-        dataSourcePie.resize();
-      });
+        dataSourcePie.resize()
+      })
     }
   },
   components: {
     MTopNav
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

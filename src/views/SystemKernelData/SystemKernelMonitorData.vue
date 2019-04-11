@@ -44,37 +44,42 @@
 </template>
 
 <script>
-import MTopNav from "@/components/m-topNav/m-topNav";
+import MTopNav from "@/components/m-topNav/m-topNav"
 import {
   SystemDataNowWeek,
   SystemDataNowMonth,
   SystemDataAddWeek,
   SystemDataAddMonth
-} from "@/api/message-search.js";
+} from "@/api/SystemKernelData"
+
 export default {
+  name: 'SystemKernelMonitorData',
   data() {
     return {
-      getTable: null, // 后台获取的数据  到时候直接覆盖
-      AllStartHistoryValue: "", // 开始时间
-      AllEndHistoryValue: "" // 结束时间
+      // 后台获取的数据  到时候直接覆盖
+      getTable: null, 
+      // 开始时间
+      AllStartHistoryValue: "", 
+      // 结束时间
+      AllEndHistoryValue: "" 
     };
   },
   mounted() {
     // 本周核心数据库中各库数据总量变化趋势图
-    this.conKelnelDataAllWeek();
+    this.conKelnelDataAllWeek()
     // 每月核心数据库中各库数据总量变化趋势图
-    this.conKelnelDataAllMonth();
+    this.conKelnelDataAllMonth()
     // 本周核心数据库中各库数据增量比例图
-    this.conKelnelDataAddWeek();
+    this.conKelnelDataAddWeek()
     // 本月核心数据库中各库数据增量排行榜
-    this.conKelnelDataAddMonth();
+    this.conKelnelDataAddMonth()
   },
   methods: {
     // 本周核心数据库中各库数据总量变化趋势图
     conKelnelDataAllWeek() {
-      SystemDataNowWeek().then(({ data }) => {
-        let getXlist = data.xList;
-        let getData = [];
+      SystemDataNowWeek().then(({data}) => {
+        let getXlist = data.xList
+        let getData = []
         data.genList.forEach((item, index) => {
           data.allList.forEach((item1, index1) => {
             if (index == index1) {
@@ -82,18 +87,18 @@ export default {
                 name: item,
                 type: "line",
                 data: item1
-              });
+              })
             }
-          });
-        });
-        this.getLineTable(getXlist, getData, this.$refs.getKelnelDataAllWeek);
-      });
+          })
+        })
+        this.getLineTable(getXlist, getData, this.$refs.getKelnelDataAllWeek)
+      })
     },
     // 每月核心数据库中各库数据总量变化趋势图
     conKelnelDataAllMonth() {
-      SystemDataNowMonth().then(({ data }) => {
-        let getXlist = data.xList;
-        let getData = [];
+      SystemDataNowMonth().then(({data}) => {
+        let getXlist = data.xList
+        let getData = []
         data.genList.forEach((item, index) => {
           data.allList.forEach((item1, index1) => {
             if (index == index1) {
@@ -101,39 +106,39 @@ export default {
                 name: item,
                 type: "line",
                 data: item1
-              });
+              })
             }
-          });
-        });
-        this.getLineTable(getXlist, getData, this.$refs.getKelnelDataAllMonth);
-      });
+          })
+        })
+        this.getLineTable(getXlist, getData, this.$refs.getKelnelDataAllMonth)
+      })
     },
     // 本周核心数据库中各库数据增量比例图
     conKelnelDataAddWeek() {
-      SystemDataAddWeek().then(({ data }) => {
-        let getName = [];
+      SystemDataAddWeek().then(({data}) => {
+        let getName = []
         data.forEach(item => {
-          getName.push(item.name);
-        });
-        let getData = data;
-        this.getPieTable(getName, getData, this.$refs.getKelnelDataAddWeek);
-      });
+          getName.push(item.name)
+        })
+        let getData = data
+        this.getPieTable(getName, getData, this.$refs.getKelnelDataAddWeek)
+      })
     },
     // 本月核心数据库中各库数据增量排行榜
     conKelnelDataAddMonth() {
-      SystemDataAddMonth().then(({ data }) => {
-        let getXlist = data.xlist;
-        let getData = data.ylist;
+      SystemDataAddMonth().then(({data}) => {
+        let getXlist = data.xlist
+        let getData = data.ylist
         this.getColumnTable(
           getXlist,
           getData,
           this.$refs.getKelnelDataAddMonth
-        );
-      });
+        )
+      })
     },
     // 获取 折线图line的 echarts函数
     getLineTable(getXlist, getData, getRef) {
-      let dataSourcePie = this.$echarts.init(getRef);
+      let dataSourcePie = this.$echarts.init(getRef)
       const option = {
         tooltip: {
           trigger: "axis"
@@ -153,57 +158,56 @@ export default {
         },
         series: getData,
         animation: false
-      };
-      dataSourcePie.setOption(option);
+      }
+      dataSourcePie.setOption(option)
       var triggerAction = function(action, selected) {
-        option.legend = [];
+        option.legend = []
         for (name in selected) {
           if (selected.hasOwnProperty(name)) {
-            option.legend.push({ name: name });
+            option.legend.push({ name: name })
           }
         }
         dataSourcePie.dispatchAction({
           type: action,
           batch: option.legend
-        });
-      };
+        })
+      }
       // 是否选中其中一个
       var isOneUnSelect = function(selected) {
-        var unSelectedCount = 0;
+        var unSelectedCount = 0
         for (name in selected) {
           if (!selected.hasOwnProperty(name)) {
-            continue;
+            continue
           }
-
           if (selected[name] == false) {
-            ++unSelectedCount;
+            ++unSelectedCount
           }
         }
-        return unSelectedCount == 1;
-      };
+        return unSelectedCount == 1
+      }
       dataSourcePie.on("legendselectchanged", obj => {
-        var selected = obj.selected;
-        var legend = obj.name;
+        var selected = obj.selected
+        var legend = obj.name
         if (selected != undefined) {
           if (isOneUnSelect(selected)) {
-            triggerAction("legendSelect", selected);
+            triggerAction("legendSelect", selected)
             this.$router.push({
               name: "核心数据库数据监控(表)",
               params: { baseName: legend }
-            });
+            })
           }
         }
-      });
+      })
       window.addEventListener("resize", function() {
-        dataSourcePie.resize();
-      });
+        dataSourcePie.resize()
+      })
       window.addEventListener("resize", function() {
-        dataSourcePie.resize();
-      });
+        dataSourcePie.resize()
+      })
     },
     // 获取饼图echarts  函数
     getPieTable(getName, getData, getRef) {
-      let dataSourcePie = this.$echarts.init(getRef);
+      let dataSourcePie = this.$echarts.init(getRef)
       const option = {
         tooltip: {
           trigger: "item",
@@ -225,14 +229,14 @@ export default {
           }
         ],
         animation: false
-      };
-      dataSourcePie.setOption(option);
+      }
+      dataSourcePie.setOption(option)
       window.addEventListener("resize", function() {
-        dataSourcePie.resize();
-      });
+        dataSourcePie.resize()
+      })
       dataSourcePie.on("click", function(res) {
-        console.log(res.name);
-      });
+        console.log(res.name)
+      })
     },
     // 获取柱形图  echarts函数
     getColumnTable(getXlist, getData, getRef) {
@@ -242,7 +246,8 @@ export default {
           trigger: "axis",
           axisPointer: {
             // 坐标轴指示器，坐标轴触发有效
-            type: "shadow" // 默认为直线，可选为：'line' | 'shadow'
+            // 默认为直线，可选为：'line' | 'shadow'
+            type: "shadow" 
           }
         },
         legend: {
@@ -277,22 +282,22 @@ export default {
           }
         ],
         animation: false
-      };
-      dataSourcePie.setOption(option);
+      }
+      dataSourcePie.setOption(option)
       window.addEventListener("resize", function() {
-        dataSourcePie.resize();
-      });
+        dataSourcePie.resize()
+      })
     }
   },
   destroyed() {
     window.removeEventListener("resize", function() {
-      dataSourcePie.resize();
-    });
+      dataSourcePie.resize()
+    })
   },
   components: {
     MTopNav
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>
