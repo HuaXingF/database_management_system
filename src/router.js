@@ -63,7 +63,6 @@ export default new Router({
                 },
             ]
         },
-
         {
             path: '/',
             name: '数据关联信息监控',

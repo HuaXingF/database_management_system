@@ -6,3 +6,9 @@ export const SystemRuleNowRule = params => {
     const url = `${baseURL}/ruleApplyResult/selectAllRuleHeGeLv`
     return axios.post(url, { params: params })
 }
+
+// 当前各表数据合格率排行榜
+export const SystemRuleNowTable = params => {
+    const url = `${baseURL}/ruleApplyResult/selectAllTabHeGeLv`
+    return axios.post(url, { params: params })
+}
