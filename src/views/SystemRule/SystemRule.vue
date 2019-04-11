@@ -43,12 +43,15 @@
                     <el-table-column prop="fRuleDefine" label="规则定义"></el-table-column>
                     <el-table-column prop="ruleOpera" label="操作">
                         <template slot-scope="scope">
-                            <el-button type="text" size="small" @click="editBtn(scope.$index, tableData)"><i style="font-size: 25px;" class="el-icon-edit" title="编辑"></i></el-button>
+                            <el-button type="text" size="small" @click="editBtn(scope.$index, tableData)">
+                                <i style="font-size: 18px;" class="el-icon-edit" title="编辑"></i>
+                            </el-button>
                             <el-button
                                     @click.native.prevent="deleteRow(scope.$index, tableData)"
                                     type="text"
-                                    size="small"
-                            ><i style="font-size: 25px;" class="el-icon-delete" title="删除"></i></el-button>
+                                    size="small">
+                                <i style="font-size: 18px;" class="el-icon-delete" title="删除"></i>
+                            </el-button>
                         </template>
                     </el-table-column>
                 </el-table>
