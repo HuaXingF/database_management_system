@@ -40,7 +40,7 @@
 
 <script>
 import MTopNav from "@/components/m-topNav/m-topNav";
-
+import { SystemRuleNowRule } from "../../api/SystemRuleNow.js";
 export default {
   name: "expertLink",
   data() {
@@ -52,16 +52,20 @@ export default {
     // 当前各规则统计数据合格率排行榜（top10）
     this.conColumnRule();
     // 当前各库数据合格率排行榜（top10）
-    this.conColumnData()
-    // 当前各表数据合格率排行榜（top10）
-    this.conColumnTable()
-    // 当前各字段数据合格率排行榜（top10）
-    this.conColumnStr()
+    // this.conColumnData();
+    // // 当前各表数据合格率排行榜（top10）
+    // this.conColumnTable();
+    // // 当前各字段数据合格率排行榜（top10）
+    // this.conColumnStr();
   },
   methods: {
     // 当前各规则统计数据合格率排行榜（top10）
     conColumnRule() {
-      this.getColumnTable(this.tablePie, this.$refs.getColumnRule);
+      SystemRuleNowRule().then(({ data }) => {
+        let getXlist = data.xList;
+        let getData = data.yList;
+        this.getColumnTable(getXlist, getData, this.$refs.getColumnRule);
+      });
     },
     // 当前各库数据合格率排行榜（top10）
     conColumnData() {
@@ -76,11 +80,12 @@ export default {
       this.getColumnTable(this.tablePie, this.$refs.getColumnStr);
     },
     // 获取柱形图  echarts函数
-    getColumnTable(tablePie, getRef) {
+    getColumnTable(getXlist, getData, getRef) {
       let dataSourcePie = this.$echarts.init(getRef);
       const option = {
         tooltip: {
           trigger: "axis",
+          formatter: "{a0}:{c0}%<br />",
           axisPointer: {
             // 坐标轴指示器，坐标轴触发有效
             type: "shadow" // 默认为直线，可选为：'line' | 'shadow'
@@ -91,27 +96,26 @@ export default {
         },
         xAxis: [
           {
+            name: "名称",
             type: "category",
-            data: [
-              "电子病历",
-              "健康档案",
-              "全员人口",
-              "公卫",
-              "基础信息",
-              "门诊记录"
-            ]
+            data: getXlist
           }
         ],
         yAxis: [
           {
-            type: "value"
+            name: "数量",
+            type: "value",
+            axisLabel: {
+              show: true,
+              interval: "auto",
+              formatter: "{value} %"
+            }
           }
         ],
         series: [
           {
-            name: "联盟广告",
+            name: "总量",
             type: "bar",
-            stack: "广告",
             itemStyle: {
               color: "#C23531"
             },
@@ -122,7 +126,7 @@ export default {
                 color: "#fff"
               }
             },
-            data: [220, 182, 191, 234, 290, 330]
+            data: getData
           }
         ],
         animation: false

@@ -6,19 +6,19 @@
           <el-breadcrumb-item>
             <i class="fa fa-home"></i>
           </el-breadcrumb-item>
-          <el-breadcrumb-item>核心数据库数据监控(库)</el-breadcrumb-item>
+          <el-breadcrumb-item :to="{path: '/SystemKernelMonitorData'}">核心数据库数据监控(库)</el-breadcrumb-item>
           <el-breadcrumb-item>{{$route.name}}</el-breadcrumb-item>
         </el-breadcrumb>
       </template>
       <template slot="operation"></template>
     </MTopNav>
-    <el-row :gutter="50">
+    <el-row :gutter="50" class="selectBox">
       <el-col :sm="12">
-        <p>本周核心数据库中各表数据总量变化趋势图</p>
+        <p>本周{{this.baseName}}中各表数据总量变化趋势图</p>
         <div id="KelnelTableAllWeek" style="height: 300%" ref="getKelnelTableAllWeek"></div>
       </el-col>
       <el-col :sm="12">
-        <p>每月核心数据库中各表数据总量变化趋势图</p>
+        <p>每月{{this.baseName}}中各表数据总量变化趋势图</p>
         <div id="KelnelTableAllMonth" style="height: 300%" ref="getKelnelTableAllMonth"></div>
       </el-col>
     </el-row>
@@ -27,7 +27,7 @@
       <el-col :sm="12">
         <el-row :gutter="10">
           <el-col :span="24">
-            <p>本周核心数据库中各表数据增量比例图</p>
+            <p>本周{{this.baseName}}中各表数据增量比例图</p>
           </el-col>
         </el-row>
         <div id="KelnelTableAddWeek" style="height: 300%" ref="getKelnelTableAddWeek"></div>
@@ -35,7 +35,7 @@
       <el-col :sm="12">
         <el-row :gutter="10">
           <el-col :span="24">
-            <p>本月核心数据库中各表数据增量排行榜</p>
+            <p>本月{{this.baseName}}中各表数据增量排行榜</p>
           </el-col>
         </el-row>
         <div id="KelnelTableAddMonth" style="height: 300%" ref="getKelnelTableAddMonth"></div>
@@ -63,9 +63,10 @@ export default {
   },
   created() {
     if (!this.$route.params.baseName) {
-      this.$router.push({ name: "核心数据库数据监控(库)" });
+      this.baseName = localStorage.getItem("SystemKernelMonItorBaseName");
+    } else {
+      this.baseName = this.$route.params.baseName;
     }
-    this.baseName = this.$route.params.baseName;
   },
   mounted() {
     // 本周核心数据库中各表数据总量变化趋势图
@@ -276,22 +277,6 @@ export default {
   margin-top: -$fontSize8 / 4;
 }
 .selectBox {
-  padding-left: 25px;
-  /deep/ div {
-    margin-top: 5px;
-    &:first-of-type {
-      margin-top: 0;
-    }
-  }
-  .el-select {
-    width: 100px;
-  }
-  /deep/ .selectTimeQuery {
-    margin-top: 17px !important;
-    .el-icon-date {
-      font-size: 16px;
-      margin-right: 5px;
-    }
-  }
+  padding-left: 0;
 }
 </style>

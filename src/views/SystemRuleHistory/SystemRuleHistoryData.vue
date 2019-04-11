@@ -183,7 +183,7 @@ export default {
             axisLabel: {
               show: true,
               interval: "auto",
-              formatter: "{value}%"
+              formatter: "{value} %"
             }
           },
           series: getTable,
@@ -222,6 +222,7 @@ export default {
           if (selected != undefined) {
             if (isOneUnSelect(selected)) {
               triggerAction("legendSelect", selected);
+              localStorage.setItem("SystemRuleHistoryBaseName", legend);
               this.$router.push({
                 name: "数据规则历史统计信息(表)",
                 params: { baseName: legend }
@@ -319,7 +320,7 @@ export default {
         if (selected != undefined) {
           if (isOneUnSelect(selected)) {
             triggerAction("legendSelect", selected);
-            localStorage.setItem("baseName", legend);
+            localStorage.setItem("SystemRuleHistoryBaseName", legend);
             this.$router.push({
               name: "数据规则历史统计信息(表)",
               params: { baseName: legend }
@@ -343,14 +344,12 @@ export default {
           formatter: "{a} <br/>{b}: {c} ({d}%)"
         },
         legend: {
-          orient: "vertical",
-          x: "left",
+          bottom: "bottom",
           selectedMode: false,
           data: getAllData
         },
         series: [
           {
-            name: "访问来源",
             type: "pie",
             radius: [0, "30%"],
             selectedMode: "single",
@@ -379,19 +378,16 @@ export default {
                 borderRadius: 4,
                 rich: {
                   a: {
+                    fontSize: 0,
                     color: "#999",
-                    lineHeight: 22,
                     align: "center"
                   },
                   hr: {
-                    borderColor: "#aaa",
                     width: "100%",
-                    borderWidth: 0.5,
                     height: 0
                   },
                   b: {
-                    fontSize: 14,
-                    lineHeight: 14
+                    fontSize: 14
                   },
                   per: {
                     color: "#eee",

@@ -165,7 +165,12 @@ export default {
             },
             yAxis: {
               name: "数量",
-              type: "value"
+              type: "value",
+              axisLabel: {
+                show: true,
+                interval: "auto",
+                formatter: "{value} %"
+              }
             },
             series: getAllData,
             animation: false

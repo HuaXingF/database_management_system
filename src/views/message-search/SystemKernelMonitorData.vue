@@ -187,15 +187,13 @@ export default {
         if (selected != undefined) {
           if (isOneUnSelect(selected)) {
             triggerAction("legendSelect", selected);
+            localStorage.setItem("SystemKernelMonItorBaseName", legend);
             this.$router.push({
               name: "核心数据库数据监控(表)",
               params: { baseName: legend }
             });
           }
         }
-      });
-      window.addEventListener("resize", function() {
-        dataSourcePie.resize();
       });
       window.addEventListener("resize", function() {
         dataSourcePie.resize();
@@ -212,8 +210,7 @@ export default {
         legend: {
           bottom: 10,
           left: "center",
-          data: getName,
-          selectedMode: false
+          data: getName
         },
         series: [
           {
@@ -227,11 +224,56 @@ export default {
         animation: false
       };
       dataSourcePie.setOption(option);
+      var triggerAction = function(action, selected) {
+        option.legend = [];
+        for (name in selected) {
+          if (selected.hasOwnProperty(name)) {
+            option.legend.push({ name: name });
+          }
+        }
+        dataSourcePie.dispatchAction({
+          type: action,
+          batch: option.legend
+        });
+      };
+      // 是否选中其中一个
+      var isOneUnSelect = function(selected) {
+        var unSelectedCount = 0;
+        for (name in selected) {
+          if (!selected.hasOwnProperty(name)) {
+            continue;
+          }
+
+          if (selected[name] == false) {
+            ++unSelectedCount;
+          }
+        }
+        return unSelectedCount == 1;
+      };
+      dataSourcePie.on("legendselectchanged", obj => {
+        var selected = obj.selected;
+        var legend = obj.name;
+        if (selected != undefined) {
+          if (isOneUnSelect(selected)) {
+            triggerAction("legendSelect", selected);
+            localStorage.setItem("SystemKernelMonItorBaseName", legend);
+            this.$router.push({
+              name: "核心数据库数据监控(表)",
+              params: { baseName: legend }
+            });
+          }
+        }
+      });
       window.addEventListener("resize", function() {
         dataSourcePie.resize();
       });
-      dataSourcePie.on("click", function(res) {
-        console.log(res.name);
+      dataSourcePie.on("click", res => {
+        let legend = res.name;
+        localStorage.setItem("SystemKernelMonItorBaseName", legend);
+        this.$router.push({
+          name: "核心数据库数据监控(表)",
+          params: { baseName: legend }
+        });
       });
     },
     // 获取柱形图  echarts函数
@@ -245,9 +287,7 @@ export default {
             type: "shadow" // 默认为直线，可选为：'line' | 'shadow'
           }
         },
-        legend: {
-          selectedMode: false
-        },
+        legend: {},
         xAxis: [
           {
             type: "category",
@@ -281,6 +321,25 @@ export default {
       dataSourcePie.setOption(option);
       window.addEventListener("resize", function() {
         dataSourcePie.resize();
+      });
+      dataSourcePie.getZr().on("click", params => {
+        const pointInPixel = [params.offsetX, params.offsetY];
+        if (dataSourcePie.containPixel("grid", pointInPixel)) {
+          let xIndex = dataSourcePie.convertFromPixel({ seriesIndex: 0 }, [
+            params.offsetX,
+            params.offsetY
+          ])[0]; /*事件处理代码书写位置*/
+          getXlist.forEach((item, index) => {
+            if (index == xIndex) {
+              let legend = item;
+              localStorage.setItem("SystemKernelMonItorBaseName", legend);
+              this.$router.push({
+                name: "核心数据库数据监控(表)",
+                params: { baseName: legend }
+              });
+            }
+          });
+        }
       });
     }
   },

@@ -103,14 +103,14 @@ export default {
 }
 
 .main-aside .collapsed .el-submenu .el-menu {
-    width: 200px;
+  width: 200px;
 }
 .main-aside {
   position: relative;
   /deep/ .el-menu .el-menu--inline {
     > li {
       font-size: 12px;
-      padding-left: 30px !important;
+      padding-left: 45px !important;
     }
   }
   &.menu-expanded {

@@ -12,7 +12,6 @@
       </template>
       <template slot="operation"></template>
     </MTopNav>
-
     <el-row :gutter="5" class="selectBox">
       <el-col :sm="7" class="selectTimeQuery" style="text-align:right;margin-right: 22.5px;">
         <i class="el-icon-date"></i>
@@ -74,10 +73,11 @@ export default {
     };
   },
   created() {
-    this.baseName = this.$route.params.baseName;
-    // if (this.$route.params.baseName == undefined) {
-    //   this.$router.push({ name: "数据规则历史信息统计" });
-    // }
+    if (this.$route.params.baseName == undefined) {
+      this.baseName = localStorage.getItem("SystemRuleHistoryBaseName");
+    } else {
+      this.baseName = this.$route.params.baseName;
+    }
   },
   mounted() {
     this.init();
