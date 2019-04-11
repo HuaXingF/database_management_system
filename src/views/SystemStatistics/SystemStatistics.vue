@@ -42,7 +42,7 @@
 import MTopNav from "@/components/m-topNav/m-topNav";
 import { SystemRuleNowRule } from "../../api/SystemRuleNow.js";
 export default {
-  name: "expertLink",
+  name: "SystemStatistics",
   data() {
     return {
       tablePie: null
@@ -88,7 +88,8 @@ export default {
           formatter: "{a0}:{c0}%<br />",
           axisPointer: {
             // 坐标轴指示器，坐标轴触发有效
-            type: "shadow" // 默认为直线，可选为：'line' | 'shadow'
+            // 默认为直线，可选为：'line' | 'shadow'
+            type: "shadow"
           }
         },
         legend: {

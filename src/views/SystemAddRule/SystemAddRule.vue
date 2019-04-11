@@ -71,16 +71,16 @@
         </div>
       </el-col>
     </el-row>
-
     <!-- 消息提示 -->
     <el-button :plain="true" @click="open"></el-button>
   </el-col>
 </template>
 
 <script>
-import MTopNav from "@/components/m-topNav/m-topNav";
+import MTopNav from "@/components/m-topNav/m-topNav"
+
 export default {
-  name: "indexingCheck",
+  name: "SystemAddRule",
   data() {
     return {
       options: [

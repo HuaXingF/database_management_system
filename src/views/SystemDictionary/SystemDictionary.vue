@@ -9,7 +9,6 @@
           <el-breadcrumb-item>{{$route.name}}</el-breadcrumb-item>
         </el-breadcrumb>
       </template>
-      <template slot="operation"></template>
     </MTopNav>
 
     <el-row :gutter="50">
@@ -197,273 +196,281 @@
 </template>
 
 <script>
-  import MTopNav from "@/components/m-topNav/m-topNav";
-  import {queryPage,
-    queryPage1,
-    insert,
-    updateById,
-    deleteById,
-    insertById,
-    queryByDictionaryId,
-    deleteById_kz,
-    updateById_kz} from "@/api/system-dictionary";
-  export default {
-    watch: {
-      input(val) {
-        if(val==null || val==""){
-          //console.log(val)
-          this.init();
-        }else{
-          //this.input()
-          this.getByName();
-        }
+import MTopNav from "@/components/m-topNav/m-topNav"
+import {
+  queryPage,
+  queryPage1,
+  insert,
+  updateById,
+  deleteById,
+  insertById,
+  queryByDictionaryId,
+  deleteById_kz,
+  updateById_kz
+} from "@/api/SystemDictionary"
+
+export default {
+  name: "SystemDictionary",
+  watch: {
+    input(val) {
+      if (val==null || val==""){
+        this.init()
+      } else {
+        this.getByName()
       }
-    },
-    name: "indexingCheck",
-    data() {
-      return {
-        flagFlag: false,
-        tableData: [],
-        input: "",
-        getRuleData: null,   //  保存tableData中数据
-        dialogFormVisible: false,
-        adddialogFormVisible: false,
-        addFormVisible: false,// 新增扩张项页面
-        editFormVisible: false,// 新增扩张项页面
-        selectFormVisible:false,// 扩张项集合页面
-        // 新增按钮对应的form对象
-        addForm: {},
-        addForm_kz:{},// 扩展项
-        editForm_kz: {},// 编辑扩展项
-        selectForm_kz:[],// 扩展项集合
-        rules: {
-          category: [
-            { required: true, message: "请输入字典名称", trigger: "blur" }
-            //{ validator: validaePass }
-          ],
-          name: [
-            { required: true, message: "请输入字典项", trigger: "blur" }
-            //{ validator: validaePass2 }
-          ],
-          code: [
-            { required: true, message: "请输入字典编码", trigger: "blur" }
-            //{ validator: validaePass2 }
-          ]
-        },
-        rules_kz: {
-          extensionCode:[
-            { required: true, message: "请输入扩展取值", trigger: "blur" }
-          ]
-        },
-        // 编辑按钮对应的editForm对象
-        editForm: {},
-        formLabelWidth: "120px",
-        total: 0,
-        page: 1,
-        pageNum : 1,
-        pageSize : 10,
-        editLoading: false,
-        word:""
-      };
-    },
-    methods: {
-      //清空条件查询
-      clearInput(){
-        this.input=null;
-      },
-      cellStyle() {
-        return "text-align:center";
-      },
-      rowClass() {
-        return "text-align:center";
-      },
-      //分页所需
-      handleCurrentChange(val) {
-        this.page = val;
-        //this.getUsers();
-        let keyword=this.filters.name;
-        if (keyword == null || keyword == "") {
-          this.init(this.page);
-        }else {
-          this.getByName(this.page);
-        }
-      },
-      //根据字典查询
-      getByName() {
-        let obj = {"pageNum" : this.pageNum, "pageSize" : this.pageSize, "category" : this.input.trim()};
-        queryPage1(obj).then(({data})=>{
-          this.tableData = data.rows;
-          this.total = data.total;
-        })
-      },
-      // 新增按钮功能实现
-      addRule() {
-        // this.$router.push({ path: "/SystemAddRule" });
-        this.adddialogFormVisible = true
-      },
-      // 删除按钮功能实现
-      deleteRow(index, rows) {
-        //rows.splice(index, 1);
-        this.$confirm('确认删除该记录及扩展数据吗？', '提示', {}).then(() => {
-          deleteById(rows.id).then(({data})=>{
-            if(data){
-              this.$message({
-                message:'删除成功',
-                type:'success'
-              });
-              this.init();
-            }else{
-              this.$message.error("删除失败");
-            }
-          })
-        })
-      },
-      //扩展项显示
-      addBtn(index, rows) {
-        this.addFormVisible = true;
-        this.addForm_kz.dictionaryId = rows.id;
-        this.addForm_kz.extensionName = rows.category+"-"+rows.name;
-      },
-      //编辑扩展项显示
-      editBtn_kz(index, rows) {
-        this.editFormVisible = true;
-        this.editForm_kz= rows;
-        this.editForm_kz.extensionName = this.word;
-      },
-      // 扩展项编辑按钮确定按钮
-      update_kz() {
-        this.$refs.editForm_kz.validate((valid) => {
-          if(valid) {
-            this.$confirm('确认提交吗？', '提示', {}).then(() => {
-              this.editLoading = true;
-              updateById_kz(this.editForm_kz).then(({data}) => {
-                this.editFormVisible = false;
-                this.editLoading = false;
-                if(data){
-                  this.$message({
-                    message:'修改成功',
-                    type:'success'
-                  });
-                  this.selectBtn_init(this.editForm_kz.dictionaryId);
-                }else{
-                  this.$message.error("修改失败");
-                }
-              })
-            })
-          }
-        })
-      },
-      //扩张项保存
-      insert_kz(){
-        this.$refs.addForm_kz.validate((valid) => {
-          if(valid) {
-            insertById(this.addForm_kz).then(({data}) => {
-              if (data) {
-                this.$message({
-                  message: '保存成功',
-                  type: 'success'
-                });
-                this.addFormVisible = false;
-                this.addForm_kz = {};
-                this.init();
-              } else {
-                this.$message.error("保存失败");
-              }
-            })
-          }
-        })
-      },
-      // 扩展项删除按钮功能实现
-      delete_kz(index, rows) {
-        //rows.splice(index, 1);
-        this.$confirm('确认删除吗？', '提示', {}).then(() => {
-          deleteById_kz(rows.id).then(({data})=>{
-            if(data){
-              this.$message({
-                message:'删除成功',
-                type:'success'
-              });
-              this.selectBtn_init(rows.dictionaryId);
-            }else{
-              this.$message.error("删除失败");
-            }
-          })
-        })
-      },
-      selectBtn_init(dictionaryId){
-        queryByDictionaryId(dictionaryId).then(({data})=>{
-          this.selectForm_kz = data;
-          this.selectFormVisible = true;
-        })
-      },
-      //扩展项查询
-      selectBtn(index, rows){
-        this.word = rows.category+"-"+rows.name;
-        queryByDictionaryId(rows.id).then(({data})=>{
-          this.selectForm_kz = data;
-          this.selectFormVisible = true;
-        })
-      },
-      // 点击编辑按钮
-      editBtn(index, rows) {
-        this.dialogFormVisible = true;
-        this.editForm = rows;
-      },
-      // 编辑按钮确定按钮
-      editConfirmBtn() {
-        this.$refs.editForm.validate((valid) => {
-          if(valid) {
-            this.$confirm('确认提交吗？', '提示', {}).then(() => {
-              updateById(this.editForm).then(({data}) => {
-                this.dialogFormVisible = false;
-                if(data){
-                  this.$message({
-                    message:'修改成功',
-                    type:'success'
-                  });
-                  this.init();
-                }else{
-                  this.$message.error("修改失败");
-                }
-              })
-            })
-          }
-        })
-      },
-      // 新增按钮的确定按钮
-      addConfirmBtn() {
-        this.$refs.addForm.validate((valid) => {
-          if(valid) {
-            insert(this.addForm).then(({data}) => {
-              if (data) {
-                this.$message({
-                  message: '保存成功',
-                  type: 'success'
-                });
-                this.adddialogFormVisible = false;
-                this.init();
-              } else {
-                this.$message.error("保存失败");
-              }
-            })
-          }
-        })
-      },
-      init(){
-        let obj = {"pageNum" : this.pageNum, "pageSize" : this.pageSize};
-        queryPage(obj).then(({data})=>{
-          this.tableData = data.rows;
-          this.total = data.total;
-        })
-      }
-    },
-    mounted() {
-      this.init();
-    },
-    components: {
-      MTopNav
     }
-  };
+  },
+  data() {
+    return {
+      flagFlag: false,
+      tableData: [],
+      input: "",
+      // 保存tableData中数据
+      getRuleData: null,   
+      dialogFormVisible: false,
+      adddialogFormVisible: false,
+      // 新增扩张项页面
+      addFormVisible: false,
+      // 新增扩张项页面
+      editFormVisible: false,
+      // 扩张项集合页面
+      selectFormVisible:false,
+      // 新增按钮对应的form对象
+      addForm: {},
+      // 扩展项
+      addForm_kz:{},
+      // 编辑扩展项
+      editForm_kz: {},
+      // 扩展项集合
+      selectForm_kz:[],
+      rules: {
+        category: [
+          { required: true, message: "请输入字典名称", trigger: "blur" }
+        ],
+        name: [
+          { required: true, message: "请输入字典项", trigger: "blur" }
+        ],
+        code: [
+          { required: true, message: "请输入字典编码", trigger: "blur" }
+        ]
+      },
+      rules_kz: {
+        extensionCode:[
+          { required: true, message: "请输入扩展取值", trigger: "blur" }
+        ]
+      },
+      // 编辑按钮对应的editForm对象
+      editForm: {},
+      formLabelWidth: "120px",
+      total: 0,
+      page: 1,
+      pageNum : 1,
+      pageSize : 10,
+      editLoading: false,
+      word:""
+    }
+  },
+  methods: {
+    //清空条件查询
+    clearInput(){
+      this.input = null
+    },
+    cellStyle() {
+      return "text-align:center"
+    },
+    rowClass() {
+      return "text-align:center"
+    },
+    //分页所需
+    handleCurrentChange(val) {
+      this.page = val
+      let keyword = this.filters.name;
+      if (keyword == null || keyword == "") {
+        this.init(this.page)
+      } else {
+        this.getByName(this.page)
+      }
+    },
+    //根据字典查询
+    getByName() {
+      let obj = {
+        "pageNum" : this.pageNum, 
+        "pageSize" : this.pageSize, 
+        "category" : this.input.trim()
+      }
+      queryPage1(obj).then(({data}) => {
+        this.tableData = data.rows
+        this.total = data.total
+      })
+    },
+    // 新增按钮功能实现
+    addRule() {
+      this.adddialogFormVisible = true
+    },
+    // 删除按钮功能实现
+    deleteRow(index, rows) {
+      this.$confirm('确认删除该记录及扩展数据吗？', '提示', {}).then(() => {
+        deleteById(rows.id).then(({data}) => {
+          if(data){
+            this.$message({
+              message:'删除成功',
+              type:'success'
+            })
+            this.init()
+          } else {
+            this.$message.error("删除失败")
+          }
+        })
+      })
+    },
+    //扩展项显示
+    addBtn(index, rows) {
+      this.addFormVisible = true
+      this.addForm_kz.dictionaryId = rows.id
+      this.addForm_kz.extensionName = rows.category + "-" + rows.name
+    },
+    //编辑扩展项显示
+    editBtn_kz(index, rows) {
+      this.editFormVisible = true
+      this.editForm_kz= rows
+      this.editForm_kz.extensionName = this.word
+    },
+    // 扩展项编辑按钮确定按钮
+    update_kz() {
+      this.$refs.editForm_kz.validate((valid) => {
+        if(valid) {
+          this.$confirm('确认提交吗？', '提示', {}).then(() => {
+            this.editLoading = true
+            updateById_kz(this.editForm_kz).then(({data}) => {
+              this.editFormVisible = false
+              this.editLoading = false
+              if(data){
+                this.$message({
+                  message:'修改成功',
+                  type:'success'
+                })
+                this.selectBtn_init(this.editForm_kz.dictionaryId)
+              } else {
+                this.$message.error("修改失败");
+              }
+            })
+          })
+        }
+      })
+    },
+    //扩张项保存
+    insert_kz(){
+      this.$refs.addForm_kz.validate((valid) => {
+        if(valid) {
+          insertById(this.addForm_kz).then(({data}) => {
+            if (data) {
+              this.$message({
+                message: '保存成功',
+                type: 'success'
+              })
+              this.addFormVisible = false
+              this.addForm_kz = {}
+              this.init()
+            } else {
+              this.$message.error("保存失败")
+            }
+          })
+        }
+      })
+    },
+    // 扩展项删除按钮功能实现
+    delete_kz(index, rows) {
+      this.$confirm('确认删除吗？', '提示', {}).then(() => {
+        deleteById_kz(rows.id).then(({data})=>{
+          if(data){
+            this.$message({
+              message:'删除成功',
+              type:'success'
+            })
+            this.selectBtn_init(rows.dictionaryId)
+          } else {
+            this.$message.error("删除失败")
+          }
+        })
+      })
+    },
+    selectBtn_init(dictionaryId){
+      queryByDictionaryId(dictionaryId).then(({data})=>{
+        this.selectForm_kz = data
+        this.selectFormVisible = true
+      })
+    },
+    //扩展项查询
+    selectBtn(index, rows){
+      this.word = rows.category + "-" + rows.name
+      queryByDictionaryId(rows.id).then(({data})=>{
+        this.selectForm_kz = data
+        this.selectFormVisible = true
+      })
+    },
+    // 点击编辑按钮
+    editBtn(index, rows) {
+      this.dialogFormVisible = true
+      this.editForm = rows
+    },
+    // 编辑按钮确定按钮
+    editConfirmBtn() {
+      this.$refs.editForm.validate((valid) => {
+        if(valid) {
+          this.$confirm('确认提交吗？', '提示', {}).then(() => {
+            updateById(this.editForm).then(({data}) => {
+              this.dialogFormVisible = false
+              if(data){
+                this.$message({
+                  message:'修改成功',
+                  type:'success'
+                })
+                this.init()
+              } else {
+                this.$message.error("修改失败")
+              }
+            })
+          })
+        }
+      })
+    },
+    // 新增按钮的确定按钮
+    addConfirmBtn() {
+      this.$refs.addForm.validate((valid) => {
+        if(valid) {
+          insert(this.addForm).then(({data}) => {
+            if (data) {
+              this.$message({
+                message: '保存成功',
+                type: 'success'
+              })
+              this.adddialogFormVisible = false
+              this.init()
+            } else {
+              this.$message.error("保存失败")
+            }
+          })
+        }
+      })
+    },
+    init(){
+      let obj = {
+        "pageNum" : this.pageNum, 
+        "pageSize" : this.pageSize
+      }
+      queryPage(obj).then(({data}) => {
+        this.tableData = data.rows
+        this.total = data.total
+      })
+    }
+  },
+  mounted() {
+    this.init()
+  },
+  components: {
+    MTopNav
+  }
+}
 </script>
 
 <style lang="scss" scoped>

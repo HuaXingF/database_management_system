@@ -59,15 +59,14 @@
 
 <script>
 import MTopNav from "@/components/m-topNav/m-topNav";
-import {
-  selectRuleTable,
-  selectRuleComTable
-} from "@/api/SystemRuleHistoyr.js";
+import { selectRuleTable, selectRuleComTable } from "@/api/SystemRuleHistoy";
+
 export default {
-  name: "messageSearch",
+  name: "SystemRuleHistoyTable",
   data() {
     return {
-      AllStartHistoryValue: "", // 开始时间
+      // 开始时间
+      AllStartHistoryValue: "",
       flagTime: 0,
       baseName: ""
     };
@@ -148,7 +147,6 @@ export default {
         data.genList.forEach(item => {
           getAllLine.push(item);
         });
-        // console.log(getAllData);
         data.yList.forEach((item, index) => {
           getYlist.push(item);
           getAllLine.forEach((item1, index1) => {
@@ -234,7 +232,6 @@ export default {
         dataSourcePie.resize();
       });
     },
-
     // 获取柱形图 echarts
     getColumnAssociTable(getXlist, getAllData, getRef) {
       let dataSourcePie = this.$echarts.init(getRef);
@@ -243,7 +240,8 @@ export default {
           trigger: "axis",
           axisPointer: {
             // 坐标轴指示器，坐标轴触发有效
-            type: "shadow" // 默认为直线，可选为：'line' | 'shadow'
+            // 默认为直线，可选为：'line' | 'shadow'
+            type: "shadow"
           }
         },
         legend: {

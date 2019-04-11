@@ -93,15 +93,16 @@
 </template>
 
 <script>
-import MTopNav from "@/components/m-topNav/m-topNav";
+import MTopNav from "@/components/m-topNav/m-topNav"
 import {
   selectTotalDay,
   selectTotalMonth,
   selectTotal
-} from "@/api/medical-theme-list.js";
+} from "@/api/SystemDataLake"
 //import tableLine from "../../components/echarts/table-line";
+
 export default {
-  name: "medicalThemeList",
+  name: "SystemDataLake",
   data() {
     return {
       lineWeekData: "lineWeekData",
@@ -182,56 +183,51 @@ export default {
   },
   mounted() {
     // 本周数据湖数据总量变化图
-    this.conLineWeekData();
+    this.conLineWeekData()
     // 数据湖数据总量月变化趋势图
-    this.conLineMonthData();
+    this.conLineMonthData()
     // 单库数据总量变化趋势
-    this.conOneDataAll();
+    this.conOneDataAll()
     // 单库数据增量变化趋势
-    this.conOneDataAdd();
+    this.conOneDataAdd()
   },
   methods: {
     getValue1() {
-      this.conOneDataAll();
-      //console.log(getObj,"11111")
+      this.conOneDataAll()
     },
     getValue2() {
-      this.conOneDataAdd();
-      //console.log(getObj,"11111")
+      this.conOneDataAdd()
     },
     // 本周数据湖数据总量变化图
     conLineWeekData() {
-      // console.log("getObj + 11111")
-      let getTable = {};
+      let getTable = {}
       selectTotalDay().then(({ data }) => {
-        // console.log(data)
-        getTable.listA = data.fSelectTimeList;
-        getTable.listY = data.fTableRowsList;
-        this.getLineTable(getTable, this.$refs.getLineWeekData);
-      });
+        getTable.listA = data.fSelectTimeList
+        getTable.listY = data.fTableRowsList
+        this.getLineTable(getTable, this.$refs.getLineWeekData)
+      })
     },
     // 数据湖数据总量月变化趋势图
     conLineMonthData() {
-      let getTable = {};
+      let getTable = {}
       selectTotalMonth().then(({ data }) => {
-        // console.log(data)
-        getTable.listA = data.fSelectTimeList;
-        getTable.listY = data.fTableRowsList;
-        this.getLineTable(getTable, this.$refs.getLineMonthData);
-      });
+        getTable.listA = data.fSelectTimeList
+        getTable.listY = data.fTableRowsList
+        this.getLineTable(getTable, this.$refs.getLineMonthData)
+      })
     },
     // 单库数据总量变化趋势
     conOneDataAll() {
       let obj = {
         value1: this.value1,
         value2: this.value2
-      };
-      let getTable = {};
+      }
+      let getTable = {}
       selectTotal(obj).then(({ data }) => {
-        getTable.listA = data.fSelectTimeList;
-        getTable.listY = data.fTableRowsList;
-        this.getLineTable(getTable, this.$refs.getOneDataAll);
-      });
+        getTable.listA = data.fSelectTimeList
+        getTable.listY = data.fTableRowsList
+        this.getLineTable(getTable, this.$refs.getOneDataAll)
+      })
     },
     // 单库数据增量变化趋势
     conOneDataAdd() {
@@ -239,21 +235,16 @@ export default {
         value1: this.value3,
         value2: this.value4
       };
-      let getTable = {};
+      let getTable = {}
       selectTotal(obj).then(({ data }) => {
-        //console.log(data,"999999")
-        getTable.listA = data.fSelectTimeList;
-        getTable.listY = data.fTableRowsList;
-        this.getLineTable(getTable, this.$refs.getOneDataAdd);
-      });
+        getTable.listA = data.fSelectTimeList
+        getTable.listY = data.fTableRowsList
+        this.getLineTable(getTable, this.$refs.getOneDataAdd)
+      })
     },
-
     // 获取echarts函数
     getLineTable(getTable, getRef) {
-      let dataSourcePie = this.$echarts.init(getRef);
-      //let legentData = [];
-      //let seriesData = [];
-      // console.log(getTable,"666")
+      let dataSourcePie = this.$echarts.init(getRef)
       const option = {
         tooltip: {
           trigger: "axis"
@@ -280,7 +271,7 @@ export default {
           {
             name: "最高数据",
             type: "line",
-            data: getTable.listY /* [11, 11, 15, 13, 12, 13, 20]*/,
+            data: getTable.listY,
             itemStyle: {
               color: "#6ED6D7"
             },
@@ -290,17 +281,14 @@ export default {
                 { type: "min", name: "最小值" }
               ]
             }
-            /* markLine: {
-              data: [{ type: "average", name: "平均值" }]
-            }*/
           }
         ],
         animation: false
-      };
-      dataSourcePie.setOption(option);
+      }
+      dataSourcePie.setOption(option)
       window.addEventListener("resize", function() {
-        dataSourcePie.resize();
-      });
+        dataSourcePie.resize()
+      })
     }
   },
   // watch: {

@@ -59,12 +59,16 @@
 
 <script>
 import MTopNav from "@/components/m-topNav/m-topNav";
-import { selectTiem, selectBing } from "@/api/SystemRuleHistoyr.js";
+import { selectTiem, selectBing } from "@/api/SystemRuleHistoy";
+
 export default {
+  name: "SystemRuleHistoyData",
   data() {
     return {
-      getTable: [], // 后台获取的数据  到时候直接覆盖
-      AllStartHistoryValue: "", // 开始时间
+      // 后台获取的数据  到时候直接覆盖
+      getTable: [],
+      // 开始时间
+      AllStartHistoryValue: "",
       timeValue: "",
       getTableData: []
     };
@@ -72,11 +76,11 @@ export default {
   mounted() {
     this.getNowData();
     // 数据库信息合格率统计
-    // this.conLineWeekData();
+    // this.conLineWeekData()
     // 数据库合格率排行榜
-    // this.conLineMonthData();
+    // this.conLineMonthData()
     // 数据库合规数据量统计
-    // this.conOneDataAll();
+    // this.conOneDataAll()
   },
   methods: {
     getNowData() {
@@ -109,7 +113,9 @@ export default {
       let getTipName = [];
       let getAllTime = { startTime: start_time, endTime: end_time };
       selectTiem(getAllTime).then(({ data }) => {
-        getTableData.push({ data: data.day });
+        getTableData.push({
+          data: data.day
+        });
         data.ku.forEach(item => {
           getTipName.push(item);
           getTable.push({
@@ -139,7 +145,10 @@ export default {
       let getTable = [];
       let getTipName = [];
       let getFormatter = "";
-      let getAllTime = { startTime: start_time, endTime: end_time };
+      let getAllTime = {
+        startTime: start_time,
+        endTime: end_time
+      };
       selectTiem(getAllTime).then(({ data }) => {
         getTableData.push({ data: data.day });
         data.ku.forEach((item, index) => {
@@ -161,7 +170,6 @@ export default {
             }
           });
         });
-
         let dataSourcePie = this.$echarts.init(this.$refs.getLineWeekData);
         const option = {
           tooltip: {
@@ -209,7 +217,6 @@ export default {
             if (!selected.hasOwnProperty(name)) {
               continue;
             }
-
             if (selected[name] == false) {
               ++unSelectedCount;
             }
@@ -307,7 +314,6 @@ export default {
           if (!selected.hasOwnProperty(name)) {
             continue;
           }
-
           if (selected[name] == false) {
             ++unSelectedCount;
           }
@@ -332,12 +338,9 @@ export default {
         dataSourcePie.resize();
       });
     },
-
     // 获取饼图echarts  函数
     getPieTable(getAllData, getSelectData, getOutsideData, getRef) {
       let dataSourcePie = this.$echarts.init(getRef);
-      /*let legentData = [];
-      let seriesData = [];*/
       const option = {
         tooltip: {
           trigger: "item",

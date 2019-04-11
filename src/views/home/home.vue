@@ -24,6 +24,7 @@ import MAside from '@/components/m-aside/m-aside'
 //import MTopTip from '@/components/m-topTip/m-topTip'
 
 export default {
+    name: 'home',
     data() {
         return {
             collapsed: false
@@ -91,6 +92,7 @@ export default {
         position: absolute;
         top: 6 * $fontSize12;
         bottom: 0;
+        margin-bottom: 0;
         overflow: hidden;
         .content-container {
             flex: 1;

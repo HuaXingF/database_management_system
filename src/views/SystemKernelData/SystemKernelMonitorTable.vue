@@ -51,14 +51,20 @@ import {
   SystemTableAllMonth,
   SystemTableAddWeek,
   SystemTableAddMonth
-} from "../../api/message-search.js";
+} from "@/api/SystemKernelData";
+
 export default {
+  name: "SystemKernelMonitorTable",
   data() {
     return {
-      getTable: null, // 后台获取的数据  到时候直接覆盖
-      AllStartHistoryValue: "", // 开始时间
-      AllEndHistoryValue: "", // 结束时间
-      baseName: "" // 传递过来的表名
+      // 后台获取的数据  到时候直接覆盖
+      getTable: null,
+      // 开始时间
+      AllStartHistoryValue: "",
+      // 结束时间
+      AllEndHistoryValue: "",
+      // 传递过来的表名
+      baseName: ""
     };
   },
   created() {
@@ -212,7 +218,8 @@ export default {
           trigger: "axis",
           axisPointer: {
             // 坐标轴指示器，坐标轴触发有效
-            type: "shadow" // 默认为直线，可选为：'line' | 'shadow'
+            // 默认为直线，可选为：'line' | 'shadow'
+            type: "shadow"
           }
         },
         legend: {
