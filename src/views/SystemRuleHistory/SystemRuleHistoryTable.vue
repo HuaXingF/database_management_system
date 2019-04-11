@@ -6,6 +6,7 @@
           <el-breadcrumb-item>
             <i class="fa fa-home"></i>
           </el-breadcrumb-item>
+          <el-breadcrumb-item :to="{ path: '/SystemRuleHistoryData' }">数据规则历史信息统计</el-breadcrumb-item>
           <el-breadcrumb-item>{{$route.name}}</el-breadcrumb-item>
         </el-breadcrumb>
       </template>
@@ -34,7 +35,7 @@
       <el-col :sm="24">
         <el-row :gutter="10">
           <el-col :span="8">
-            <p>数据库中表规则合格数据量统计</p>
+            <p>{{this.baseName}}中表规则合格数据量统计</p>
           </el-col>
         </el-row>
         <!-- <tableLine :getId="lineWeekData"></tableLine> -->
@@ -46,7 +47,7 @@
       <el-col :sm="24">
         <el-row :gutter="10">
           <el-col :span="8">
-            <p>数据库中表合规数据量统计</p>
+            <p>{{this.baseName}}中表合规数据量统计</p>
           </el-col>
         </el-row>
 
@@ -74,9 +75,9 @@ export default {
   },
   created() {
     this.baseName = this.$route.params.baseName;
-    if (this.$route.params.baseName == undefined) {
-      this.$router.push({ name: "数据规则历史信息统计" });
-    }
+    // if (this.$route.params.baseName == undefined) {
+    //   this.$router.push({ name: "数据规则历史信息统计" });
+    // }
   },
   mounted() {
     this.init();
@@ -271,14 +272,6 @@ export default {
       });
     }
   },
-  // watch: {
-  //   getTable: {
-  //     handler(newValue,oldValue) {
-  //       this.getLineTable(tableData,getRef);
-  //     },
-  //     deep: true
-  //   }
-  // },
   components: {
     MTopNav
   }

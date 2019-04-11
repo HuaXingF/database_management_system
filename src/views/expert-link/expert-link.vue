@@ -14,12 +14,10 @@
     <el-row :gutter="50">
       <el-col :sm="12">
         <p>当前各维度关联总量排行榜</p>
-        <!-- <tableLine :getId="lineWeekData"></tableLine> -->
         <div id="columnAssociAllData" style="height: 300%" ref="getColumnAssociAllData"></div>
       </el-col>
       <el-col :sm="12">
         <p>当前患者信息关联总量</p>
-        <!-- <tableLine :getId="lineMonthData"></tableLine> -->
         <div id="piePatientAssoci" style="height: 300%" ref="getPiePatientAssoci"></div>
       </el-col>
     </el-row>
@@ -27,17 +25,14 @@
     <el-row :gutter="20">
       <el-col :sm="8">
         <p>当前医生信息关联总量</p>
-        <!-- <tableLine :getId="lineMonthData"></tableLine> -->
         <div id="pieDoctorAssoci" style="height: 300%" ref="getPieDoctorAssoci"></div>
       </el-col>
       <el-col :sm="8">
         <p>当前费用信息关联总量</p>
-        <!-- <tableLine :getId="lineMonthData"></tableLine> -->
         <div id="pieCostAssoci" style="height: 300%" ref="getPieCostAssoci"></div>
       </el-col>
       <el-col :sm="8">
         <p>当前mesh信息关联总量</p>
-        <!-- <tableLine :getId="lineMonthData"></tableLine> -->
         <div id="pieMeshAssoci" style="height: 300%" ref="getPieMeshAssoci"></div>
       </el-col>
     </el-row>
@@ -108,7 +103,7 @@ export default {
                 type: "bar",
                 stack: "广告",
                 itemStyle: {
-                  color: "#96A7B7"
+                  color: "#C23531"
                 },
                 label: {
                   normal: {
@@ -130,16 +125,11 @@ export default {
         dataSourcePie.resize();
       });
     },
-    /* fDimId: "001"
-    fDimName: "患者"
-    fFailCountSum: "120"
-    fRelatedCountSum: "130"*/
     // 当前患者信息关联总量
     conPiePatientAssoci() {
       let fDimId = "001";
       let tablePie = [];
       selectDimRatio(fDimId).then(({ data }) => {
-        //console.log(data)
         tablePie.push({
           name: "关联成功",
           value: parseInt(data[0].fRelatedCountSum)
@@ -148,7 +138,6 @@ export default {
           name: "关联失败",
           value: parseInt(data[0].fFailCountSum)
         });
-        //console.log(tablePie,"666")
         this.getPieAssociTable(tablePie, this.$refs.getPiePatientAssoci);
       });
     },
@@ -203,10 +192,6 @@ export default {
     // 获取饼形图
     getPieAssociTable(tablePie, getRef) {
       let dataSourcePie = this.$echarts.init(getRef);
-      /* let legentData = [];
-      let seriesData = [];*/
-      //let name=null
-      //console.log(tablePie)
       const option = {
         tooltip: {
           trigger: "item",

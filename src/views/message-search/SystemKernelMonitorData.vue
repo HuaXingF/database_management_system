@@ -230,6 +230,9 @@ export default {
       window.addEventListener("resize", function() {
         dataSourcePie.resize();
       });
+      dataSourcePie.on("click", function(res) {
+        console.log(res.name);
+      });
     },
     // 获取柱形图  echarts函数
     getColumnTable(getXlist, getData, getRef) {

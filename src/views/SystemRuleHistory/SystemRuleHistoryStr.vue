@@ -6,6 +6,8 @@
           <el-breadcrumb-item>
             <i class="fa fa-home"></i>
           </el-breadcrumb-item>
+          <el-breadcrumb-item :to="{ path: '/SystemRuleHistoryData' }">数据规则历史信息统计</el-breadcrumb-item>
+          <el-breadcrumb-item :to="{ path: '/SystemRuleHistoryTable' }">数据规则历史信息统计(表)</el-breadcrumb-item>
           <el-breadcrumb-item>{{$route.name}}</el-breadcrumb-item>
         </el-breadcrumb>
       </template>
@@ -31,13 +33,11 @@
     </el-row>
     <el-row :gutter="50">
       <el-col :sm="12">
-        <p>表中记录合格率统计</p>
-        <!-- <tableLine :getId="lineWeekData"></tableLine> -->
+        <p>{{this.baseName}}表中记录合格率统计</p>
         <div id="QuantityYield" style="height: 300%" ref="getQuantityYield"></div>
       </el-col>
       <el-col :sm="12">
-        <p>表中记录合格率统计</p>
-        <!-- <tableLine :getId="lineMonthData"></tableLine> -->
+        <p>{{this.baseName}}表中记录合格率统计</p>
         <div id="QuantityPie" style="height: 300%" ref="getQuantityPie"></div>
       </el-col>
     </el-row>
@@ -46,11 +46,9 @@
       <el-col :sm="24">
         <el-row :gutter="10">
           <el-col :span="8">
-            <p>表中字段合格数量统计</p>
+            <p>{{this.baseName}}表中字段合格数量统计</p>
           </el-col>
         </el-row>
-
-        <!-- <tableLine :getId="lineWeekData"></tableLine> -->
         <div id="QuantityAmount" style="height: 300%" ref="getQuantityAmount"></div>
       </el-col>
     </el-row>
@@ -74,9 +72,9 @@ export default {
   },
   created() {
     this.baseName = this.$route.params.baseName;
-    if (this.$route.params.baseName == undefined) {
-      this.$router.push({ name: "数据规则历史信息统计" });
-    }
+    // if (this.$route.params.baseName == undefined) {
+    //   this.$router.push({ name: "数据规则历史信息统计" });
+    // }
   },
   mounted() {
     this.init();
@@ -181,13 +179,13 @@ export default {
       // 表中记录合格率统计饼图
       selectRuleHistoryPieStr({ startTime, endTime, baseName }).then(
         ({ data }) => {
-          let getName = []
+          let getName = [];
           let getPieData = [];
           data.forEach(item => {
-            getName.push(item.name)
-          })
+            getName.push(item.name);
+          });
           getPieData = data;
-          this.getPieTable(getName,getPieData, this.$refs.getQuantityPie);
+          this.getPieTable(getName, getPieData, this.$refs.getQuantityPie);
         }
       );
     },
@@ -220,7 +218,7 @@ export default {
       });
     },
     // 获取饼图echarts  函数
-    getPieTable(getName,getPieData, getRef) {
+    getPieTable(getName, getPieData, getRef) {
       let dataSourcePie = this.$echarts.init(getRef);
       const option = {
         tooltip: {

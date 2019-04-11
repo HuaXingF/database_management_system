@@ -71,3 +71,10 @@ export const SystemTableAddWeek = params => {
     const url = `${baseURL}/tabAllRows/selectAddBaseWeekPie?baseName=${params.baseName}`
     return axios.post(url, { params: params })
 }
+
+// 核心数据库数据监控(表)
+// 本月核心数据库中各表数据增量排行榜
+export const SystemTableAddMonth = params => {
+    const url = `${baseURL}/tabAllRows/selectAddBaseMonthDesc?baseName=${params.baseName}`
+    return axios.post(url, { params: params })
+}
