@@ -42,7 +42,9 @@
 import MTopNav from "@/components/m-topNav/m-topNav";
 import {
   SystemRuleNowRule,
-  SystemRuleNowTable
+  SystemRuleNowTable,
+  SystemRuleNowData,
+  SystemRuleNowStr
 } from "@/api/SystemStatistics.js";
 export default {
   name: "SystemStatistics",
@@ -55,11 +57,11 @@ export default {
     // 当前各规则统计数据合格率排行榜（top10）
     this.conColumnRule();
     // 当前各库数据合格率排行榜（top10）
-    // this.conColumnData();
+    this.conColumnData();
     // // 当前各表数据合格率排行榜（top10）
     this.conColumnTable();
     // // 当前各字段数据合格率排行榜（top10）
-    // this.conColumnStr();
+    this.conColumnStr();
   },
   methods: {
     // 当前各规则统计数据合格率排行榜（top10）
@@ -72,7 +74,11 @@ export default {
     },
     // 当前各库数据合格率排行榜（top10）
     conColumnData() {
-      this.getColumnTable(this.tablePie, this.$refs.getColumnData);
+      SystemRuleNowData().then(({ data }) => {
+        let getXlist = data.xList;
+        let getData = data.yList;
+        this.getColumnTable(getXlist, getData, this.$refs.getColumnData);
+      });
     },
     // 当前各表数据合格率排行榜（top10）
     conColumnTable() {
@@ -84,7 +90,12 @@ export default {
     },
     // 当前各字段数据合格率排行榜（top10）
     conColumnStr() {
-      this.getColumnTable(this.tablePie, this.$refs.getColumnStr);
+      SystemRuleNowStr().then(({ data }) => {
+        console.log(data);
+        let getXlist = data.xList;
+        let getData = data.yList;
+        this.getColumnTable(getXlist, getData, this.$refs.getColumnStr);
+      });
     },
     // 获取柱形图  echarts函数
     getColumnTable(getXlist, getData, getRef) {
@@ -131,7 +142,9 @@ export default {
               normal: {
                 show: true,
                 position: "inside",
-                color: "#fff"
+                color: "#fff",
+                formatter: "{c0}%",
+                fontSize: 10
               }
             },
             data: getData

@@ -19,19 +19,19 @@
       <el-col :sm="14" class="selectTimeBox">
         <div class="block dataSelect">
           <el-date-picker
-                  v-model="timeValue"
-                  type="daterange"
-                  range-separator="至"
-                  start-placeholder="开始日期"
-                  end-placeholder="结束日期"
-                  @change="changeTime">
-          </el-date-picker>
+            v-model="timeValue"
+            type="daterange"
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            @change="changeTime"
+          ></el-date-picker>
         </div>
       </el-col>
     </el-row>
     <el-row :gutter="50">
       <el-col :sm="12">
-        <el-row :gutter="5" >
+        <el-row :gutter="5">
           <el-col :sm="6">
             <p>患者关联数据统计</p>
           </el-col>
@@ -40,7 +40,7 @@
         <div id="linePatientAssoic" style="height: 300%" ref="getLineKernelWeekData"></div>
       </el-col>
       <el-col :sm="12">
-        <el-row :gutter="5" >
+        <el-row :gutter="5">
           <el-col :sm="6">
             <p>医生关联数据统计</p>
           </el-col>
@@ -61,7 +61,7 @@
         <div id="oneKernelDataAll" style="height: 300%" ref="getOneKernelDataAll"></div>
       </el-col>
       <el-col :sm="12">
-        <el-row :gutter="5" >
+        <el-row :gutter="5">
           <el-col :sm="6">
             <p>mesh关联数据统计</p>
           </el-col>
@@ -74,10 +74,8 @@
 </template>
 
 <script>
-import MTopNav from "@/components/m-topNav/m-topNav"
-import {
-  selectDimRelatedCountSum
-} from "@/api/SystemHistory"
+import MTopNav from "@/components/m-topNav/m-topNav";
+import { selectDimRelatedCountSum } from "@/api/SystemHistory";
 
 export default {
   name: "SystemHistory",
@@ -86,99 +84,105 @@ export default {
       lineWeekData: "lineWeekData",
       lineMonthData: "lineMonthData",
       // 后台获取的数据  到时候直接覆盖
-      getTable: {}, 
+      getTable: {},
       //开始时间-结束时间
-      timeValue:'',
+      timeValue: "",
       value: "黄金糕"
-    }
+    };
   },
   mounted() {
-    this.init()
+    this.init();
   },
   methods: {
-    init(){
-      this.initTime()
+    init() {
+      this.initTime();
     },
-    initTime(timeId){
-      let end_time=new Date()
-      let start_time=new Date(end_time -6*24*3600*1000)
-        let time=[start_time,end_time]
-      this.changeTime(timeId)
+    initTime(timeId) {
+      let end_time = new Date();
+      let start_time = new Date(end_time - 6 * 24 * 3600 * 1000);
+      let time = [start_time, end_time];
+      this.changeTime(timeId);
     },
     // 时间改变触发时间
     changeTime(timeId) {
-      let startTime = null
-      let endTime = null
+      let startTime = null;
+      let endTime = null;
       if (timeId == null) {
         startTime = this.$moment()
-          .day(-4)
+          .subtract("days", 6)
           .format("YYYY-MM-DD");
-        endTime = this.$moment().format("YYYY-MM-DD")
+        endTime = this.$moment().format("YYYY-MM-DD");
       } else {
-        startTime = this.$moment(timeId[0]).format("YYYY-MM-DD")
-        endTime = this.$moment(timeId[1]).format("YYYY-MM-DD")
+        startTime = this.$moment(timeId[0]).format("YYYY-MM-DD");
+        endTime = this.$moment(timeId[1]).format("YYYY-MM-DD");
       }
-      this.initValue(startTime,endTime)
+      this.initValue(startTime, endTime);
     },
-    initValue(start_time,end_time){
-      this.change1(start_time,end_time)
-      this.change2(start_time,end_time)
-      this.change3(start_time,end_time)
-      this.change4(start_time,end_time)
+    initValue(start_time, end_time) {
+      this.change1(start_time, end_time);
+      this.change2(start_time, end_time);
+      this.change3(start_time, end_time);
+      this.change4(start_time, end_time);
     },
     //患者关联数据统计
-    change1(start_time,end_time){
+    change1(start_time, end_time) {
       let obj = {
-        "fDimId": "001", 
-        "startTime": start_time, 
-        "endTime": end_time
-      }
-      selectDimRelatedCountSum(obj).then(({data}) => {
-        this.getTable_patients = data
-        this.getLineKernelTable(this.getTable_patients, this.$refs.getLineKernelWeekData)
-      })
+        fDimId: "001",
+        startTime: start_time,
+        endTime: end_time
+      };
+      selectDimRelatedCountSum(obj).then(({ data }) => {
+        this.getTable_patients = data;
+        this.getLineKernelTable(
+          this.getTable_patients,
+          this.$refs.getLineKernelWeekData
+        );
+      });
     },
     //医生关联数据统计
-    change2(start_time,end_time){
+    change2(start_time, end_time) {
       let obj = {
-        "fDimId": "002",
-        "startTime": start_time,
-        "endTime": end_time
-      }
-      selectDimRelatedCountSum(obj).then(({data}) => {
-        this.getTable_doctor = data
-        this.getLineKernelTable(this.getTable_doctor, this.$refs.getLineKernelMonthData)
-      })
+        fDimId: "002",
+        startTime: start_time,
+        endTime: end_time
+      };
+      selectDimRelatedCountSum(obj).then(({ data }) => {
+        this.getTable_doctor = data;
+        this.getLineKernelTable(
+          this.getTable_doctor,
+          this.$refs.getLineKernelMonthData
+        );
+      });
     },
     // 费用关联数据统计
-    change3(start_time,end_time){
-      let getTable = {}
+    change3(start_time, end_time) {
+      let getTable = {};
       let obj = {
         fDimId: "003",
         startTime: start_time,
         endTime: end_time
-      }
-      selectDimRelatedCountSum(obj).then(({data}) => {
-        getTable = data
-        this.getLineKernelTable(getTable, this.$refs.getOneKernelDataAll)
-      })
+      };
+      selectDimRelatedCountSum(obj).then(({ data }) => {
+        getTable = data;
+        this.getLineKernelTable(getTable, this.$refs.getOneKernelDataAll);
+      });
     },
     //mesh关联数据统计
-    change4(start_time,end_time){
-      let getTable = {}
+    change4(start_time, end_time) {
+      let getTable = {};
       let obj = {
         fDimId: "004",
         startTime: start_time,
         endTime: end_time
-      }
-      selectDimRelatedCountSum(obj).then(({data}) => {
-        getTable = data
-        this.getLineKernelTable(getTable, this.$refs.getOneKernelDataAdd)
-      })
+      };
+      selectDimRelatedCountSum(obj).then(({ data }) => {
+        getTable = data;
+        this.getLineKernelTable(getTable, this.$refs.getOneKernelDataAdd);
+      });
     },
     // 获取echarts函数
     getLineKernelTable(getTable, getRef) {
-      let dataSourcePie = this.$echarts.init(getRef)
+      let dataSourcePie = this.$echarts.init(getRef);
       const option = {
         tooltip: {
           trigger: "axis"
@@ -187,13 +191,13 @@ export default {
           selectedMode: false
         },
         xAxis: {
-          name:"时间",
+          name: "时间",
           type: "category",
           boundaryGap: false,
           data: getTable.timeList
         },
         yAxis: {
-          name:'数量',
+          name: "数量",
           type: "value",
           axisLabel: {
             formatter: "{value}"
@@ -203,7 +207,7 @@ export default {
           {
             name: "最高数据",
             type: "line",
-            data:  getTable.sumList,
+            data: getTable.sumList,
             itemStyle: {
               color: "#6ED6D7"
             },
@@ -216,11 +220,11 @@ export default {
           }
         ],
         animation: false
-      }
-      dataSourcePie.setOption(option)
+      };
+      dataSourcePie.setOption(option);
       window.addEventListener("resize", function() {
         dataSourcePie.resize();
-      })
+      });
     }
   },
   // watch: {

@@ -13,7 +13,7 @@
     </MTopNav>
     <el-row :gutter="50">
       <el-col :sm="12">
-        <el-row :gutter="10" class="selectBox">
+        <el-row :gutter="10">
           <el-col :span="8">
             <p>指定管道读取数据量统计</p>
           </el-col>
@@ -29,11 +29,10 @@
             </el-select>
           </el-col>
         </el-row>
-        <!-- <tableLine :getId="lineWeekData"></tableLine> -->
         <div id="lineKernelWeekData" style="height: 300%" ref="getLineKernelWeekData"></div>
       </el-col>
       <el-col :sm="12">
-        <el-row :gutter="10" class="selectBox">
+        <el-row :gutter="10">
           <el-col :span="8">
             <p>指定管道写入数据量统计</p>
           </el-col>
@@ -49,11 +48,9 @@
             </el-select>
           </el-col>
         </el-row>
-        <!-- <tableLine :getId="lineMonthData"></tableLine> -->
         <div id="lineKernelMonthData" style="height: 300%" ref="getLineKernelMonthData"></div>
       </el-col>
     </el-row>
-
     <el-row :gutter="50">
       <el-col :sm="12">
         <el-row :gutter="10" class="selectBox">
@@ -72,8 +69,6 @@
             </el-select>
           </el-col>
         </el-row>
-
-        <!-- <tableLine :getId="lineWeekData"></tableLine> -->
         <div id="oneKernelDataAll" style="height: 300%" ref="getOneKernelDataAll"></div>
       </el-col>
       <el-col :sm="12">
@@ -93,7 +88,6 @@
             </el-select>
           </el-col>
         </el-row>
-        <!-- <tableLine :getId="lineMonthData"></tableLine> -->
         <div id="oneKernelDataAdd" style="height: 300%" ref="getOneKernelDataAdd"></div>
       </el-col>
     </el-row>
@@ -101,11 +95,8 @@
 </template>
 
 <script>
-import MTopNav from "@/components/m-topNav/m-topNav"
-import { 
-  selectOneTimeAtamp, 
-  selectAllId 
-} from "@/api/SystemETL"
+import MTopNav from "@/components/m-topNav/m-topNav";
+import { selectOneTimeAtamp, selectAllId } from "@/api/SystemETL";
 
 export default {
   name: "SystemETL",
@@ -114,190 +105,184 @@ export default {
       lineWeekData: "lineWeekData",
       lineMonthData: "lineMonthData",
       // 后台获取的数据  到时候直接覆盖
-      getTable: null, 
+      getTable: null,
       options: [],
       // 指定管道读取数据量统计
-      ETLReadData: "", 
+      ETLReadData: "",
       // 指定管道写入数据量统计
-      ETLWriteData: "", 
+      ETLWriteData: "",
       // 指定管道去重数据统计
-      ETLRemoveData: "", 
+      ETLRemoveData: "",
       // 指定管道去空值数据统计
-      ETLNullData: "", 
+      ETLNullData: "",
       startTime: null,
       endTime: null
-    }
+    };
   },
   mounted() {
-    this.init()
+    this.init();
   },
   methods: {
     init() {
-      selectAllId().then(({data}) => {
+      selectAllId().then(({ data }) => {
         for (let i = 0; i < data.length; i++) {
           this.options.push({
             name: data[i].fPipelineTitle,
             value: data[i].fPipelineId
-          })
+          });
         }
-        this.changeTime()
+        this.changeTime();
         let obj = {
           fPipelineId: data[0].fPipelineId,
           startTime: this.startTime,
           endTime: this.endTime
-        }
-        this.changeTime(obj)
+        };
+        this.changeTime(obj);
         //  指定管道读取数据量统计
-        this.conLineKernelWeekData(obj)
+        this.conLineKernelWeekData(obj);
         // 指定管道写入数据量统计
-        this.conLineKernelMonthData(obj)
+        this.conLineKernelMonthData(obj);
         //  指定管道去重数据统计
-        this.conOneKernelDataAll(obj)
+        this.conOneKernelDataAll(obj);
         // 指定管道去空值数据统计
-        this.conOneKernelDataAdd(obj)
+        this.conOneKernelDataAdd(obj);
       });
     },
     // 时间改变触发时间
     changeTime(timeId) {
-      let startTime = null
-      let endTime = null
+      let startTime = null;
+      let endTime = null;
       if (timeId == undefined) {
         startTime = this.$moment()
-          .day(-4)
+          .subtract("days", 6)
           .format("YYYY-MM-DD");
-        endTime = this.$moment().format("YYYY-MM-DD")
+        endTime = this.$moment().format("YYYY-MM-DD");
       } else {
-        startTime = this.$moment(timeId[0]).format("YYYY-MM-DD")
-        endTime = this.$moment(timeId[1]).format("YYYY-MM-DD")
+        startTime = this.$moment(timeId[0]).format("YYYY-MM-DD");
+        endTime = this.$moment(timeId[1]).format("YYYY-MM-DD");
       }
-      this.startTime = startTime
-      this.endTime = endTime
+      this.startTime = startTime;
+      this.endTime = endTime;
     },
     getData1(valId) {
-      this.changeTime()
-      let getObj = {}
+      this.changeTime();
+      let getObj = {};
       getObj = this.options.find(item => {
-        return item.name === valId
-      })
-      let obj = {
-        fPipelineId: getObj.value,
-        startTime: this.startTime,
-        endTime: this.endTime
-      }
-      this.conLineKernelWeekData(obj)
-    },
-    getData2(valId) {
-      this.changeTime()
-      let getObj = {}
-      getObj = this.options.find(item => {
-        return item.name === valId
-      })
-      let obj = {
-        fPipelineId: getObj.value,
-        startTime: this.startTime,
-        endTime: this.endTime
-      }
-      this.conLineKernelMonthData(obj)
-    },
-    getData3(valId) {
-      this.changeTime()
-      let getObj = {}
-      getObj = this.options.find(item => {
-        return item.name === valId
+        return item.name === valId;
       });
       let obj = {
         fPipelineId: getObj.value,
         startTime: this.startTime,
         endTime: this.endTime
-      }
-      this.conOneKernelDataAll(obj)
+      };
+      this.conLineKernelWeekData(obj);
     },
-    getData4(valId) {
-      this.changeTime()
-      let getObj = {}
+    getData2(valId) {
+      this.changeTime();
+      let getObj = {};
       getObj = this.options.find(item => {
-        return item.name === valId
-      })
+        return item.name === valId;
+      });
       let obj = {
         fPipelineId: getObj.value,
         startTime: this.startTime,
         endTime: this.endTime
-      }
-      this.conOneKernelDataAdd(obj)
+      };
+      this.conLineKernelMonthData(obj);
     },
-    /* fPipelineId: "PatientBaseInfoETLPipelineb2bdef1c-e942-400b-a7a4-f4028d2129cb"
-    fRdCount: "1" //去重
-    fReadSum: "2" 读
-    fRnCount: "1" 去空
-    fSelectTime: "2019-03-22 10:18:59"
-    fWriteSum: "2"*/ 
+    getData3(valId) {
+      this.changeTime();
+      let getObj = {};
+      getObj = this.options.find(item => {
+        return item.name === valId;
+      });
+      let obj = {
+        fPipelineId: getObj.value,
+        startTime: this.startTime,
+        endTime: this.endTime
+      };
+      this.conOneKernelDataAll(obj);
+    },
+    getData4(valId) {
+      this.changeTime();
+      let getObj = {};
+      getObj = this.options.find(item => {
+        return item.name === valId;
+      });
+      let obj = {
+        fPipelineId: getObj.value,
+        startTime: this.startTime,
+        endTime: this.endTime
+      };
+      this.conOneKernelDataAdd(obj);
+    },
     //  指定管道读取数据量统计
     conLineKernelWeekData(obj) {
-      let listA = []
-      let listY = []
+      let listA = [];
+      let listY = [];
       selectOneTimeAtamp(obj).then(({ data }) => {
         for (let i = 0; i < data.length; i++) {
-          listA.push(data[i].fSelectTime)
-          listY.push(data[i].fReadSum)
+          listA.push(data[i].fSelectTime);
+          listY.push(data[i].fReadSum);
         }
         let getTable = {
           listA: listA,
           listY: listY
-        }
-        this.getLineKernelTable(getTable, this.$refs.getLineKernelWeekData)
-      })
+        };
+        this.getLineKernelTable(getTable, this.$refs.getLineKernelWeekData);
+      });
     },
     // 指定管道写入数据量统计
     conLineKernelMonthData(obj) {
-      let listA = []
-      let listY = []
+      let listA = [];
+      let listY = [];
       selectOneTimeAtamp(obj).then(({ data }) => {
         for (let i = 0; i < data.length; i++) {
-          listA.push(data[i].fSelectTime)
-          listY.push(data[i].fWriteSum)
+          listA.push(data[i].fSelectTime);
+          listY.push(data[i].fWriteSum);
         }
         let getTable = {
           listA: listA,
           listY: listY
-        }
-        this.getLineKernelTable(getTable, this.$refs.getLineKernelMonthData)
-      })
+        };
+        this.getLineKernelTable(getTable, this.$refs.getLineKernelMonthData);
+      });
     },
     //  指定管道去重数据统计
     conOneKernelDataAll(obj) {
-      let listA = []
-      let listY = []
+      let listA = [];
+      let listY = [];
       selectOneTimeAtamp(obj).then(({ data }) => {
         for (let i = 0; i < data.length; i++) {
-          listA.push(data[i].fSelectTime)
-          listY.push(data[i].fRdCount)
+          listA.push(data[i].fSelectTime);
+          listY.push(data[i].fRdCount);
         }
         let getTable = {
           listA: listA,
           listY: listY
-        }
-        this.getLineKernelTable(getTable, this.$refs.getOneKernelDataAll)
-      })
+        };
+        this.getLineKernelTable(getTable, this.$refs.getOneKernelDataAll);
+      });
     },
     //指定管道去空值数据统计
     conOneKernelDataAdd(obj) {
-      let listA = []
-      let listY = []
+      let listA = [];
+      let listY = [];
       selectOneTimeAtamp(obj).then(({ data }) => {
         for (let i = 0; i < data.length; i++) {
-          listA.push(data[i].fSelectTime)
-          listY.push(data[i].fRnCount)
+          listA.push(data[i].fSelectTime);
+          listY.push(data[i].fRnCount);
         }
         let getTable = {
           listA: listA,
           listY: listY
-        }
-        this.getLineKernelTable(getTable, this.$refs.getOneKernelDataAdd)
-      })
+        };
+        this.getLineKernelTable(getTable, this.$refs.getOneKernelDataAdd);
+      });
     },
     // 获取echarts函数
     getLineKernelTable(getTable, getRef) {
-      let dataSourcePie = this.$echarts.init(getRef)
+      let dataSourcePie = this.$echarts.init(getRef);
       const option = {
         tooltip: {
           trigger: "axis"
@@ -335,21 +320,13 @@ export default {
           }
         ],
         animation: false
-      }
-      dataSourcePie.setOption(option)
+      };
+      dataSourcePie.setOption(option);
       window.addEventListener("resize", function() {
-        dataSourcePie.resize()
-      })
+        dataSourcePie.resize();
+      });
     }
   },
-  // watch: {
-  //   getTable: {
-  //     handler(newValue,oldValue) {
-  //       this.getLineTable(tableData,getRef);
-  //     },
-  //     deep: true
-  //   }
-  // },
   components: {
     MTopNav
   }

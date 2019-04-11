@@ -56,109 +56,109 @@
 </template>
 
 <script>
-import MTopNav from "@/components/m-topNav/m-topNav"
+import MTopNav from "@/components/m-topNav/m-topNav";
 import {
   selectRuleHistoryStr,
   selectRuleHistoryPieStr
-} from "@/api/SystemRuleHistoy"
+} from "@/api/SystemRuleHistoy";
 
 export default {
-  name: 'SystemRuleHistoyStr',
+  name: "SystemRuleHistoyStr",
   data() {
     return {
       // 后台获取的数据  到时候直接覆盖
-      getTable: null, 
+      getTable: null,
       // 开始时间
-      AllStartHistoryValue: "", 
+      AllStartHistoryValue: "",
       // 结束时间
-      AllEndHistoryValue: "", 
+      AllEndHistoryValue: "",
       baseName: ""
     };
   },
   created() {
-    this.baseName = this.$route.params.baseName
+    this.baseName = this.$route.params.baseName;
   },
   mounted() {
-    this.init()
+    this.init();
   },
   methods: {
     init(timeId) {
-      this.selcetTime(timeId)
+      this.selcetTime(timeId);
     },
     selcetTime(timeId) {
-      let startTime = null
-      let endTime = null
+      let startTime = null;
+      let endTime = null;
       if (timeId == null) {
         startTime = this.$moment()
-          .day(-4)
+          .subtract("days", 6)
           .format("YYYY-MM-DD");
-        endTime = this.$moment().format("YYYY-MM-DD")
+        endTime = this.$moment().format("YYYY-MM-DD");
       } else {
-        startTime = this.$moment(timeId[0]).format("YYYY-MM-DD")
-        endTime = this.$moment(timeId[1]).format("YYYY-MM-DD")
+        startTime = this.$moment(timeId[0]).format("YYYY-MM-DD");
+        endTime = this.$moment(timeId[1]).format("YYYY-MM-DD");
       }
-      this.initTableQualified(startTime, endTime)
+      this.initTableQualified(startTime, endTime);
     },
     // 表中记录合格率统计
     initTableQualified(startTime, endTime) {
       // 获取x轴
-      let getXlist = [] 
+      let getXlist = [];
       // 获取y轴
-      let getYlist = []
+      let getYlist = [];
       // 获取所有合格率的数组
-      let getHeGeLv = [] 
+      let getHeGeLv = [];
       // 获取单个合格率的数组
-      let getList = []
+      let getList = [];
       // 获取合格率的所有数据
-      let getAllData = [] 
+      let getAllData = [];
       // 获取合格的数组
-      let getHeGe = [] 
+      let getHeGe = [];
       // 获取合格的所有数据
-      let getHeGeData = [] 
+      let getHeGeData = [];
       // 获取单个合格的数组
-      let getHeGeList = [] 
-      let baseName = this.baseName
+      let getHeGeList = [];
+      let baseName = this.baseName;
       // 获取百分比
-      let getFormatter = ""
+      let getFormatter = "";
       // 表中记录合格率统计
       selectRuleHistoryStr({ startTime, endTime, baseName }).then(
         ({ data }) => {
-          getXlist = data.xList
-          getYlist = data.yList
+          getXlist = data.xList;
+          getYlist = data.yList;
           data.allList.forEach((item, index) => {
             item.forEach((item1, index1) => {
-              getHeGeLv.push(item1.heGeLv)
-              getHeGe.push(item1.heGe)
-            })
-            getList = getHeGeLv.splice(0, item.length)
-            getHeGeList = getHeGe.splice(0, item.length)
+              getHeGeLv.push(item1.heGeLv);
+              getHeGe.push(item1.heGe);
+            });
+            getList = getHeGeLv.splice(0, item.length);
+            getHeGeList = getHeGe.splice(0, item.length);
             getYlist.forEach((item2, index2) => {
               if (index2 == 0) {
-                getFormatter = `{b${index2}}<br/>`
+                getFormatter = `{b${index2}}<br/>`;
               }
-              getFormatter += `{a${index2}}:{c${index2}}%<br />`
+              getFormatter += `{a${index2}}:{c${index2}}%<br />`;
               if (index == index2) {
                 getAllData.push({
                   name: item2,
                   type: "line",
                   data: getList
-                })
+                });
                 getHeGeData.push({
                   name: item2,
                   type: "line",
                   data: getHeGeList
-                })
+                });
               }
-            })
-          })
+            });
+          });
           // 表中字段合格数量统计
           this.getLineTable(
             getXlist,
             getHeGeData,
             this.$refs.getQuantityAmount
-          )
+          );
           // 表中记录合格率统计
-          let dataSourcePie = this.$echarts.init(this.$refs.getQuantityYield)
+          let dataSourcePie = this.$echarts.init(this.$refs.getQuantityYield);
           const option = {
             legend: {
               selectedMode: false
@@ -185,28 +185,28 @@ export default {
             series: getAllData,
             animation: false
           };
-          dataSourcePie.setOption(option)
+          dataSourcePie.setOption(option);
           window.addEventListener("resize", function() {
-            dataSourcePie.resize()
-          })
+            dataSourcePie.resize();
+          });
         }
-      )
+      );
       // 表中记录合格率统计饼图
       selectRuleHistoryPieStr({ startTime, endTime, baseName }).then(
         ({ data }) => {
-          let getName = []
-          let getPieData = []
+          let getName = [];
+          let getPieData = [];
           data.forEach(item => {
-            getName.push(item.name)
-          })
+            getName.push(item.name);
+          });
           getPieData = data;
-          this.getPieTable(getName, getPieData, this.$refs.getQuantityPie)
+          this.getPieTable(getName, getPieData, this.$refs.getQuantityPie);
         }
-      )
+      );
     },
     // 获取 折线图line的 echarts函数
     getLineTable(getXlist, getAllData, getRef) {
-      let dataSourcePie = this.$echarts.init(getRef)
+      let dataSourcePie = this.$echarts.init(getRef);
       const option = {
         legend: {
           selectedMode: false
@@ -226,15 +226,15 @@ export default {
         },
         series: getAllData,
         animation: false
-      }
-      dataSourcePie.setOption(option)
+      };
+      dataSourcePie.setOption(option);
       window.addEventListener("resize", function() {
-        dataSourcePie.resize()
-      })
+        dataSourcePie.resize();
+      });
     },
     // 获取饼图echarts  函数
     getPieTable(getName, getPieData, getRef) {
-      let dataSourcePie = this.$echarts.init(getRef)
+      let dataSourcePie = this.$echarts.init(getRef);
       const option = {
         tooltip: {
           trigger: "item",
@@ -256,18 +256,18 @@ export default {
           }
         ],
         animation: false
-      }
-      dataSourcePie.setOption(option)
+      };
+      dataSourcePie.setOption(option);
       window.addEventListener("resize", function() {
-        dataSourcePie.resize()
-      })
+        dataSourcePie.resize();
+      });
     }
   },
   computed: {},
   components: {
     MTopNav
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>
