@@ -91,7 +91,6 @@ export default {
     // 当前各字段数据合格率排行榜（top10）
     conColumnStr() {
       SystemRuleNowStr().then(({ data }) => {
-        console.log(data);
         let getXlist = data.xList;
         let getData = data.yList;
         this.getColumnTable(getXlist, getData, this.$refs.getColumnStr);

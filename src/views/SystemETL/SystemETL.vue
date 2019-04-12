@@ -154,7 +154,7 @@ export default {
       let endTime = null;
       if (timeId == undefined) {
         startTime = this.$moment()
-          .subtract("days", 6)
+          .subtract(6, "days")
           .format("YYYY-MM-DD");
         endTime = this.$moment().format("YYYY-MM-DD");
       } else {
